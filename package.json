@@ -1,0 +1,26 @@
+{
+  "name": "login-process",
+  "version": "1.0.0",
+  "description": "Login System",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/projecthuman-repo/Login-Process.git"
+  },
+  "author": "Shivam Aery, David Zhang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/projecthuman-repo/Login-Process/issues"
+  },
+  "homepage": "https://github.com/projecthuman-repo/Login-Process#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^6.9.0",
+    "morgan": "^1.10.0"
+  }
+}
