@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 const app = require("./app");
-dotenv.config({ path: "./config.env" });
+const config = require('./utils/config')
+const logger = require('./utils/logger')
 const User = require("./models/user");
 
-const DB = process.env.DATABASE_CONNECTION;
+/* const DB = process.env.DATABASE_CONNECTION;
 mongoose.set("strictQuery", false);
 mongoose
   .connect(DB, {
@@ -25,10 +25,8 @@ const testUser = new User({
   email: "emaile",
   phoneNumber: "phonenumbere",
 });
-testUser.save();
+testUser.save(); */
 
-const port = process.env.port || 3000;
-
-app.listen(port, () => {
-  console.log("App is running on port", port);
+app.listen(config.PORT, () => {  // refactored PORT into utils/config for best practices
+  logger.info(`App is running on port ${config.PORT}`);
 });
