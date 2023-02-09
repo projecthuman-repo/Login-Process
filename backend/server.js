@@ -1,8 +1,8 @@
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 const app = require("./app");
 const config = require('./utils/config')
 const logger = require('./utils/logger')
-const User = require("./models/user");
+// const User = require("./models/user");
 
 /* const DB = process.env.DATABASE_CONNECTION;
 mongoose.set("strictQuery", false);
