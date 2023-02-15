@@ -5,20 +5,17 @@ const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: [true, "A user must have a first name"],
-    trim: true,
   },
 
   lastName: {
     type: String,
     required: [true, "A user must have a last name"],
-    trim: true,
   },
 
   username: {
     type: String,
     required: [true, "A user must have a username"],
     unique: true,
-    trim: true,
   },
   passwordHash: {
     type: String,
@@ -29,7 +26,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "A user must have an email"],
     unique: true,
-    trim: true,
   },
 
   phoneNumber: {
