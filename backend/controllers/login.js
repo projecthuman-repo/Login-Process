@@ -19,6 +19,13 @@ loginRouter.post(
     .withMessage("Invalid input for password"),
 
   async (request, response) => {
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
+      return response.status(401).json({
+        status: "Fail",
+        errors: errors.array(),
+      });
+    }
     const { username, password } = request.body;
 
     const user = await User.findOne({ username });
