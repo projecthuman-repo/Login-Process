@@ -34,7 +34,7 @@ usersRouter.post(
       pointsForContainingLower: 10,
       pointsForContainingUpper: 10,
       pointsForContainingNumber: 10,
-      pointsForContainingSymbol: 10,
+      pointsForContainingSymbol: 10, //in case we want to let the user know how good their password is
     })
     .withMessage(
       "Passwords must be between 8-10 characters long, have at least one uppercase letter, lowercase letter, number and symbol"

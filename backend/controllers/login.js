@@ -6,7 +6,7 @@ const User = require("../models/user");
 
 loginRouter.post(
   "/",
-  /*   body("username")
+    body("username")
     .not()
     .isEmpty()
     .trim()
@@ -18,7 +18,7 @@ loginRouter.post(
     .trim()
     .escape()
     .withMessage("Invalid input for password"),
- */
+
   async (request, response) => {
     const errors = validationResult(request);
     if (!errors.isEmpty()) {
