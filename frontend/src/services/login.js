@@ -3,8 +3,8 @@ const baseUrl = '/api/login'
 
 const login = async info => {
   const credentials = {
-    username: info.lUsername,
-    password: info.lPassword
+    username: info.loginUsername,
+    password: info.loginPassword
   }
   const response = await axios.post(baseUrl, credentials)
   return response.data

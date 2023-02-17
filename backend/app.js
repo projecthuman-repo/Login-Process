@@ -10,6 +10,7 @@ const app = express();
 const cors = require('cors')  // required for frontend
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
+const googleUsersRouter = require('./controllers/googleUsers')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
 const mongoose = require('mongoose')
@@ -38,6 +39,7 @@ app.use(morgan("dev"));
 
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
+app.use('/api/googleusers', googleUsersRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)

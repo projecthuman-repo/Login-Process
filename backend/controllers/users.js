@@ -75,19 +75,18 @@ usersRouter.post(
       });
     }
 
-    const { firstName, lastName, username, password, email, phoneNumber } =
-      request.body;
+    const userInfo = request.body;
 
     const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
+    const passwordHash = await bcrypt.hash(userInfo.password, saltRounds);
 
     const user = new User({
-      firstName,
-      lastName,
-      username,
-      passwordHash,
-      email,
-      phoneNumber,
+      firstName: userInfo.firstName,
+      lastName: userInfo.lastName,
+      username: userInfo.username,
+      passwordHash: passwordHash,
+      email: userInfo.email,
+      phoneNumber: userInfo.phoneNumber,
     });
 
     const savedUser = await user.save();

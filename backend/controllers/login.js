@@ -57,7 +57,7 @@ loginRouter.post(
       data: {
         token,
         username: user.username,
-        firstName: user.firstName,
+        firstName: user.firstName, //can add more later
       },
     });
   }
