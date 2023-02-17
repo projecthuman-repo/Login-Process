@@ -6,6 +6,7 @@ googleUsersRouter.get("/", async (request, response) => {
   const googleUsers = await GoogleUser.find({});
   response.json({
     status: "Success",
+    numberOfGoogleUsers: googleUsers.length,
     data: { googleUsers },
   });
 });
