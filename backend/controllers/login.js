@@ -31,7 +31,7 @@ loginRouter.post('/', async (request, response) => {
 
   response
     .status(200)
-    .send({ token, username: user.username, firstName: user.firstName })
+    .send({ token, username: user.username, firstName: user.firstName })  // we can add more as we go
 })
 
 module.exports = loginRouter
