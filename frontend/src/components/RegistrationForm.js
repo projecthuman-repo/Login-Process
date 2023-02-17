@@ -3,64 +3,131 @@ import { Form, Button } from "react-bootstrap";
 import "react-phone-number-input/style.css";
 import { registerUser } from "./../services/registration";
 import PhoneInput from "react-phone-number-input";
+import { useFormik } from "formik";
+import { schema } from "./../schemas/registrationSchema";
 
 export default function RegistrationForm() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [username, setUsername] = useState("");
+  const onSubmit = (values, actions) => {
+    try {
+      registerUser({
+        email: values.email,
+        password: values.password,
+        phoneNumber: phoneNumber,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        username: values.username,
+        /*   confirmPassword: values.confirmPassword, */
+      });
+      actions.resetForm();
+    } catch (exception) {}
+  };
+  const {
+    values,
+    errors,
+    handleBlur,
+    isSubmitting,
+    touched,
+    handleChange,
+    handleSubmit,
+  } = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      firstName: "",
+      lastName: "",
+      username: "",
+      phoneNumber: "",
+      confirmPassword: "",
+    },
+    validationSchema: schema,
+    onSubmit,
+  });
+
   const [register, setRegister] = useState(false);
-  const handleSubmit = (e) => {
+  const [phoneNumber, setPhoneNumber] = useState("");
+  /*  const handleSubmit = (e) => {
     e.preventDefault();
     try {
       registerUser({
-        email: email,
-        password: password,
-        phoneNumber: phoneNumber,
-        firstName: firstName,
-        lastName: lastName,
-        username: username,
+        email: values.email,
+        password: values.password,
+        phoneNumber: values.phoneNumber,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        username: values.username,
       });
-      setFirstName("");
+      /*       setFirstName("");
       setLastName("");
       setUsername("");
       setPassword("");
       setEmail("");
-      setPhoneNumber("");
-      setRegister(true);
-    } catch (err) {
+      setPhoneNumber(""); */
+  /* setRegister(true); */
+  /*  } catch (err) {
       console.log(err.message);
     }
-  };
+  };  */
+
   return (
     <div>
       <h2>Register</h2>
-      <Form onSubmit={(e) => handleSubmit(e)}>
+      <Form onSubmit={handleSubmit}>
         {/* email */}
         <Form.Group controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control
             type="email"
             name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={values.email}
+            onChange={handleChange}
             placeholder="Enter email"
+            onBlur={handleBlur}
+            isInvalid={errors.email && touched.email ? true : false}
           />
         </Form.Group>
-
+        {errors.email && touched.email ? (
+          <p className="text-danger">{errors.email}</p>
+        ) : (
+          ""
+        )}
         {/* password */}
         <Form.Group controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
           <Form.Control
             type="password"
             name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={values.password}
+            onChange={handleChange}
             placeholder="Password"
+            onBlur={handleBlur}
+            isInvalid={errors.password && touched.password ? true : false}
           />
         </Form.Group>
+        {errors.password && touched.password ? (
+          <p className="text-danger">{errors.password}</p>
+        ) : (
+          ""
+        )}
+
+        <Form.Group controlId="formBasicConfirmPassword">
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Control
+            type="password"
+            name="confirmPassword"
+            value={values.confirmPassword}
+            onChange={handleChange}
+            placeholder="Confirm Password"
+            onBlur={handleBlur}
+            isInvalid={
+              errors.confirmPassword && touched.confirmPassword ? true : false
+            }
+          />
+        </Form.Group>
+        {errors.confirmPassword && touched.confirmPassword ? (
+          <p className="text-danger">{errors.confirmPassword}</p>
+        ) : (
+          ""
+        )}
 
         <Form.Group controlId="formBasicPhoneNumber">
           <Form.Label>Phone Number</Form.Label>
@@ -71,48 +138,74 @@ export default function RegistrationForm() {
             defaultCountry="CA"
             onChange={setPhoneNumber}
             placeholder="Enter phone number"
+            onBlur={handleBlur}
+            /*    isInvalid={
+              errors.phoneNumber && touched.confirmPassword ? true : false
+            } */
           />
         </Form.Group>
+        {errors.phoneNumber && touched.phoneNumber ? (
+          <p className="text-danger">{errors.phoneNumber}</p>
+        ) : (
+          ""
+        )}
 
         <Form.Group controlId="formBasicUsername">
           <Form.Label>Username</Form.Label>
           <Form.Control
             type="username"
             name="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={values.username}
+            onChange={handleChange}
             placeholder="Username"
+            onBlur={handleBlur}
+            isInvalid={errors.username && touched.username ? true : false}
           />
         </Form.Group>
+        {errors.username && touched.username ? (
+          <p className="text-danger">{errors.username}</p>
+        ) : (
+          ""
+        )}
 
         <Form.Group controlId="formBasicFirstName">
           <Form.Label>First Name</Form.Label>
           <Form.Control
             type="firstName"
             name="firstName"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            value={values.firstName}
+            onChange={handleChange}
             placeholder="First Name"
+            onBlur={handleBlur}
+            isInvalid={errors.firstName && touched.firstName ? true : false}
           />
         </Form.Group>
+        {errors.firstName && touched.firstName ? (
+          <p className="text-danger">{errors.firstName}</p>
+        ) : (
+          ""
+        )}
 
         <Form.Group controlId="formBasicLastName">
           <Form.Label>Last Name</Form.Label>
           <Form.Control
             type="lastName"
             name="lastName"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
+            value={values.lastName}
+            onChange={handleChange}
             placeholder="Last Name"
+            onBlur={handleBlur}
+            isInvalid={errors.lastName && touched.lastName ? true : false}
           />
         </Form.Group>
+        {errors.lastName && touched.lastName ? (
+          <p className="text-danger">{errors.lastName}</p>
+        ) : (
+          ""
+        )}
 
         {/* submit button */}
-        <Button
-          variant="primary"
-          type="submit"
-          onClick={(e) => handleSubmit(e)}
-        >
+        <Button disabled={isSubmitting} variant="primary" type="submit">
           Register
         </Button>
         {register ? (
