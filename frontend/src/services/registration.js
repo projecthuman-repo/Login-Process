@@ -5,8 +5,8 @@ const register = async info => {  // we will need to set something up to send a 
   const user = {
     firstName: info.firstName,
     lastName: info.lastName,
-    username: info.rUsername,
-    password: info.rPassword,
+    username: info.registrationUsername,
+    password: info.registrationPassword,
     email: info.email,
     phoneNumber: info.phoneNumber
 
