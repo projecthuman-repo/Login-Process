@@ -1,6 +1,130 @@
-import 'react-phone-number-input/style.css'
-import PhoneInput from 'react-phone-number-input'
+import { React, useState } from "react";
+import { Form, Button } from "react-bootstrap";
+import "react-phone-number-input/style.css";
+import { registerUser } from "./../services/registration";
+import PhoneInput from "react-phone-number-input";
 
+export default function RegistrationForm() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [username, setUsername] = useState("");
+  const [register, setRegister] = useState(false);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    try {
+      registerUser({
+        email: email,
+        password: password,
+        phoneNumber: phoneNumber,
+        firstName: firstName,
+        lastName: lastName,
+        username: username,
+      });
+      setFirstName("");
+      setLastName("");
+      setUsername("");
+      setPassword("");
+      setEmail("");
+      setPhoneNumber("");
+      setRegister(true);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+  return (
+    <div>
+      <h2>Register</h2>
+      <Form onSubmit={(e) => handleSubmit(e)}>
+        {/* email */}
+        <Form.Group controlId="formBasicEmail">
+          <Form.Label>Email address</Form.Label>
+          <Form.Control
+            type="email"
+            name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter email"
+          />
+        </Form.Group>
+
+        {/* password */}
+        <Form.Group controlId="formBasicPassword">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+          />
+        </Form.Group>
+
+        <Form.Group controlId="formBasicPhoneNumber">
+          <Form.Label>Phone Number</Form.Label>
+          <PhoneInput
+            type="phoneNumber"
+            name="phoneNumber"
+            value={phoneNumber}
+            defaultCountry="CA"
+            onChange={setPhoneNumber}
+            placeholder="Enter phone number"
+          />
+        </Form.Group>
+
+        <Form.Group controlId="formBasicUsername">
+          <Form.Label>Username</Form.Label>
+          <Form.Control
+            type="username"
+            name="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+          />
+        </Form.Group>
+
+        <Form.Group controlId="formBasicFirstName">
+          <Form.Label>First Name</Form.Label>
+          <Form.Control
+            type="firstName"
+            name="firstName"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder="First Name"
+          />
+        </Form.Group>
+
+        <Form.Group controlId="formBasicLastName">
+          <Form.Label>Last Name</Form.Label>
+          <Form.Control
+            type="lastName"
+            name="lastName"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            placeholder="Last Name"
+          />
+        </Form.Group>
+
+        {/* submit button */}
+        <Button
+          variant="primary"
+          type="submit"
+          onClick={(e) => handleSubmit(e)}
+        >
+          Register
+        </Button>
+        {register ? (
+          <p className="text-success">You are Registered Successfully</p>
+        ) : (
+          <p className="text-danger"></p>
+        )}
+      </Form>
+    </div>
+  );
+}
+/* 
 const RegistrationForm = ({
     handleRegistration,
     firstName,
@@ -74,7 +198,7 @@ const RegistrationForm = ({
             </div>
             <button type='submit'>register</button>
         </form>
-    )
-}
+    ) */
+/* } */
 
-export default RegistrationForm
+/* export default RegistrationForm */
