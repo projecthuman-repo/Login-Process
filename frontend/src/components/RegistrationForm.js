@@ -7,12 +7,14 @@ import { useFormik } from "formik";
 import { schema } from "./../schemas/registrationSchema";
 
 export default function RegistrationForm() {
+  const [register, setRegister] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
   const onSubmit = (values, actions) => {
     try {
       registerUser({
         email: values.email,
         password: values.password,
-        phoneNumber: phoneNumber,
+        phoneNumber: values.phoneNumber,
         firstName: values.firstName,
         lastName: values.lastName,
         username: values.username,
@@ -43,8 +45,8 @@ export default function RegistrationForm() {
     onSubmit,
   });
 
-  const [register, setRegister] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState("");
+  if (phoneNumber !== "") values.phoneNumber = phoneNumber;
+
   /*  const handleSubmit = (e) => {
     e.preventDefault();
     try {

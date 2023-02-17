@@ -1,5 +1,6 @@
 import * as yup from "yup";
 const passwordRules = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)/;
+
 export const schema = yup.object().shape({
   email: yup.string().email("Please enter a valid email").required("Required"),
   password: yup
@@ -18,5 +19,5 @@ export const schema = yup.object().shape({
   username: yup.string().trim().required("Required"),
   firstName: yup.string().trim().required("Required"),
   lastName: yup.string().trim().required("Required"),
-  phoneNumber: yup.string().trim().required("Required"),
+  phoneNumber: yup.string().required("Required"),
 });
