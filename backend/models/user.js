@@ -1,18 +1,18 @@
 const mongoose = require("mongoose");
-const uniqueValidator = require('mongoose-unique-validator')
+const uniqueValidator = require("mongoose-unique-validator");
 
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: [true, "A user must have a first name"],
-    unique: false,  // was prev true
+    unique: false, // was prev true
     trim: true,
   },
 
   lastName: {
     type: String,
     required: [true, "A user must have a last name"],
-    unique: false,  // was prev true
+    unique: false, // was prev true
     trim: true,
   },
 
@@ -25,7 +25,7 @@ const userSchema = new mongoose.Schema({
   passwordHash: {
     type: String,
     required: true,
-    unique: false,  // was prev true
+    unique: false, // was prev true
   },
 
   email: {
@@ -40,18 +40,29 @@ const userSchema = new mongoose.Schema({
     required: [true, "A user must have a phone number"],
     unique: true,
   },
+
+  passwordChangedAt: Date,
 });
 
-userSchema.plugin(uniqueValidator)
+userSchema.plugin(uniqueValidator);
 
-userSchema.set('toJSON', {  // stringifies and renames _id to id, does not show __v
+userSchema.set("toJSON", {
+  // stringifies and renames _id to id, does not show __v
   transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
-    delete returnedObject.passwordHash  // passwordHash should not be revealed
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+    delete returnedObject.passwordHash; // passwordHash should not be revealed
+  },
+});
+
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = this.passwordChangedAt.getTime() / 1000;
+    if (changedTimestamp > JWTTimestamp) return true;
   }
-})
+  return false;
+};
 
 const User = mongoose.model("User", userSchema);
 
