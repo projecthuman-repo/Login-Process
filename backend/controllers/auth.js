@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
+const authRouter = require("express").Router();
 const User = require("../models/user");
-module.exports = protect = async (request, response, next) => {
+const protect = async (request, response, next) => {
   //Obtain token
   if (
     request.headers.authorization &&
@@ -32,6 +33,26 @@ module.exports = protect = async (request, response, next) => {
       message: "Password was changed, log in again",
     });
   }
-  requestuest.user = user;
+  request.user = user;
   next();
 };
+
+authRouter.post("/forgotPassword", async (request, response, next) => {
+  const user = await User.findOne({ email: request.body.email });
+  if (!user) {
+    return response.status(404).json({
+      status: "Fail",
+      message: "No user associated with the provided email",
+    });
+  }
+  const resetToken = user.createPasswordResetToken();
+
+  await user.save({ validateBeforeSave: false });
+});
+
+module.exports = {
+  authRouter: authRouter,
+  protect: protect,
+};
+
+//exports.resetPassword = async (request, response, next) => {};

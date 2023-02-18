@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const crypto = require("crypto");
 const uniqueValidator = require("mongoose-unique-validator");
 
 const userSchema = new mongoose.Schema({
@@ -41,6 +42,9 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
 
+  passwordResetToken: String,
+  passwordResetExpires: Date,
+
   passwordChangedAt: Date,
 });
 
@@ -56,14 +60,26 @@ userSchema.set("toJSON", {
   },
 });
 
-userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+userSchema.methods.changedPasswordAfter = function (jwtTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = this.passwordChangedAt.getTime() / 1000;
-    if (changedTimestamp > JWTTimestamp) return true;
+    if (changedTimestamp > jwtTimestamp) return true;
   }
   return false;
 };
 
+userSchema.methods.createPasswordResetToken = () => {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  this.passwordResetExpires = Date.now() + 600000; //add 10 min to current time
+
+  return resetToken;
+};
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
