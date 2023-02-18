@@ -7,7 +7,8 @@ import { useFormik } from "formik";
 import { schema } from "./../schemas/registrationSchema";
 
 export default function RegistrationForm() {
-  const [register, setRegister] = useState(false);
+  const [register, setRegister] = useState(false); //set this to true after registration to faciliate logout
+  //add backend methjod to check if user exists before allowing registration
   const [phoneNumber, setPhoneNumber] = useState("");
   const onSubmit = (values, actions) => {
     try {
@@ -21,6 +22,7 @@ export default function RegistrationForm() {
         /*   confirmPassword: values.confirmPassword, */
       });
       actions.resetForm();
+      setPhoneNumber("");
     } catch (exception) {}
   };
   const {
@@ -82,7 +84,7 @@ export default function RegistrationForm() {
             name="email"
             value={values.email}
             onChange={handleChange}
-            placeholder="Enter email"
+            placeholder="Email"
             onBlur={handleBlur}
             isInvalid={errors.email && touched.email ? true : false}
           />
@@ -139,7 +141,7 @@ export default function RegistrationForm() {
             value={phoneNumber}
             defaultCountry="CA"
             onChange={setPhoneNumber}
-            placeholder="Enter phone number"
+            placeholder="Phone number"
             onBlur={handleBlur}
             /*    isInvalid={
               errors.phoneNumber && touched.confirmPassword ? true : false

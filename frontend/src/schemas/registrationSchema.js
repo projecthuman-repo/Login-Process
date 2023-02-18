@@ -2,11 +2,16 @@ import * as yup from "yup";
 const passwordRules = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)/;
 
 export const schema = yup.object().shape({
-  email: yup.string().email("Please enter a valid email").required("Required"),
+  email: yup
+    .string()
+    .trim()
+    .email("Please enter a valid email")
+    .required("Required"),
   password: yup
     .string()
     .min(8)
     .max(10)
+    .trim()
     .matches(passwordRules, {
       message:
         "Passwords must contain 8-10 characters, one special character, one lowercase letter, and one uppercase letter",

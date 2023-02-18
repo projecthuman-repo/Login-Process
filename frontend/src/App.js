@@ -1,52 +1,24 @@
 import { useState, useEffect } from "react";
-import jwt_decode from "jwt-decode";
+
 //import registrationService from './services/registration'
-import loginService from "./services/login";
+/* import loginService from "./services/login"; */
 import LoginForm from "./components/LoginForm";
 import Notification from "./components/Notification";
 import RegistrationForm from "./components/RegistrationForm";
 
 const App = () => {
-  const [loginUsername, setLoginUsername] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
+  /*   const [loginUsername, setLoginUsername] = useState("");
+  const [loginPassword, setLoginPassword] = useState(""); */
   /*  const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [registrationUsername, setRegistrationUsername] = useState("");
   const [registrationPassword, setRegistrationPassword] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState(""); */
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [user, setUser] = useState(null);
+  /*   const [errorMessage, setErrorMessage] = useState(null);
+  const [user, setUser] = useState(null); */
 
-  const handleCallbackResponse = (response) => {
-    const userInfo = jwt_decode(response.credential);
-    console.log(userInfo);
-
-    const user = {
-      firstName: userInfo.given_name,
-      lastName: userInfo.family_name,
-      registrationUsername: userInfo.email,
-      email: userInfo.email,
-      // we need something to add phone number
-      // pfpLink: userInfo.picture - optional
-    };
-    // setUser(user) - immediate sign in
-  };
-
-  useEffect(() => {
-    /* global google */
-    google.accounts.id.initialize({
-      client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-      callback: handleCallbackResponse,
-    });
-
-    google.accounts.id.renderButton(document.getElementById("signInDiv"), {
-      theme: "outline",
-      size: "large",
-    });
-  }, []);
-
-  const handleLogin = async (event) => {
+  /*   const handleLogin = async (event) => {
     event.preventDefault();
     try {
       const user = await loginService.login({
@@ -63,7 +35,7 @@ const App = () => {
       }, 5000);
     }
   };
-
+ */
   /*  const handleRegistration = async (event) => {
     event.preventDefault();
     try {
@@ -91,24 +63,22 @@ const App = () => {
  */
   return (
     <div>
-      {user === null ? (
+      {/*  {user === null ? ( */}
+      <div>
         <div>
-          <div>
-            <Notification message={errorMessage} />
-            <h1>Login</h1>
-            <LoginForm
-              handleLogin={handleLogin}
+          {/*  <Notification message={errorMessage} /> */}
+          <LoginForm
+          /*       handleLogin={handleLogin}
               username={loginUsername}
               password={loginPassword}
               setUsername={setLoginUsername}
-              setPassword={setLoginPassword}
-            />
-            <div id="signInDiv"> {/* make this a component later? */}</div>
-          </div>
-          <hr />
-          <div>
-            <RegistrationForm
-            /*  handleRegistration={handleRegistration}
+              setPassword={setLoginPassword} */
+          />
+        </div>
+        <hr />
+        <div>
+          <RegistrationForm
+          /*  handleRegistration={handleRegistration}
               firstName={firstName}
               lastName={lastName}
               username={registrationUsername}
@@ -121,14 +91,12 @@ const App = () => {
               setPassword={setRegistrationPassword}
               setEmail={setEmail}
               setPhoneNumber={setPhoneNumber} */
-            />
-          </div>
+          />
         </div>
-      ) : (
-        <div>
-          <p>hello {user.firstName}</p>
-        </div>
-      )}
+      </div>
+      {/*   ) : ( */}
+      <div>{/*    <p>hello {user.firstName}</p> */}</div>
+      {/* )} */}
     </div>
   );
 };
