@@ -37,7 +37,7 @@ const protect = async (request, response, next) => {
   next();
 };
 
-authRouter.post("/forgotPassword", async (request, response, next) => {
+authRouter.post("/forgotPassword", async (request, response) => {
   const user = await User.findOne({ email: request.body.email });
   if (!user) {
     return response.status(404).json({
@@ -46,8 +46,14 @@ authRouter.post("/forgotPassword", async (request, response, next) => {
     });
   }
   const resetToken = user.createPasswordResetToken();
+  await user.save();
 
-  await user.save({ validateBeforeSave: false });
+  return response.json({
+    status: "Success",
+    data: {
+      resetToken,
+    },
+  });
 });
 
 module.exports = {
