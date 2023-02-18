@@ -3,9 +3,11 @@ import { useState, useEffect } from "react";
 //import registrationService from './services/registration'
 /* import loginService from "./services/login"; */
 import LoginForm from "./components/LoginForm";
-import Notification from "./components/Notification";
+//import Notification from "./components/Notification";
 import RegistrationForm from "./components/RegistrationForm";
+import AuthComponent from "./components/AuthComponent";
 
+import { Routes, Route } from "react-router-dom";
 const App = () => {
   /*   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState(""); */
@@ -61,43 +63,13 @@ const App = () => {
     }
   };
  */
+
   return (
-    <div>
-      {/*  {user === null ? ( */}
-      <div>
-        <div>
-          {/*  <Notification message={errorMessage} /> */}
-          <LoginForm
-          /*       handleLogin={handleLogin}
-              username={loginUsername}
-              password={loginPassword}
-              setUsername={setLoginUsername}
-              setPassword={setLoginPassword} */
-          />
-        </div>
-        <hr />
-        <div>
-          <RegistrationForm
-          /*  handleRegistration={handleRegistration}
-              firstName={firstName}
-              lastName={lastName}
-              username={registrationUsername}
-              password={registrationPassword}
-              email={email}
-              phoneNumber={phoneNumber}
-              setFirstName={setFirstName}
-              setLastName={setLastName}
-              setUsername={setRegistrationUsername}
-              setPassword={setRegistrationPassword}
-              setEmail={setEmail}
-              setPhoneNumber={setPhoneNumber} */
-          />
-        </div>
-      </div>
-      {/*   ) : ( */}
-      <div>{/*    <p>hello {user.firstName}</p> */}</div>
-      {/* )} */}
-    </div>
+    <Routes>
+      <Route exact path="/register" element={<RegistrationForm />}></Route>
+      <Route exact path="/login" element={<LoginForm />}></Route>
+      <Route exact path="/auth" element={<AuthComponent />}></Route>
+    </Routes>
   );
 };
 
