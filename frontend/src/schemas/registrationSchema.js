@@ -18,10 +18,6 @@ export const schema = yup.object().shape({
         "Passwords must contain 8-10 characters, one special character, one lowercase letter, and one uppercase letter",
     })
     .required("Required"),
-  /*   confirmPassword: yup
-    .string()
-    .oneOf([yup.ref("password"), null], "Passwords must match")
-    .required("Required"), */
   username: yup.string().trim().required("Required"),
   firstName: yup.string().trim().required("Required"),
   lastName: yup.string().trim().required("Required"),

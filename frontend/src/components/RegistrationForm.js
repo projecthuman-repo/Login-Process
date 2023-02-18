@@ -19,7 +19,6 @@ export default function RegistrationForm() {
         firstName: values.firstName,
         lastName: values.lastName,
         username: values.username,
-        /*   confirmPassword: values.confirmPassword, */
       });
       actions.resetForm();
       setPhoneNumber("");
@@ -41,7 +40,6 @@ export default function RegistrationForm() {
       lastName: "",
       username: "",
       phoneNumber: "",
-      confirmPassword: "",
     },
     validationSchema: schema,
     onSubmit,
@@ -86,26 +84,6 @@ export default function RegistrationForm() {
         </Form.Group>
         {errors.password && touched.password ? (
           <p className="text-danger">{errors.password}</p>
-        ) : (
-          ""
-        )}
-
-        <Form.Group controlId="formBasicConfirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            type="password"
-            name="confirmPassword"
-            value={values.confirmPassword}
-            onChange={handleChange}
-            placeholder="Confirm Password"
-            onBlur={handleBlur}
-            isInvalid={
-              errors.confirmPassword && touched.confirmPassword ? true : false
-            }
-          />
-        </Form.Group>
-        {errors.confirmPassword && touched.confirmPassword ? (
-          <p className="text-danger">{errors.confirmPassword}</p>
         ) : (
           ""
         )}
