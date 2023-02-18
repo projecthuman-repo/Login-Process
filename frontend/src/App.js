@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 
 //import registrationService from './services/registration'
 /* import loginService from "./services/login"; */
@@ -7,7 +6,7 @@ import LoginForm from "./components/LoginForm";
 import RegistrationForm from "./components/RegistrationForm";
 import AuthComponent from "./components/AuthComponent";
 //import Navigation from "./components/Navigation";
-import { Container, Col, Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import { Routes, Route } from "react-router-dom";
 const App = () => {
   return (

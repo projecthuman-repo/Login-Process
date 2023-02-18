@@ -1,4 +1,4 @@
- import { Container, Col, Row } from "react-bootstrap";
+ import { Col, Row } from "react-bootstrap";
 
 
  //for when we make a nav bar or some sort of nav componenet
