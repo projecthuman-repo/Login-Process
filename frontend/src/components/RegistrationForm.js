@@ -7,8 +7,8 @@ import { useFormik } from "formik";
 import { schema } from "./../schemas/registrationSchema";
 
 export default function RegistrationForm() {
-  const [register, setRegister] = useState(false); //set this to true after registration to faciliate logout
-  //add backend methjod to check if user exists before allowing registration
+  const [register, setRegister] = useState(false); //need to set this to true after registration to faciliate logout, will add later
+  //add backend method to check if user exists before allowing registration
   const [phoneNumber, setPhoneNumber] = useState("");
   const onSubmit = (values, actions) => {
     try {
@@ -48,29 +48,6 @@ export default function RegistrationForm() {
   });
 
   if (phoneNumber !== "") values.phoneNumber = phoneNumber;
-
-  /*  const handleSubmit = (e) => {
-    e.preventDefault();
-    try {
-      registerUser({
-        email: values.email,
-        password: values.password,
-        phoneNumber: values.phoneNumber,
-        firstName: values.firstName,
-        lastName: values.lastName,
-        username: values.username,
-      });
-      /*       setFirstName("");
-      setLastName("");
-      setUsername("");
-      setPassword("");
-      setEmail("");
-      setPhoneNumber(""); */
-  /* setRegister(true); */
-  /*  } catch (err) {
-      console.log(err.message);
-    }
-  };  */
 
   return (
     <div>
@@ -143,9 +120,6 @@ export default function RegistrationForm() {
             onChange={setPhoneNumber}
             placeholder="Phone number"
             onBlur={handleBlur}
-            /*    isInvalid={
-              errors.phoneNumber && touched.confirmPassword ? true : false
-            } */
           />
         </Form.Group>
         {errors.phoneNumber && touched.phoneNumber ? (
@@ -221,81 +195,3 @@ export default function RegistrationForm() {
     </div>
   );
 }
-/* 
-const RegistrationForm = ({
-    handleRegistration,
-    firstName,
-    lastName,
-    username,
-    password,
-    email,
-    phoneNumber,
-    setFirstName,
-    setLastName,
-    setUsername,
-    setPassword,
-    setEmail,
-    setPhoneNumber
-}) => {
-
-    return (
-        <form onSubmit={handleRegistration}>
-            <div>
-                first name
-                <input
-                    type='text'
-                    value={firstName}
-                    name='FirstName'
-                    onChange={({ target }) => setFirstName(target.value)}
-                />
-            </div>
-            <div>
-                last name
-                <input
-                    type='text'
-                    value={lastName}
-                    name='LastName'
-                    onChange={({ target }) => setLastName(target.value)}
-                />
-            </div>
-            <div>
-                username
-                <input
-                    type='text'
-                    value={username}
-                    name='Username'
-                    onChange={({ target }) => setUsername(target.value)}
-                />
-            </div>
-            <div>
-                password
-                <input
-                    type='password'
-                    value={password}
-                    name='Password'
-                    onChange={({ target }) => setPassword(target.value)}
-                />
-            </div>
-            <div>
-                email
-                <input
-                    type='email'
-                    value={email}
-                    name='Email'
-                    onChange={({ target }) => setEmail(target.value)}
-                />
-            </div>
-            <div>
-                <PhoneInput
-                    placeholder='phone number'
-                    value={phoneNumber}
-                    name='PhoneNumber'
-                    onChange={setPhoneNumber}
-                />
-            </div>
-            <button type='submit'>register</button>
-        </form>
-    ) */
-/* } */
-
-/* export default RegistrationForm */
