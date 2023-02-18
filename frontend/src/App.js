@@ -1,4 +1,3 @@
-
 //import registrationService from './services/registration'
 /* import loginService from "./services/login"; */
 import LoginForm from "./components/LoginForm";
@@ -29,6 +28,7 @@ const App = () => {
         <Route exact path="/register" element={<RegistrationForm />}></Route>
         <Route exact path="/login" element={<LoginForm />}></Route>
         <Route exact path="/auth" element={<AuthComponent />}></Route>
+        <Route exact path="/free" element={<AuthComponent />}></Route>
       </Routes>
     </div>
   );
