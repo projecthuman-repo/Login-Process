@@ -76,6 +76,7 @@ authRouter.post("/forgotPassword", async (request, response) => {
     return response.status(500).json({
       status: "Fail",
       message: "Email was not sent",
+      err,
     });
   }
 });
