@@ -29,6 +29,8 @@ import { React, useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { login } from "./../services/login";
 import jwt_decode from "jwt-decode";
+import Cookies from "universal-cookie";
+const cookies = new Cookies();
 export default function LoginForm() {
   const handleCallbackResponse = (response) => {
     const userInfo = jwt_decode(response.credential);
@@ -60,14 +62,20 @@ export default function LoginForm() {
   //const [register, setRegister] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const onSubmit = (values, actions) => {
-    try {
-      login({
-        password: values.password,
-        username: values.username,
-        /*   confirmPassword: values.confirmPassword, */
-      });
-      actions.resetForm();
-    } catch (exception) {}
+    login({
+      password: values.password,
+      username: values.username,
+      /*   confirmPassword: values.confirmPassword, */
+    })
+      .then((data) => {
+        actions.resetForm();
+        console.log("TOKENNNNNN", data.token);
+        cookies.set("TOKEN", data.token, {
+          path: "/",
+        });
+        window.location.href = "/auth";
+      })
+      .catch((err) => {});
   };
   const {
     values,
