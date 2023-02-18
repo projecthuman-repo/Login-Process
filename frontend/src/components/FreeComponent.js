@@ -1,6 +1,5 @@
-
 import React from "react";
-
+//Component to test if user can land on this page with/without auth
 export default function FreeComponent() {
   return (
     <div>

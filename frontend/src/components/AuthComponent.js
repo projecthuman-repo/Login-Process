@@ -1,3 +1,4 @@
+//Component to test if user can land on this page with auth only
 export default function AuthComponent() {
   return (
     <div>
