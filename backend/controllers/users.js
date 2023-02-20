@@ -30,10 +30,12 @@ usersRouter.get("/", async (request, response) => {
 usersRouter.post(
   "/",
   body("email")
+    .isString()
     .isEmail()
     .normalizeEmail()
     .withMessage("Email entered is not a valid email"),
   body("password")
+    .isString()
     .isStrongPassword({
       minLength: 8,
       maxLength: 10,
@@ -53,24 +55,28 @@ usersRouter.post(
       "Passwords must be between 8-10 characters long, have at least one uppercase letter, lowercase letter, number and symbol"
     ),
   body("username")
+    .isString()
     .not()
     .isEmpty()
     .trim()
     .escape()
     .withMessage("Invalid input for username"),
   body("firstName")
+    .isString()
     .not()
     .isEmpty()
     .trim()
     .escape()
     .withMessage("Invalid input for first name"),
   body("lastName")
+    .isString()
     .not()
     .isEmpty()
     .trim()
     .escape()
     .withMessage("Invalid input for username"),
   body("phoneNumber")
+    .isString()
     .not()
     .isEmpty()
     .trim()

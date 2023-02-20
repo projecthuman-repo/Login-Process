@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
+const { body, validationResult } = require("express-validator");
 const authRouter = require("express").Router();
 const sendEmail = require("./../utils/email");
 const User = require("../models/user");
@@ -88,44 +89,75 @@ module.exports = {
   protect: protect,
 };
 
-authRouter.patch("/resetPassword/:token", async (request, response) => {
-  const resetToken = request.params.token;
-  const hashedToken = crypto
-    .createHash("sha256")
-    .update(resetToken)
-    .digest("hex");
+authRouter.patch(
+  "/resetPassword/:token",
+  body("password")
+    .isString()
+    .isStrongPassword({
+      minLength: 8,
+      maxLength: 10,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+      returnScore: false,
+      pointsPerUnique: 1,
+      pointsPerRepeat: 0.5,
+      pointsForContainingLower: 10,
+      pointsForContainingUpper: 10,
+      pointsForContainingNumber: 10,
+      pointsForContainingSymbol: 10, //in case we want to let the user know how good their password is
+    })
+    .withMessage(
+      "Passwords must be between 8-10 characters long, have at least one uppercase letter, lowercase letter, number and symbol"
+    ),
+  async (request, response) => {
+    const errors = validationResult(request);
 
-  const user = await User.findOne({
-    passwordResetToken: hashedToken,
-    passwordResetExpires: { $gt: Date.now() }, //check that password reset token has not expired
-  });
+    if (!errors.isEmpty()) {
+      return response.status(400).json({
+        status: "Fail",
+        errors: errors.array(),
+      });
+    }
+    const resetToken = request.params.token;
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
 
-  if (!user) {
-    return response.status(400).json({
-      status: "Fail",
-      message: "Token is invalid or expired",
+    const user = await User.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: Date.now() }, //check that password reset token has not expired
+    });
+
+    if (!user) {
+      return response.status(400).json({
+        status: "Fail",
+        message: "Token is invalid or expired",
+      });
+    }
+    const passwordToChangeTo = request.body.password;
+    const saltRounds = 10;
+    const newHashedPassword = await bcrypt.hash(passwordToChangeTo, saltRounds);
+    user.passwordHash = newHashedPassword;
+    user.passwordResetExpires = undefined;
+    user.passwordResetToken = undefined; //removing user reset token after user changed password
+    await user.save();
+    //Log user in via JWT
+    const userForToken = {
+      username: user.username,
+      id: user._id,
+    };
+
+    // token expires in 20 min
+    const token = jwt.sign(userForToken, process.env.SECRET, {
+      expiresIn: "20m",
+    });
+
+    response.status(200).json({
+      status: "Success",
+      token,
     });
   }
-  const passwordToChangeTo = request.body.password;
-  const saltRounds = 10;
-  const newHashedPassword = await bcrypt.hash(passwordToChangeTo, saltRounds);
-  user.passwordHash = newHashedPassword;
-  user.passwordResetExpires = undefined;
-  user.passwordResetToken = undefined; //removing user reset token after user changed password
-  await user.save();
-  //Log user in via JWT
-  const userForToken = {
-    username: user.username,
-    id: user._id,
-  };
-
-  // token expires in 20 min
-  const token = jwt.sign(userForToken, process.env.SECRET, {
-    expiresIn: "20m",
-  });
-
-  response.status(200).json({
-    status: "Success",
-    token,
-  });
-});
+);

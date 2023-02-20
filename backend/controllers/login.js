@@ -6,7 +6,7 @@ const User = require("../models/user");
 
 loginRouter.post(
   "/",
-    body("username")
+  body("username")
     .not()
     .isEmpty()
     .trim()
@@ -55,8 +55,8 @@ loginRouter.post(
 
     response.status(200).json({
       status: "Success",
+      token,
       data: {
-        token,
         username: user.username,
         firstName: user.firstName, //can add more later
       },
