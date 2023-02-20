@@ -6,7 +6,9 @@ const morgan = require("morgan");
 const app = express();
 
 //MIDDLEWARE
-
+const helmet = require("helmet");
+const mongoSanitize = require("express-mongo-sanitize");
+const xss = require("xss-clean");
 const cors = require("cors"); // required for frontend
 const usersRouter = require("./controllers/users");
 const loginRouter = require("./controllers/login");
@@ -31,10 +33,18 @@ mongoose
   .catch((err) => {
     logger.info("error connecting to MongoDB:", err.message);
   });
-
+app.use(helmet());
 app.use(cors());
+
 // app.use(express.static('build'))  - possibly needed for frontend production build
-app.use(express.json());
+app.use(express.json({ limit: "10kb" }));
+
+//Data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+
+//Data sanitization against XSS
+app.use(xss());
+
 app.use(middleware.requestLogger);
 app.use(morgan("dev"));
 
