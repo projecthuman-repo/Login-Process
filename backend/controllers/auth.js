@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const bcrypt = require("bcrypt");
 const authRouter = require("express").Router();
 const sendEmail = require("./../utils/email");
 const User = require("../models/user");
@@ -87,20 +89,43 @@ module.exports = {
 };
 
 authRouter.patch("/resetPassword/:token", async (request, response) => {
-  const user = await User.findOne({ email: request.body.email });
+  const resetToken = request.params.token;
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() }, //check that password reset token has not expired
+  });
+
   if (!user) {
-    return response.status(404).json({
+    return response.status(400).json({
       status: "Fail",
-      message: "No user associated with the provided email",
+      message: "Token is invalid or expired",
     });
   }
-  const resetToken = user.createPasswordResetToken();
+  const passwordToChangeTo = request.body.password;
+  const saltRounds = 10;
+  const newHashedPassword = await bcrypt.hash(passwordToChangeTo, saltRounds);
+  user.passwordHash = newHashedPassword;
+  user.passwordResetExpires = undefined;
+  user.passwordResetToken = undefined; //removing user reset token after user changed password
   await user.save();
+  //Log user in via JWT
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  };
 
-  return response.json({
+  // token expires in 20 min
+  const token = jwt.sign(userForToken, process.env.SECRET, {
+    expiresIn: "20m",
+  });
+
+  response.status(200).json({
     status: "Success",
-    data: {
-      resetToken,
-    },
+    token,
   });
 });

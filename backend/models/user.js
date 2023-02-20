@@ -53,6 +53,12 @@ userSchema.set("toJSON", {
   },
 });
 
+userSchema.pre("save", function (next) {
+  if (!this.isModified("passwordHash") || this.isNew) return next();
+  this.passwordChangedAt = Date.now() - 1000; //putting password change 1 sec in the past to ensure jwt is issued before a password is changed
+  next();
+});
+
 userSchema.methods.changedPasswordAfter = function (jwtTimestamp) {
   if (this.passwordChangedAt) {
     const changedTimestamp = this.passwordChangedAt.getTime() / 1000;
