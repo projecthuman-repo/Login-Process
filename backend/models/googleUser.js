@@ -6,19 +6,19 @@ const googleUserSchema = new mongoose.Schema({
     type: String,
     required: [true, "A user must have a first name"],
     unique: false,
-    trim: true,
+    //trim: true,
   },
   lastName: {
     type: String,
     required: [true, "A user must have a last name"],
     unique: false,
-    trim: true,
+    //trim: true,
   },
   email: {
     type: String,
     required: [true, "A user must have an email"],
     unique: true,
-    trim: true,
+    //trim: true,
   },
   phoneNumber: {
     type: String,

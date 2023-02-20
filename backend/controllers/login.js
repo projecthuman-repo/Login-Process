@@ -1,34 +1,67 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { body, validationResult } = require("express-validator");
 const loginRouter = require("express").Router();
 const User = require("../models/user");
 
-loginRouter.post("/", async (request, response) => {
-  const { username, password } = request.body;
+loginRouter.post(
+  "/",
+    body("username")
+    .not()
+    .isEmpty()
+    .trim()
+    .escape()
+    .withMessage("Invalid input for username"),
+  body("password")
+    .not()
+    .isEmpty()
+    .trim()
+    .escape()
+    .withMessage("Invalid input for password"),
 
-  const user = await User.findOne({ username });
-  const passwordCorrect =
-    user === null ? false : await bcrypt.compare(password, user.passwordHash);
+  async (request, response) => {
+    const errors = validationResult(request);
+    if (!errors.isEmpty()) {
+      return response.status(401).json({
+        status: "Fail",
+        errors: errors.array(),
+      });
+    }
+    const { username, password } = request.body;
 
-  if (!(user && passwordCorrect)) {
-    return response.status(401).json({
-      error: "invalid username or password",
+    const user = await User.findOne({ username });
+    const passwordCorrect =
+      user === null ? false : await bcrypt.compare(password, user.passwordHash);
+
+    if (!(user && passwordCorrect)) {
+      return response.status(401).json({
+        status: "Fail",
+        error: "Invalid username or password",
+      });
+    }
+
+    const userForToken = {
+      username: user.username,
+      id: user._id,
+    };
+
+    // token expires in 60 * 60 seconds (1hr)
+    const token = jwt.sign(
+      userForToken,
+      process.env.SECRET,
+      /*     { expiresIn: "60 * 60" } */
+      { expiresIn: "20m" } //Change to 20 minutes, research and found it to be recommended
+    );
+
+    response.status(200).json({
+      status: "Success",
+      data: {
+        token,
+        username: user.username,
+        firstName: user.firstName, //can add more later
+      },
     });
   }
-
-  const userForToken = {
-    username: user.username,
-    id: user._id,
-  };
-
-  // token expires in 60 * 60 seconds (1hr)
-  const token = jwt.sign(userForToken, process.env.SECRET, {
-    expiresIn: 60 * 60,
-  });
-
-  response
-    .status(200)
-    .send({ token, username: user.username, firstName: user.firstName }); // we can add more as we go
-});
+);
 
 module.exports = loginRouter;
