@@ -3,7 +3,7 @@ const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const { body, validationResult } = require("express-validator");
 const authRouter = require("express").Router();
-const sendEmail = require("./../utils/email");
+const Email = require("./../utils/email");
 const User = require("../models/user");
 
 const protect = async (request, response, next) => {
@@ -14,7 +14,7 @@ const protect = async (request, response, next) => {
   ) {
     var token = request.headers.authorization.split(" ")[1];
   } else if (request.cookies.jwt) {
-    var token = request.cookies.jwt
+    var token = request.cookies.jwt;
   }
 
   if (!token) {
@@ -60,11 +60,7 @@ authRouter.post("/forgotPassword", async (request, response) => {
   )}/api/authentication/resetPassword/${resetToken}`;
   const message = `Forgot password? Submit PATCH request with your new password to ${resetURL}\nIf you didn't forget your password, ignore this email!`;
   try {
-    await sendEmail({
-      email: user.email,
-      subject: "Your password reset token, 10 MINUTES TILL EXPIRATION",
-      message: message,
-    });
+    await new Email(user, resetURL).sendPasswordReset();
 
     return response.status(200).json({
       status: "Success",

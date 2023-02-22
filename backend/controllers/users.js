@@ -4,6 +4,7 @@ const usersRouter = require("express").Router();
 const User = require("../models/user");
 const { body, validationResult } = require("express-validator");
 const protect = require("./auth").protect;
+const Email = require("./../utils/email");
 
 usersRouter.get("/", async (request, response) => {
   const users = await User.find({});
@@ -150,6 +151,9 @@ usersRouter.post(
     });
 
     const savedUser = await user.save();
+
+    const url = "http://localhost:3000/";
+    await new Email(user, url).sendWelcomeToApp();
 
     response.status(201).json({
       status: "Success",

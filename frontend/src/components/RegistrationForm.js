@@ -5,8 +5,10 @@ import { registerUser } from "./../services/registration";
 import PhoneInput from "react-phone-number-input";
 import { useFormik } from "formik";
 import { schema } from "./../schemas/registrationSchema";
+import { useNavigate } from "react-router-dom";
 
 export default function RegistrationForm() {
+  const navigate = useNavigate();
   const [register, setRegister] = useState(false); //need to set this to true after registration to faciliate logout, will add later
   //add backend method to check if user exists before allowing registration
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -23,6 +25,9 @@ export default function RegistrationForm() {
         actions.resetForm();
         setPhoneNumber("");
         console.log("Successfully registered user ", data);
+        window.setTimeout(() => {
+          navigate("/");
+        }, 1500);
       })
       .catch((err) => {
         console.log(err);
@@ -181,11 +186,9 @@ export default function RegistrationForm() {
         )}
       </Form>
 
-      <div>
-        <p>
-          Have an account? <a href="/">Login</a>
-        </p>
-      </div>
+      <p>
+        Have an account? <a href="/">Login</a>
+      </p>
     </div>
   );
 }

@@ -1,6 +1,55 @@
 const nodemailer = require("nodemailer");
 
-const sendEmail = async (options) => {
+module.exports = class Email {
+  constructor(user, url) {
+    this.to = user.email;
+    this.firstName = user.firstName;
+    this.url = url;
+    this.from = "shivamaeryy08@gmail.com";
+  }
+
+  newTransport() {
+    if (process.env.NODE_ENV === "development") {
+      return nodemailer.createTransport({
+        service: "SendGrid",
+        auth: {
+          user: process.env.SEND_GRID_USERNAME,
+          pass: process.env.SEND_GRID_PASSWORD,
+        },
+      });
+    } else {
+      return nodemailer.createTransport({
+        host: process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
+        secure: false,
+        auth: {
+          user: process.env.EMAIL_USERNAME,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      });
+    }
+  }
+
+  async send(subject, message) {
+    const mailOptions = {
+      from: this.from,
+      to: this.to,
+      subject: subject,
+      text: message,
+      //html: <b>options.message</b>,
+    };
+    await this.newTransport().sendMail(mailOptions);
+  }
+
+  async sendWelcomeToApp() {
+    await this.send("Welcome to the PHC Portal", "Welcome to our various apps");
+  }
+
+  async sendPasswordReset() {
+    await this.send("password reset token", "Please reset your password");
+  }
+};
+/* const sendEmail = async (options) => {
   const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT,
@@ -20,6 +69,4 @@ const sendEmail = async (options) => {
   };
 
   await transporter.sendMail(mailOptions);
-};
-
-module.exports = sendEmail;
+}; */
