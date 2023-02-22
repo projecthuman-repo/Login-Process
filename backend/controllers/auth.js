@@ -65,9 +65,7 @@ authRouter.post("/forgotPassword", async (request, response) => {
     return response.status(200).json({
       status: "Success",
       message: "Token sent to email",
-      data: {
-        resetToken,
-      },
+      resetToken,
     });
   } catch (err) {
     user.createPasswordResetToken = undefined;

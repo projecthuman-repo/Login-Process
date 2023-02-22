@@ -1,5 +1,4 @@
 const nodemailer = require("nodemailer");
-
 module.exports = class Email {
   constructor(user, url) {
     this.to = user.email;
@@ -9,7 +8,7 @@ module.exports = class Email {
   }
 
   newTransport() {
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.NODE_ENV === "production") {
       return nodemailer.createTransport({
         service: "SendGrid",
         auth: {
@@ -35,18 +34,28 @@ module.exports = class Email {
       from: this.from,
       to: this.to,
       subject: subject,
-      text: message,
-      //html: <b>options.message</b>,
+      // text: message,
+      html: `<p>Welcome to the main PHC login page, visit <a href=${this.url}>here</a> to login</p>`,
     };
-    await this.newTransport().sendMail(mailOptions);
+    try {
+      await this.newTransport().sendMail(mailOptions);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   async sendWelcomeToApp() {
-    await this.send("Welcome to the PHC Portal", "Welcome to our various apps");
+    await this.send(
+      "Welcome to the PHC Portal",
+      `Welcome to the main PHC login page, visit ${this.url} to login`
+    );
   }
 
   async sendPasswordReset() {
-    await this.send("password reset token", "Please reset your password");
+    await this.send(
+      "PASSWORD RESET TOKEN",
+      "Your token is Please reset your password at the following link: "
+    );
   }
 };
 /* const sendEmail = async (options) => {

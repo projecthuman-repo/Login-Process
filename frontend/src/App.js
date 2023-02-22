@@ -5,7 +5,7 @@ import LoginForm from "./components/LoginForm";
 import RegistrationForm from "./components/RegistrationForm";
 //import Navigation from "./components/Navigation";
 import ForgotPassword from "./components/ForgotPassword";
-import { Col, Row } from "react-bootstrap";
+import ResetPassword from "./components/ResetPassword";
 import { Routes, Route } from "react-router-dom";
 const App = () => {
   return (
@@ -13,7 +13,12 @@ const App = () => {
       <Routes>
         <Route exact path="/register" element={<RegistrationForm />}></Route>
         <Route exact path="/" element={<LoginForm />}></Route>
-        <Route exact path="/resetPassword" element={<ForgotPassword />}></Route>
+        <Route
+          exact
+          path="/forgotPassword"
+          element={<ForgotPassword />}
+        ></Route>
+        <Route exact path="/resetPassword" element={<ResetPassword />}></Route>
       </Routes>
     </div>
   );

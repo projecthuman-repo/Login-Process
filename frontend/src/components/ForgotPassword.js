@@ -3,8 +3,7 @@ import { schema } from "./../schemas/forgotPassSchema";
 import { React, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 
-export default function FillOutTokenForm() {
-  const [phoneNumber, setPhoneNumber] = useState("");
+export default function ForgotPasswordForm() {
   const onSubmit = (values, actions) => {};
   const {
     values,
@@ -24,7 +23,7 @@ export default function FillOutTokenForm() {
 
   return (
     <div>
-      <h2>Login</h2>
+      <h2>Forgot Password</h2>
       <Form onSubmit={handleSubmit}>
         <Form.Group controlId="formBasicUsername">
           <Form.Label>Email, Phone or Username</Form.Label>
@@ -45,7 +44,7 @@ export default function FillOutTokenForm() {
         )}
         {/* submit button */}
         <Button disabled={isSubmitting} variant="primary" type="submit">
-          Login
+          Get Reset Password Link
         </Button>
       </Form>
     </div>
