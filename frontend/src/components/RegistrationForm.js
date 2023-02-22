@@ -11,18 +11,22 @@ export default function RegistrationForm() {
   //add backend method to check if user exists before allowing registration
   const [phoneNumber, setPhoneNumber] = useState("");
   const onSubmit = (values, actions) => {
-    try {
-      registerUser({
-        email: values.email,
-        password: values.password,
-        phoneNumber: values.phoneNumber,
-        firstName: values.firstName,
-        lastName: values.lastName,
-        username: values.username,
+    registerUser({
+      email: values.email,
+      password: values.password,
+      phoneNumber: values.phoneNumber,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      username: values.username,
+    })
+      .then((data) => {
+        actions.resetForm();
+        setPhoneNumber("");
+        console.log("Successfully registered user ", data);
+      })
+      .catch((err) => {
+        console.log(err);
       });
-      actions.resetForm();
-      setPhoneNumber("");
-    } catch (exception) {}
   };
   const {
     values,
@@ -159,7 +163,13 @@ export default function RegistrationForm() {
         ) : (
           ""
         )}
-
+        <div>
+          <p>
+            By signing up you agree to our <a href="/terms">terms</a>,
+            <a href="/privacyPolicy">privacyPolicy</a> and
+            <a href="/privacyPolicy"> cookiePolicy</a>
+          </p>
+        </div>
         {/* submit button */}
         <Button disabled={isSubmitting} variant="primary" type="submit">
           Register
@@ -170,6 +180,12 @@ export default function RegistrationForm() {
           <p className="text-danger"></p>
         )}
       </Form>
+
+      <div>
+        <p>
+          Have an account? <a href="/">Login</a>
+        </p>
+      </div>
     </div>
   );
 }

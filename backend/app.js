@@ -2,7 +2,7 @@ const config = require("./utils/config");
 const express = require("express");
 require("express-async-errors"); // eliminates need for try-catch blocks
 const morgan = require("morgan");
-
+const cookieParser = require("cookie-parser");
 const app = express();
 
 //MIDDLEWARE
@@ -38,6 +38,7 @@ app.use(cors());
 
 // app.use(express.static('build'))  - possibly needed for frontend production build
 app.use(express.json({ limit: "10kb" }));
+app.use(cookieParser());
 
 //Data sanitization against NoSQL query injection
 app.use(mongoSanitize());

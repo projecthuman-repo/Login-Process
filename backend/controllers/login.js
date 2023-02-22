@@ -24,7 +24,7 @@ loginRouter.post(
     if (!errors.isEmpty()) {
       return response.status(401).json({
         status: "Fail",
-        errors: errors.array(),
+        error: errors.array(),
       });
     }
     const { username, password } = request.body;

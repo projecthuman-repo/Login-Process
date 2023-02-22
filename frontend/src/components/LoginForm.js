@@ -4,8 +4,6 @@ import { React, useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { login } from "./../services/login";
 import jwt_decode from "jwt-decode";
-import Cookies from "universal-cookie";
-const cookies = new Cookies();
 export default function LoginForm() {
   const handleCallbackResponse = (response) => {
     const userInfo = jwt_decode(response.credential);
@@ -34,23 +32,20 @@ export default function LoginForm() {
       size: "large",
     });
   }, []);
-  //const [register, setRegister] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const onSubmit = (values, actions) => {
     login({
       password: values.password,
       username: values.username,
-      /*   confirmPassword: values.confirmPassword, */
     })
       .then((data) => {
         actions.resetForm();
-        console.log("TOKENNNNNN", data.token);
-        cookies.set("TOKEN", data.token, {
-          path: "/",
-        });
         window.location.href = "/auth";
+        console.log("Successfully logged in user ", data);
       })
-      .catch((err) => {});
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const {
     values,
@@ -69,51 +64,28 @@ export default function LoginForm() {
     onSubmit,
   });
 
-  /*  const handleSubmit = (e) => {
-      e.preventDefault();
-      try {
-        registerUser({
-          email: values.email,
-          password: values.password,
-          phoneNumber: values.phoneNumber,
-          firstName: values.firstName,
-          lastName: values.lastName,
-          username: values.username,
-        });
-        /*       setFirstName("");
-        setLastName("");
-        setUsername("");
-        setPassword("");
-        setEmail("");
-        setPhoneNumber(""); */
-  /* setRegister(true); */
-  /*  } catch (err) {
-        console.log(err.message);
-      }
-    };  */
-
   return (
     <div>
       <h2>Login</h2>
-
-      <Form.Group controlId="formBasicUsername">
-        <Form.Label>Username</Form.Label>
-        <Form.Control
-          type="username"
-          name="username"
-          value={values.username}
-          onChange={handleChange}
-          placeholder="Username"
-          onBlur={handleBlur}
-          isInvalid={errors.username && touched.username ? true : false}
-        />
-      </Form.Group>
-      {errors.username && touched.username ? (
-        <p className="text-danger">{errors.username}</p>
-      ) : (
-        ""
-      )}
       <Form onSubmit={handleSubmit}>
+        <Form.Group controlId="formBasicUsername">
+          <Form.Label>Username</Form.Label>
+          <Form.Control
+            type="username"
+            name="username"
+            value={values.username}
+            onChange={handleChange}
+            placeholder="Username"
+            onBlur={handleBlur}
+            isInvalid={errors.username && touched.username ? true : false}
+          />
+        </Form.Group>
+        {errors.username && touched.username ? (
+          <p className="text-danger">{errors.username}</p>
+        ) : (
+          ""
+        )}
+
         {/* password */}
         <Form.Group controlId="formBasicPassword">
           <Form.Label>Password</Form.Label>
@@ -136,84 +108,13 @@ export default function LoginForm() {
         <Button disabled={isSubmitting} variant="primary" type="submit">
           Login
         </Button>
+        <div>
+          <a href="/resetPassword">Forgot Password?</a>
+        </div>
+        <div>
+          <a href="/register">Don't have an account? Sign up</a>
+        </div>
       </Form>
-      <div id="signInDiv"> {/* make this a component later? */}</div>
     </div>
   );
 }
-/* 
-  const RegistrationForm = ({
-      handleRegistration,
-      firstName,
-      lastName,
-      username,
-      password,
-      email,
-      phoneNumber,
-      setFirstName,
-      setLastName,
-      setUsername,
-      setPassword,
-      setEmail,
-      setPhoneNumber
-  }) => {
-  
-      return (
-          <form onSubmit={handleRegistration}>
-              <div>
-                  first name
-                  <input
-                      type='text'
-                      value={firstName}
-                      name='FirstName'
-                      onChange={({ target }) => setFirstName(target.value)}
-                  />
-              </div>
-              <div>
-                  last name
-                  <input
-                      type='text'
-                      value={lastName}
-                      name='LastName'
-                      onChange={({ target }) => setLastName(target.value)}
-                  />
-              </div>
-              <div>
-                  username
-                  <input
-                      type='text'
-                      value={username}
-                      name='Username'
-                      onChange={({ target }) => setUsername(target.value)}
-                  />
-              </div>
-              <div>
-                  password
-                  <input
-                      type='password'
-                      value={password}
-                      name='Password'
-                      onChange={({ target }) => setPassword(target.value)}
-                  />
-              </div>
-              <div>
-                  email
-                  <input
-                      type='email'
-                      value={email}
-                      name='Email'
-                      onChange={({ target }) => setEmail(target.value)}
-                  />
-              </div>
-              <div>
-                  <PhoneInput
-                      placeholder='phone number'
-                      value={phoneNumber}
-                      name='PhoneNumber'
-                      onChange={setPhoneNumber}
-                  />
-              </div>
-              <button type='submit'>register</button>
-          </form>
-      ) */
-/* } */

@@ -13,12 +13,14 @@ const protect = async (request, response, next) => {
     request.headers.authorization.startsWith("Bearer")
   ) {
     var token = request.headers.authorization.split(" ")[1];
+  } else if (request.cookies.jwt) {
+    var token = request.cookies.jwt
   }
 
   if (!token) {
     return response.status(401).json({
       status: "Fail",
-      message: "You are not authorized",
+      error: "You are not authorized",
     });
   }
   //Verify token
@@ -28,14 +30,14 @@ const protect = async (request, response, next) => {
   if (!user) {
     return response.status(401).json({
       status: "Fail",
-      message: "No user associated with token",
+      error: "No user associated with token",
     });
   }
 
   if (user.changedPasswordAfter(decoded.iat)) {
     return response.status(401).json({
       status: "Fail",
-      message: "Password was changed, log in again",
+      error: "Password was changed, log in again",
     });
   }
   request.user = user;
@@ -47,7 +49,7 @@ authRouter.post("/forgotPassword", async (request, response) => {
   if (!user) {
     return response.status(404).json({
       status: "Fail",
-      message: "No user associated with the provided email",
+      error: "No user associated with the provided email",
     });
   }
   const resetToken = user.createPasswordResetToken();
@@ -78,8 +80,7 @@ authRouter.post("/forgotPassword", async (request, response) => {
 
     return response.status(500).json({
       status: "Fail",
-      message: "Email was not sent",
-      err,
+      error: err,
     });
   }
 });
@@ -117,7 +118,7 @@ authRouter.patch(
     if (!errors.isEmpty()) {
       return response.status(400).json({
         status: "Fail",
-        errors: errors.array(),
+        error: errors.array(),
       });
     }
     const resetToken = request.params.token;
@@ -134,7 +135,7 @@ authRouter.patch(
     if (!user) {
       return response.status(400).json({
         status: "Fail",
-        message: "Token is invalid or expired",
+        error: "Token is invalid or expired",
       });
     }
     const passwordToChangeTo = request.body.password;

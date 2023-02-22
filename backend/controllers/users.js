@@ -90,11 +90,36 @@ usersRouter.post(
     if (!errors.isEmpty()) {
       return response.status(400).json({
         status: "Fail",
-        errors: errors.array(),
+        error: errors.array(),
       });
     }
 
     const userInfo = request.body;
+    const emailExists = await User.findOne({ email: userInfo.email });
+    const phoneNumberExists = await User.findOne({
+      phoneNumber: userInfo.phonenumber,
+    });
+    const usernameExists = await User.findOne({ username: userInfo.username });
+    if (emailExists !== null) {
+      return response.status(400).json({
+        status: "Fail",
+        error: "There already exists a user with the given email",
+      });
+    }
+
+    if (phoneNumberExists !== null) {
+      return response.status(400).json({
+        status: "Fail",
+        error: "There already exists a user with the given phone number",
+      });
+    }
+
+    if (usernameExists !== null) {
+      return response.status(400).json({
+        status: "Fail",
+        error: "There already exists a user with the given username",
+      });
+    }
 
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(userInfo.password, saltRounds);
