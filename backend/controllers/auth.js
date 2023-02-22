@@ -5,6 +5,7 @@ const { body, validationResult } = require("express-validator");
 const authRouter = require("express").Router();
 const Email = require("./../utils/email");
 const User = require("../models/user");
+const { reset } = require("nodemon");
 
 const protect = async (request, response, next) => {
   //Obtain token
@@ -46,6 +47,7 @@ const protect = async (request, response, next) => {
 
 authRouter.post("/forgotPassword", async (request, response) => {
   const user = await User.findOne({ email: request.body.email });
+
   if (!user) {
     return response.status(404).json({
       status: "Fail",
@@ -55,10 +57,7 @@ authRouter.post("/forgotPassword", async (request, response) => {
   const resetToken = user.createPasswordResetToken();
   await user.save();
 
-  const resetURL = `${request.protocol}://${request.get(
-    "host"
-  )}/api/authentication/resetPassword/${resetToken}`;
-  const message = `Forgot password? Submit PATCH request with your new password to ${resetURL}\nIf you didn't forget your password, ignore this email!`;
+  const resetURL = `http://localhost:3000/resetPassword/${resetToken}`;
   try {
     await new Email(user, resetURL).sendPasswordReset();
 
@@ -139,7 +138,7 @@ authRouter.patch(
     user.passwordResetExpires = undefined;
     user.passwordResetToken = undefined; //removing user reset token after user changed password
     await user.save();
-    //Log user in via JWT
+    /*  //Log user in via JWT
     const userForToken = {
       username: user.username,
       id: user._id,
@@ -154,11 +153,11 @@ authRouter.patch(
       expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), //set expiration date of cookie to 30 days from now
       secure: false, //only used with HTTPS
       httpOnly: true, //cookie cannot be accessed or modified by browser, prevents cross side scripting attacks
-    });
+    }); */
 
     response.status(200).json({
       status: "Success",
-      token,
+      message: "Successfully reset password",
     });
   }
 );

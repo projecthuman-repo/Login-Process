@@ -47,7 +47,7 @@ export default function ResetPasswordForm() {
         <Form.Group controlId="formConfirmBasicPassword">
           <Form.Label>Confirm Password</Form.Label>
           <Form.Control
-            type="confirmPassword"
+            type="password"
             name="confirmPassword"
             value={values.confirmPassword}
             onChange={handleChange}

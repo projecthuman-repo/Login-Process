@@ -34,8 +34,7 @@ module.exports = class Email {
       from: this.from,
       to: this.to,
       subject: subject,
-      // text: message,
-      html: `<p>Welcome to the main PHC login page, visit <a href=${this.url}>here</a> to login</p>`,
+      text: message,
     };
     try {
       await this.newTransport().sendMail(mailOptions);
@@ -54,7 +53,7 @@ module.exports = class Email {
   async sendPasswordReset() {
     await this.send(
       "PASSWORD RESET TOKEN",
-      "Your token is Please reset your password at the following link: "
+      `Change your password here: ${this.url}`
     );
   }
 };
