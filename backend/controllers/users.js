@@ -118,6 +118,12 @@ usersRouter.post(
       expiresIn: "20m",
     });
 
+    response.cookie("jwt", token, {
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), //set expiration date of cookie to 30 days from now
+      secure: false, //only used with HTTPS
+      httpOnly: true, //cookie cannot be accessed or modified by browser, prevents cross side scripting attacks
+    });
+
     const savedUser = await user.save();
 
     response.status(201).json({
