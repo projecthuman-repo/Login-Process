@@ -3,11 +3,6 @@ import * as yup from "yup";
 const passwordRules = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)/;
 
 export const schema = yup.object().shape({
-  email: yup
-    .string()
-    .trim()
-    .email("Please enter a valid email")
-    .required("Required"),
   password: yup
     .string()
     .min(8)
@@ -18,8 +13,15 @@ export const schema = yup.object().shape({
         "Passwords must contain 8-10 characters, one special character, one lowercase letter, and one uppercase letter",
     })
     .required("Required"),
-  username: yup.string().trim().required("Required"),
-  firstName: yup.string().trim().required("Required"),
-  lastName: yup.string().trim().required("Required"),
-  phoneNumber: yup.string().trim().required("Required"),
+  confirmPassword: yup
+    .string()
+    .min(8)
+    .max(10)
+    .trim()
+    .matches(passwordRules, {
+      message:
+        "Passwords must contain 8-10 characters, one special character, one lowercase letter, and one uppercase letter",
+    })
+    .oneOf([yup.ref("password"), null], "Passwords must match")
+    .required("Required"),
 });

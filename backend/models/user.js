@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const uniqueValidator = require('mongoose-unique-validator')
+const crypto = require("crypto");
+const uniqueValidator = require("mongoose-unique-validator");
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -33,19 +34,57 @@ const userSchema = new mongoose.Schema({
     required: [true, "A user must have a phone number"],
     unique: true,
   },
+
+  emailToken: String,
+
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+
+  passwordResetToken: String,
+  passwordResetExpires: Date,
+
+  passwordChangedAt: Date,
 });
 
-userSchema.plugin(uniqueValidator)
+userSchema.plugin(uniqueValidator);
 
-userSchema.set('toJSON', {  // stringifies and renames _id to id, does not show __v
+userSchema.set("toJSON", {
+  // stringifies and renames _id to id, does not show __v
   transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
-    delete returnedObject.passwordHash  // passwordHash should not be revealed
-  }
-})
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+    delete returnedObject.passwordHash; // passwordHash should not be revealed
+  },
+});
 
+userSchema.pre("save", function (next) {
+  if (!this.isModified("passwordHash") || this.isNew) return next();
+  this.passwordChangedAt = Date.now() - 1000; //putting password change 1 sec in the past to ensure jwt is issued before a password is changed
+  next();
+});
+
+userSchema.methods.changedPasswordAfter = function (jwtTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = this.passwordChangedAt.getTime() / 1000;
+    if (changedTimestamp > jwtTimestamp) return true;
+  }
+  return false;
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  this.passwordResetExpires = Date.now() + 600000; //add 10 min to current time
+  return resetToken;
+};
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;

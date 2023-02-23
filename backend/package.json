@@ -20,15 +20,20 @@
   "homepage": "https://github.com/projecthuman-repo/Login-Process#readme",
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-async-errors": "^3.1.1",
+    "express-mongo-sanitize": "^2.2.0",
     "express-validator": "^6.14.3",
+    "helmet": "^6.0.1",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^6.9.0",
     "mongoose-unique-validator": "^3.1.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.9.1",
+    "xss-clean": "^0.1.1"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",

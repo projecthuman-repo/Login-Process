@@ -6,7 +6,7 @@ const User = require("../models/user");
 
 loginRouter.post(
   "/",
-    body("username")
+  body("username")
     .not()
     .isEmpty()
     .trim()
@@ -20,16 +20,21 @@ loginRouter.post(
     .withMessage("Invalid input for password"),
 
   async (request, response) => {
-    const errors = validationResult(request);
-    if (!errors.isEmpty()) {
-      return response.status(401).json({
+    const errors = validationResult(request).array();
+    let list_errors = "";
+    for (let i = 0; i < errors.length; i++) {
+      list_errors += errors[i].msg + "\n";
+    }
+    if (list_errors) {
+      return response.status(400).json({
         status: "Fail",
-        errors: errors.array(),
+        error: list_errors,
       });
     }
     const { username, password } = request.body;
 
     const user = await User.findOne({ username });
+
     const passwordCorrect =
       user === null ? false : await bcrypt.compare(password, user.passwordHash);
 
@@ -37,6 +42,14 @@ loginRouter.post(
       return response.status(401).json({
         status: "Fail",
         error: "Invalid username or password",
+      });
+    }
+
+    if (user.isVerified === false) {
+      return response.status(401).json({
+        status: "Fail",
+        error:
+          "User does not correspond to a verified account, please check your email and verfy your account if you already registered",
       });
     }
 
@@ -53,10 +66,16 @@ loginRouter.post(
       { expiresIn: "20m" } //Change to 20 minutes, research and found it to be recommended
     );
 
+    response.cookie("jwt", token, {
+      expires: new Date(Date.now() + 2592000000), //set expiration date of cookie to 30 days from now
+      secure: false, //only used with HTTPS
+      httpOnly: true, //cookie cannot be accessed or modified by browser, prevents cross side scripting attacks
+    });
+
     response.status(200).json({
       status: "Success",
+      token,
       data: {
-        token,
         username: user.username,
         firstName: user.firstName, //can add more later
       },

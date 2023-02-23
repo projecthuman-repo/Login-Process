@@ -5,24 +5,38 @@ import { registerUser } from "./../services/registration";
 import PhoneInput from "react-phone-number-input";
 import { useFormik } from "formik";
 import { schema } from "./../schemas/registrationSchema";
-
+import { useNavigate } from "react-router-dom";
 export default function RegistrationForm() {
-  const [register, setRegister] = useState(false); //need to set this to true after registration to faciliate logout, will add later
+  const [registrationError, setRegistrationError] = useState(null);
+  const navigate = useNavigate();
   //add backend method to check if user exists before allowing registration
   const [phoneNumber, setPhoneNumber] = useState("");
   const onSubmit = (values, actions) => {
-    try {
-      registerUser({
-        email: values.email,
-        password: values.password,
-        phoneNumber: values.phoneNumber,
-        firstName: values.firstName,
-        lastName: values.lastName,
-        username: values.username,
+    registerUser({
+      email: values.email,
+      password: values.password,
+      phoneNumber: values.phoneNumber,
+      firstName: values.firstName,
+      lastName: values.lastName,
+      username: values.username,
+    })
+      .then((data) => {
+        actions.resetForm();
+        setPhoneNumber("");
+        console.log("Successfully registered user ", data);
+
+        /*         window.setTimeout(() => {
+          navigate("/");
+        }, 1500); */
+        //TO IMPLEMENT REDIRECTUER AND LOGIN HERE
+      })
+      .catch((err) => {
+        //actions.resetForm();
+        setPhoneNumber("");
+        setRegistrationError(err.response.data.error.split("\n"));
+
+        //console.log(registrationError);
       });
-      actions.resetForm();
-      setPhoneNumber("");
-    } catch (exception) {}
   };
   const {
     values,
@@ -159,17 +173,31 @@ export default function RegistrationForm() {
         ) : (
           ""
         )}
-
+        <div>
+          <p>
+            By signing up you agree to our <a href="/terms">terms</a>,
+            <a href="/privacyPolicy">privacyPolicy</a> and
+            <a href="/privacyPolicy"> cookiePolicy</a>
+          </p>
+        </div>
         {/* submit button */}
-        <Button disabled={isSubmitting} variant="primary" type="submit">
+        <Button variant="primary" type="submit">
           Register
         </Button>
-        {register ? (
-          <p className="text-success">You are Registered Successfully</p>
+        {registrationError !== null ? (
+          <div>
+            {registrationError.map((error) => (
+              <p className="text-danger">{error}</p>
+            ))}
+          </div>
         ) : (
-          <p className="text-danger"></p>
+          <p className="text-success"></p>
         )}
       </Form>
+
+      <p>
+        Have an account? <a href="/">Login</a>
+      </p>
     </div>
   );
 }
