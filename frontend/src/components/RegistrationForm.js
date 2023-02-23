@@ -6,10 +6,9 @@ import PhoneInput from "react-phone-number-input";
 import { useFormik } from "formik";
 import { schema } from "./../schemas/registrationSchema";
 import { useNavigate } from "react-router-dom";
-
 export default function RegistrationForm() {
+  const [registrationError, setRegistrationError] = useState(null);
   const navigate = useNavigate();
-  const [register, setRegister] = useState(false); //need to set this to true after registration to faciliate logout, will add later
   //add backend method to check if user exists before allowing registration
   const [phoneNumber, setPhoneNumber] = useState("");
   const onSubmit = (values, actions) => {
@@ -25,12 +24,15 @@ export default function RegistrationForm() {
         actions.resetForm();
         setPhoneNumber("");
         console.log("Successfully registered user ", data);
-        window.setTimeout(() => {
+        /*         window.setTimeout(() => {
           navigate("/");
-        }, 1500);
+        }, 1500); */
       })
       .catch((err) => {
-        console.log(err);
+        actions.resetForm();
+        setPhoneNumber("");
+        setRegistrationError(err.response.data.error.split("\n"));
+        console.log(registrationError);
       });
   };
   const {
@@ -179,10 +181,14 @@ export default function RegistrationForm() {
         <Button disabled={isSubmitting} variant="primary" type="submit">
           Register
         </Button>
-        {register ? (
-          <p className="text-success">You are Registered Successfully</p>
+        {registrationError !== null ? (
+          <div>
+            {registrationError.map((error) => (
+              <p className="text-danger">{error}</p>
+            ))}
+          </div>
         ) : (
-          <p className="text-danger"></p>
+          <p className="text-success"></p>
         )}
       </Form>
 

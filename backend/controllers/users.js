@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const usersRouter = require("express").Router();
 const User = require("../models/user");
 const { body, validationResult } = require("express-validator");
@@ -86,45 +87,58 @@ usersRouter.post(
     .withMessage("Invalid input for phone number"),
 
   async (request, response) => {
-    const errors = validationResult(request);
-
-    if (!errors.isEmpty()) {
+    const errors = validationResult(request).array();
+    let list_errors = "";
+    for (let i = 0; i < errors.length; i++) {
+      list_errors += errors[i].msg + "\n";
+    }
+    if (list_errors) {
       return response.status(400).json({
         status: "Fail",
-        error: errors.array(),
+        error: list_errors,
       });
     }
 
     const userInfo = request.body;
     const emailExists = await User.findOne({ email: userInfo.email });
     const phoneNumberExists = await User.findOne({
-      phoneNumber: userInfo.phonenumber,
+      phoneNumber: userInfo.phoneNumber,
     });
     const usernameExists = await User.findOne({ username: userInfo.username });
+    let exists_errors = "";
     if (emailExists !== null) {
-      return response.status(400).json({
+      /* return response.status(400).json({
         status: "Fail",
         error: "There already exists a user with the given email",
-      });
+      }); */
+      exists_errors += "There already exists a user with the given email\n";
     }
 
     if (phoneNumberExists !== null) {
-      return response.status(400).json({
+      /*  return response.status(400).json({
         status: "Fail",
         error: "There already exists a user with the given phone number",
-      });
+      }); */
+      exists_errors +=
+        "There already exists a user with the given phone number\n";
     }
 
     if (usernameExists !== null) {
-      return response.status(400).json({
+      /*  return response.status(400).json({
         status: "Fail",
         error: "There already exists a user with the given username",
-      });
+      }); */
+      exists_errors += "There already exists a user with the given username\n";
     }
+
+    return response.status(400).json({
+      status: "Fail",
+      error: exists_errors,
+    });
 
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(userInfo.password, saltRounds);
-
+    const emailToken = crypto.randomBytes(32).toString("hex");
     const user = new User({
       firstName: userInfo.firstName,
       lastName: userInfo.lastName,
@@ -132,6 +146,7 @@ usersRouter.post(
       passwordHash: passwordHash,
       email: userInfo.email,
       phoneNumber: userInfo.phoneNumber,
+      emailToken: emailToken,
     });
 
     const userForToken = {
@@ -152,7 +167,7 @@ usersRouter.post(
 
     const savedUser = await user.save();
 
-    const url = "http://localhost:3000/";
+    const url = `http://localhost:3000/verification/?token=${emailToken}`;
     await new Email(user, url).sendWelcomeToApp();
 
     response.status(201).json({
@@ -162,6 +177,23 @@ usersRouter.post(
         savedUser,
       },
     });
+  }
+);
+
+usersRouter.get(
+  "http://localhost:3000/verification/",
+  async (request, response) => {
+    const token = request.query.token;
+    const user = await User.findOne({ emailToken: token });
+    if (!user) {
+      return response.status(401).json({
+        status: "Fail",
+        error: "No user account associated with token",
+      });
+    }
+    user.isVerified = true;
+    await user.save();
+    response.redirect("http://localhost:3000/");
   }
 );
 

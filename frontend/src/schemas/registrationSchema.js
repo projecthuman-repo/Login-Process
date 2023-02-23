@@ -21,5 +21,5 @@ export const schema = yup.object().shape({
   username: yup.string().trim().required("Required"),
   firstName: yup.string().trim().required("Required"),
   lastName: yup.string().trim().required("Required"),
-  phoneNumber: yup.string().required("Required"),
+  phoneNumber: yup.string().trim().required("Required"),
 });
