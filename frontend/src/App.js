@@ -6,7 +6,6 @@ import RegistrationForm from "./components/RegistrationForm";
 //import Navigation from "./components/Navigation";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
-import Verification from "./components/Verification";
 import { Routes, Route } from "react-router-dom";
 const App = () => {
   return (
@@ -20,7 +19,6 @@ const App = () => {
           element={<ForgotPassword />}
         ></Route>
         <Route exact path="/resetPassword" element={<ResetPassword />}></Route>
-        <Route exact path="/Verification" element={<Verification />}></Route>
       </Routes>
     </div>
   );

@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema({
 
   emailToken: String,
 
-  isVerified: {
+  activeStatus: {
     type: Boolean,
     default: false,
   },
