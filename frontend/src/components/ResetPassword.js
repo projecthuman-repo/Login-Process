@@ -6,6 +6,7 @@ import { useSearchParams } from "react-router-dom";
 import { resetPassword } from "./../services/resetPassword";
 
 export default function ResetPasswordForm() {
+  const [resetError, setResetError] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   let resetToken = searchParams.get("resetToken");
   const onSubmit = (values, actions) => {
@@ -16,6 +17,7 @@ export default function ResetPasswordForm() {
       })
       .catch((err) => {
         console.log(err);
+        setResetError(err.response.data.error.split("\n"));
       });
   };
   const {
@@ -80,6 +82,15 @@ export default function ResetPasswordForm() {
         <Button variant="primary" type="submit">
           Reset Password
         </Button>
+        {resetError !== null ? (
+          <div>
+            {resetError.map((error) => (
+              <p className="text-danger">{error}</p>
+            ))}
+          </div>
+        ) : (
+          <p className="text-success"></p>
+        )}
       </Form>
     </div>
   );
