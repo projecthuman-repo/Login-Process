@@ -130,11 +130,12 @@ usersRouter.post(
       }); */
       exists_errors += "There already exists a user with the given username\n";
     }
-
-    return response.status(400).json({
-      status: "Fail",
-      error: exists_errors,
-    });
+    if (exists_errors) {
+      return response.status(400).json({
+        status: "Fail",
+        error: exists_errors,
+      });
+    }
 
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(userInfo.password, saltRounds);
@@ -180,21 +181,17 @@ usersRouter.post(
   }
 );
 
-usersRouter.get(
-  "http://localhost:3000/verification/",
-  async (request, response) => {
-    const token = request.query.token;
-    const user = await User.findOne({ emailToken: token });
-    if (!user) {
-      return response.status(401).json({
-        status: "Fail",
-        error: "No user account associated with token",
-      });
-    }
-    user.isVerified = true;
-    await user.save();
-    response.redirect("http://localhost:3000/");
+usersRouter.patch("/verification/", async (request, response) => {
+  const token = request.query.token;
+  const user = await User.findOne({ emailToken: token });
+  if (!user) {
+    return response.status(401).json({
+      status: "Fail",
+      error: "No user account associated with token",
+    });
   }
-);
+  user.isVerified = true;
+  await user.save();
+});
 
 module.exports = usersRouter;

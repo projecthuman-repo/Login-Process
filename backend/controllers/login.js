@@ -34,6 +34,14 @@ loginRouter.post(
     const { username, password } = request.body;
 
     const user = await User.findOne({ username });
+
+    if (user.isVerified === false) {
+      return response.status(401).json({
+        status: "Fail",
+        error:
+          "User does not correspond to a verified account, please check your email and verfy your account if you already registered",
+      });
+    }
     const passwordCorrect =
       user === null ? false : await bcrypt.compare(password, user.passwordHash);
 
