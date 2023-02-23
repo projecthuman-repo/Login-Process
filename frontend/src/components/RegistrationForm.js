@@ -27,11 +27,13 @@ export default function RegistrationForm() {
         /*         window.setTimeout(() => {
           navigate("/");
         }, 1500); */
+        //TO IMPLEMENT REDIRECTUER AND LOGIN HERE
       })
       .catch((err) => {
         //actions.resetForm();
         setPhoneNumber("");
         setRegistrationError(err.response.data.error.split("\n"));
+        navigate("/verification");
         //console.log(registrationError);
       });
   };

@@ -20,7 +20,7 @@ const App = () => {
           element={<ForgotPassword />}
         ></Route>
         <Route exact path="/resetPassword" element={<ResetPassword />}></Route>
-        <Route exact path="/Verification" element={<Verification />}></Route>
+        <Route exact path="/verification" element={<Verification />}></Route>
       </Routes>
     </div>
   );

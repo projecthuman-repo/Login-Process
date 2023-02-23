@@ -186,7 +186,7 @@ usersRouter.patch("/verification/", async (request, response) => {
   if (!user) {
     return response.status(401).json({
       status: "Fail",
-      error: "No user account associated with token",
+      error: "No user account associated with token, please go and register an account!",
     });
   }
   user.isVerified = true;
