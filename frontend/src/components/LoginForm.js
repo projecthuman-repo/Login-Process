@@ -109,7 +109,7 @@ export default function LoginForm() {
           Login
         </Button>
         <div>
-          <a href="/resetPassword">Forgot Password?</a>
+          <a href="/forgotPassword">Forgot Password?</a>
         </div>
         <div>
           <a href="/register">Don't have an account? Sign up</a>
