@@ -5,6 +5,7 @@ import { Form, Button } from "react-bootstrap";
 import { resetToken } from "./../services/resetToken";
 
 export default function ForgotPasswordForm() {
+  const [forgotPassError, setForgotPassError] = useState(null);
   const onSubmit = (values, actions) => {
     resetToken({ email: values.email })
       .then((result) => {
@@ -12,7 +13,8 @@ export default function ForgotPasswordForm() {
         actions.resetForm();
       })
       .catch((err) => {
-        console.log(err);
+        setForgotPassError(err.response.data.error.split("\n"));
+        actions.resetForm();
       });
   };
   const {
@@ -56,6 +58,15 @@ export default function ForgotPasswordForm() {
         <Button disabled={isSubmitting} variant="primary" type="submit">
           Get Reset Password Link
         </Button>
+        {forgotPassError !== null ? (
+          <div>
+            {forgotPassError.map((error) => (
+              <p className="text-danger">{error}</p>
+            ))}
+          </div>
+        ) : (
+          <p className="text-success"></p>
+        )}
       </Form>
     </div>
   );
