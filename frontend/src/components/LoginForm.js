@@ -45,7 +45,7 @@ export default function LoginForm() {
       })
       .catch((err) => {
         setLoginError(err.response.data.error.split("\n"));
-        actions.resetForm();
+      //  actions.resetForm();
       });
   };
   const {

@@ -14,7 +14,7 @@ export default function ForgotPasswordForm() {
       })
       .catch((err) => {
         setForgotPassError(err.response.data.error.split("\n"));
-        actions.resetForm();
+       // actions.resetForm();
       });
   };
   const {

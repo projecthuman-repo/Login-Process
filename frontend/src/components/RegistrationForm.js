@@ -29,10 +29,10 @@ export default function RegistrationForm() {
         }, 1500); */
       })
       .catch((err) => {
-        actions.resetForm();
+        //actions.resetForm();
         setPhoneNumber("");
         setRegistrationError(err.response.data.error.split("\n"));
-        console.log(registrationError);
+        //console.log(registrationError);
       });
   };
   const {
