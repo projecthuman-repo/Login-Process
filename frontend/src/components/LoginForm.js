@@ -5,6 +5,7 @@ import { Form, Button } from "react-bootstrap";
 import { login } from "./../services/login";
 import jwt_decode from "jwt-decode";
 export default function LoginForm() {
+  const [loginError, setLoginError] = useState(null);
   const handleCallbackResponse = (response) => {
     const userInfo = jwt_decode(response.credential);
     console.log(userInfo);
@@ -40,11 +41,11 @@ export default function LoginForm() {
     })
       .then((data) => {
         actions.resetForm();
-        window.location.href = "/auth";
         console.log("Successfully logged in user ", data);
       })
       .catch((err) => {
-        console.log(err);
+        setLoginError(err.response.data.error.split("\n"));
+        actions.resetForm();
       });
   };
   const {
@@ -108,6 +109,17 @@ export default function LoginForm() {
         <Button disabled={isSubmitting} variant="primary" type="submit">
           Login
         </Button>
+
+        {loginError !== null ? (
+          <div>
+            {loginError.map((error) => (
+              <p className="text-danger">{error}</p>
+            ))}
+          </div>
+        ) : (
+          <p className="text-success"></p>
+        )}
+        <div id="signInDiv"></div>
         <div>
           <a href="/forgotPassword">Forgot Password?</a>
         </div>
