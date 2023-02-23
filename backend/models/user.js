@@ -35,6 +35,13 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
 
+  emailToken: String,
+
+  activeStatus: {
+    type: Boolean,
+    default: false,
+  },
+
   passwordResetToken: String,
   passwordResetExpires: Date,
 

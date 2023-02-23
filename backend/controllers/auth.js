@@ -106,12 +106,15 @@ authRouter.patch(
       "Passwords must be between 8-10 characters long, have at least one uppercase letter, lowercase letter, number and symbol"
     ),
   async (request, response) => {
-    const errors = validationResult(request);
-
-    if (!errors.isEmpty()) {
+    const errors = validationResult(request).array();
+    let list_errors = "";
+    for (let i = 0; i < errors.length; i++) {
+      list_errors += errors[i].msg + "\n";
+    }
+    if (list_errors) {
       return response.status(400).json({
         status: "Fail",
-        error: errors.array(),
+        error: list_errors,
       });
     }
     const resetToken = request.params.token;
