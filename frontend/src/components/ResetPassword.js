@@ -10,8 +10,13 @@ export default function ResetPasswordForm() {
   let resetToken = searchParams.get("resetToken");
   const onSubmit = (values, actions) => {
     resetPassword(resetToken, { password: values.password })
-      .then((result) => {})
-      .catch((err) => {});
+      .then((result) => {
+        console.log(result);
+        actions.resetForm();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const {
     values,
