@@ -24,6 +24,7 @@ export default function RegistrationForm() {
         actions.resetForm();
         setPhoneNumber("");
         console.log("Successfully registered user ", data);
+        navigate("/verification");
         /*         window.setTimeout(() => {
           navigate("/");
         }, 1500); */
@@ -33,7 +34,7 @@ export default function RegistrationForm() {
         //actions.resetForm();
         setPhoneNumber("");
         setRegistrationError(err.response.data.error.split("\n"));
-        navigate("/verification");
+
         //console.log(registrationError);
       });
   };
