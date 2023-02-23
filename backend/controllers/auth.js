@@ -57,7 +57,7 @@ authRouter.post("/forgotPassword", async (request, response) => {
   const resetToken = user.createPasswordResetToken();
   await user.save();
 
-  const resetURL = `http://localhost:3000/resetPassword/${resetToken}`;
+  const resetURL = `http://localhost:3000/resetPassword/?resetToken=${resetToken}`;
   try {
     await new Email(user, resetURL).sendPasswordReset();
 
@@ -84,7 +84,7 @@ module.exports = {
 };
 
 authRouter.patch(
-  "/resetPassword/:token",
+  "/resetPassword/",
   body("password")
     .isString()
     .isStrongPassword({
@@ -117,7 +117,7 @@ authRouter.patch(
         error: list_errors,
       });
     }
-    const resetToken = request.params.token;
+    const resetToken = request.query.resetToken;
     const hashedToken = crypto
       .createHash("sha256")
       .update(resetToken)

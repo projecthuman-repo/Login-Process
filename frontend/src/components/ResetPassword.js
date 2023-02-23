@@ -2,9 +2,17 @@ import { useFormik } from "formik";
 import { schema } from "./../schemas/resetPassSchema";
 import { React, useState } from "react";
 import { Form, Button } from "react-bootstrap";
+import { useSearchParams } from "react-router-dom";
+import { resetPassword } from "./../services/resetPassword";
 
 export default function ResetPasswordForm() {
-  const onSubmit = (values, actions) => {};
+  const [searchParams, setSearchParams] = useSearchParams();
+  let resetToken = searchParams.get("resetToken");
+  const onSubmit = (values, actions) => {
+    resetPassword(resetToken, { password: values.password })
+      .then((result) => {})
+      .catch((err) => {});
+  };
   const {
     values,
     errors,
@@ -64,7 +72,7 @@ export default function ResetPasswordForm() {
           ""
         )}
         {/* submit button */}
-        <Button disabled={isSubmitting} variant="primary" type="submit">
+        <Button variant="primary" type="submit">
           Reset Password
         </Button>
       </Form>

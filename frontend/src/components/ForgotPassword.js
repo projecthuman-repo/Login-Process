@@ -2,19 +2,19 @@ import { useFormik } from "formik";
 import { schema } from "./../schemas/forgotPassSchema";
 import { React, useState } from "react";
 import { Form, Button } from "react-bootstrap";
-import { resetToken } from "./../services/resetToken";
+import { forgotPassword } from "./../services/forgotPassword";
 
 export default function ForgotPasswordForm() {
   const [forgotPassError, setForgotPassError] = useState(null);
   const onSubmit = (values, actions) => {
-    resetToken({ email: values.email })
+    forgotPassword({ email: values.email })
       .then((result) => {
         console.log(result);
         actions.resetForm();
       })
       .catch((err) => {
         setForgotPassError(err.response.data.error.split("\n"));
-       // actions.resetForm();
+        // actions.resetForm();
       });
   };
   const {
@@ -55,7 +55,7 @@ export default function ForgotPasswordForm() {
           ""
         )}
         {/* submit button */}
-        <Button disabled={isSubmitting} variant="primary" type="submit">
+        <Button variant="primary" type="submit">
           Get Reset Password Link
         </Button>
         {forgotPassError !== null ? (

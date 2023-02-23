@@ -106,7 +106,7 @@ export default function LoginForm() {
           ""
         )}
         {/* submit button */}
-        <Button disabled={isSubmitting} variant="primary" type="submit">
+        <Button variant="primary" type="submit">
           Login
         </Button>
 

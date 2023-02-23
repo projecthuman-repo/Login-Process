@@ -178,7 +178,7 @@ export default function RegistrationForm() {
           </p>
         </div>
         {/* submit button */}
-        <Button disabled={isSubmitting} variant="primary" type="submit">
+        <Button variant="primary" type="submit">
           Register
         </Button>
         {registrationError !== null ? (
