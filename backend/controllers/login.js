@@ -75,10 +75,8 @@ loginRouter.post(
     response.status(200).json({
       status: "Success",
       token,
-      data: {
-        username: user.username,
-        firstName: user.firstName, //can add more later
-      },
+      username: user.username,
+      firstName: user.firstName, //can add more later
     });
   }
 );

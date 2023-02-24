@@ -6,12 +6,26 @@ import PhoneInput from "react-phone-number-input";
 import { useFormik } from "formik";
 import { schema } from "./../schemas/registrationSchema";
 import { useNavigate } from "react-router-dom";
+import { resendVerificationLink } from "./../services/resendVerificationLink";
 export default function RegistrationForm() {
   const [registrationError, setRegistrationError] = useState(null);
   const [hasRegistered, setHasRegistered] = useState(false);
+  const [user, setUser] = useState(null);
+  const [emailToken, setEmailToken] = useState(null);
   const navigate = useNavigate();
   //add backend method to check if user exists before allowing registration
   const [phoneNumber, setPhoneNumber] = useState("");
+  function resendLink() {
+    resendVerificationLink(user, emailToken)
+      .then((data) => {
+        console.log(user);
+        console.log(emailToken);
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   const onSubmit = (values, actions) => {
     registerUser({
       email: values.email,
@@ -23,10 +37,13 @@ export default function RegistrationForm() {
     })
       .then((data) => {
         actions.resetForm();
+        console.log(data);
         setPhoneNumber("");
         console.log("Successfully registered user ", data);
         setRegistrationError(null);
         setHasRegistered(true);
+        setUser(data.savedUser);
+        setEmailToken(data.emailToken);
 
         /*         window.setTimeout(() => {
           navigate("/");
@@ -187,22 +204,35 @@ export default function RegistrationForm() {
         <Button variant="primary" type="submit">
           Register
         </Button>
-        {registrationError !== null ? (
-          <div>
-            {registrationError.map((error) => (
-              <p className="text-danger">{error}</p>
-            ))}
-          </div>
-        ) : (
-          <p></p>
-        )}
-
-        {hasRegistered ? (
-          <p className="text-success">Succesfully registered account, please verify your account using the email sent to you!</p>
-        ) : (
-          <p></p>
-        )}
       </Form>
+      {registrationError !== null ? (
+        <div>
+          {registrationError.map((error) => (
+            <p className="text-danger">{error}</p>
+          ))}
+        </div>
+      ) : (
+        <p></p>
+      )}
+
+      {hasRegistered ? (
+        <div>
+          {" "}
+          <p className="text-success">
+            Succesfully registered account, please verify your account using the
+            email sent to you!
+          </p>
+          <Button
+            variant="primary"
+            type="submit"
+            onClick={() => resendLink()}
+          >
+            Resend verification link
+          </Button>
+        </div>
+      ) : (
+        <p></p>
+      )}
 
       <p>
         Have an account? <a href="/">Login</a>

@@ -87,21 +87,21 @@ export default function ResetPasswordForm() {
         <Button variant="primary" type="submit">
           Reset Password
         </Button>
-        {resetError !== null ? (
-          <div>
-            {resetError.map((error) => (
-              <p className="text-danger">{error}</p>
-            ))}
-          </div>
-        ) : (
-          <p className="text-success"></p>
-        )}
-        {successResetPass ? (
-          <p className="text-success">Successfully reset password!</p>
-        ) : (
-          <p></p>
-        )}
       </Form>
+      {resetError !== null ? (
+        <div>
+          {resetError.map((error) => (
+            <p className="text-danger">{error}</p>
+          ))}
+        </div>
+      ) : (
+        <p className="text-success"></p>
+      )}
+      {successResetPass ? (
+        <p className="text-success">Successfully reset password!</p>
+      ) : (
+        <p></p>
+      )}
     </div>
   );
 }

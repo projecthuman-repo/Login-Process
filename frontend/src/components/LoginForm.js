@@ -110,24 +110,23 @@ export default function LoginForm() {
         <Button variant="primary" type="submit">
           Login
         </Button>
-
-        {loginError !== null ? (
-          <div>
-            {loginError.map((error) => (
-              <p className="text-danger">{error}</p>
-            ))}
-          </div>
-        ) : (
-          <p className="text-success"></p>
-        )}
-        <div id="signInDiv"></div>
-        <div>
-          <a href="/forgotPassword">Forgot Password?</a>
-        </div>
-        <div>
-          <a href="/register">Don't have an account? Sign up</a>
-        </div>
       </Form>
+      {loginError !== null ? (
+        <div>
+          {loginError.map((error) => (
+            <p className="text-danger">{error}</p>
+          ))}
+        </div>
+      ) : (
+        <p className="text-success"></p>
+      )}
+      <div id="signInDiv"></div>
+      <div>
+        <a href="/forgotPassword">Forgot Password?</a>
+      </div>
+      <div>
+        <a href="/register">Don't have an account? Sign up</a>
+      </div>
     </div>
   );
 }
