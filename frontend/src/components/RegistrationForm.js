@@ -52,7 +52,7 @@ export default function RegistrationForm() {
       })
       .catch((err) => {
         //actions.resetForm();
-        setPhoneNumber("");
+        //setPhoneNumber("");
         setRegistrationError(err.response.data.error.split("\n"));
 
         //console.log(registrationError);
@@ -222,11 +222,7 @@ export default function RegistrationForm() {
             Succesfully registered account, please verify your account using the
             email sent to you!
           </p>
-          <Button
-            variant="primary"
-            type="submit"
-            onClick={() => resendLink()}
-          >
+          <Button variant="primary" type="submit" onClick={() => resendLink()}>
             Resend verification link
           </Button>
         </div>
