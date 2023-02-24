@@ -8,6 +8,7 @@ import { schema } from "./../schemas/registrationSchema";
 import { useNavigate } from "react-router-dom";
 export default function RegistrationForm() {
   const [registrationError, setRegistrationError] = useState(null);
+  const [hasRegistered, setHasRegistered] = useState(false);
   const navigate = useNavigate();
   //add backend method to check if user exists before allowing registration
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -24,7 +25,8 @@ export default function RegistrationForm() {
         actions.resetForm();
         setPhoneNumber("");
         console.log("Successfully registered user ", data);
-        setRegistrationError(null)
+        setRegistrationError(null);
+        setHasRegistered(true);
 
         /*         window.setTimeout(() => {
           navigate("/");
@@ -192,7 +194,13 @@ export default function RegistrationForm() {
             ))}
           </div>
         ) : (
-          <p className="text-success"></p>
+          <p></p>
+        )}
+
+        {hasRegistered ? (
+          <p className="text-success">Succesfully registered account, please verify your account using the email sent to you!</p>
+        ) : (
+          <p></p>
         )}
       </Form>
 

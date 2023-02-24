@@ -4,10 +4,12 @@ import { React, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 import { resetPassword } from "./../services/resetPassword";
-
+import { useNavigate } from "react-router-dom";
 export default function ResetPasswordForm() {
   const [resetError, setResetError] = useState(null);
+  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [successResetPass, setSuccessResetPass] = useState(false);
   let resetToken = searchParams.get("resetToken");
   const onSubmit = (values, actions) => {
     resetPassword(resetToken, { password: values.password })
@@ -15,6 +17,8 @@ export default function ResetPasswordForm() {
         console.log(result);
         actions.resetForm();
         setResetError(null);
+        setSuccessResetPass(true);
+        navigate("/");
       })
       .catch((err) => {
         console.log(err);
@@ -91,6 +95,11 @@ export default function ResetPasswordForm() {
           </div>
         ) : (
           <p className="text-success"></p>
+        )}
+        {successResetPass ? (
+          <p className="text-success">Successfully reset password!</p>
+        ) : (
+          <p></p>
         )}
       </Form>
     </div>
