@@ -14,6 +14,7 @@ export default function ResetPasswordForm() {
       .then((result) => {
         console.log(result);
         actions.resetForm();
+        setResetError(null);
       })
       .catch((err) => {
         console.log(err);

@@ -24,6 +24,7 @@ export default function RegistrationForm() {
         actions.resetForm();
         setPhoneNumber("");
         console.log("Successfully registered user ", data);
+        setRegistrationError(null)
 
         /*         window.setTimeout(() => {
           navigate("/");

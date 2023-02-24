@@ -15,7 +15,7 @@ export default function Verification() {
     })
     .catch((err) => {
       console.log(err);
-      //setVerifyError(err.response.data.error.split("\n"));
+      // setVerifyError(err.response.data.error.split("\n"));
     });
   return (
     <div>

@@ -42,10 +42,11 @@ export default function LoginForm() {
       .then((data) => {
         actions.resetForm();
         console.log("Successfully logged in user ", data);
+        setLoginError(null);
       })
       .catch((err) => {
         setLoginError(err.response.data.error.split("\n"));
-      //  actions.resetForm();
+        //  actions.resetForm();
       });
   };
   const {

@@ -11,6 +11,7 @@ export default function ForgotPasswordForm() {
       .then((result) => {
         console.log(result);
         actions.resetForm();
+        setForgotPassError(null);
       })
       .catch((err) => {
         setForgotPassError(err.response.data.error.split("\n"));
