@@ -141,26 +141,12 @@ authRouter.patch(
     user.passwordResetExpires = undefined;
     user.passwordResetToken = undefined; //removing user reset token after user changed password
     await user.save();
-    /*  //Log user in via JWT
-    const userForToken = {
-      username: user.username,
-      id: user._id,
-    };
-
-    // token expires in 20 min
-    const token = jwt.sign(userForToken, process.env.SECRET, {
-      expiresIn: "20m",
-    });
-
-    response.cookie("jwt", token, {
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), //set expiration date of cookie to 30 days from now
-      secure: false, //only used with HTTPS
-      httpOnly: true, //cookie cannot be accessed or modified by browser, prevents cross side scripting attacks
-    }); */
-
+   
     response.status(200).json({
       status: "Success",
       message: "Successfully reset password",
     });
   }
 );
+
+

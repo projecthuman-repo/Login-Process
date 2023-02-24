@@ -15,16 +15,10 @@ export default function Verification() {
     })
     .catch((err) => {
       console.log(err);
-      //setVerifyError(err.response.data.error.split("\n"));
+      // setVerifyError(err.response.data.error.split("\n"));
     });
   return (
     <div>
-      {" "}
-      <p>
-        Check your email for your verification link, click{" "}
-        <a href={`http://localhost:3000/verification/?token=${token}`}>here</a>{" "}
-        to resend email{" "}
-      </p>
       {verifyError !== null ? (
         <div>
           {verifyError.map((error) => (

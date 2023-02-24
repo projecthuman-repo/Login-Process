@@ -23,9 +23,7 @@ usersRouter.get("/", async (request, response) => {
   response.json({
     status: "Success",
     numberOfUsers: users.length,
-    data: {
-      users,
-    },
+    users,
   });
 });
 
@@ -168,14 +166,20 @@ usersRouter.post(
     const savedUser = await user.save();
 
     const url = `http://localhost:3000/verification/?token=${emailToken}`;
-    await new Email(user, url).sendWelcomeToApp();
+    try {
+      await new Email(user, url).sendWelcomeToApp();
+    } catch (err) {
+      return response.status(500).json({
+        status: "Fail",
+        error: err,
+      });
+    }
 
     response.status(201).json({
       status: "Success",
       token,
-      data: {
-        savedUser,
-      },
+      emailToken,
+      savedUser,
     });
   }
 );
@@ -186,11 +190,37 @@ usersRouter.patch("/verification/", async (request, response) => {
   if (!user) {
     return response.status(401).json({
       status: "Fail",
-      error: "No user account associated with token, please go and register an account!",
+      error:
+        "No user account associated with token, please go and register an account!",
     });
   }
   user.isVerified = true;
   await user.save();
+  return response.json({
+    status: "Success",
+    token,
+    message: "Please check your email to verify your account!",
+  });
+});
+usersRouter.patch("/resend/email/:emailToken", async (request, response) => {
+  const emailToken = request.params.emailToken;
+  console.log(emailToken);
+  const user = request.body;
+  const url = `http://localhost:3000/verification/?token=${emailToken}`;
+  try {
+    await new Email(user, url).sendWelcomeToApp();
+
+    return response.status(200).json({
+      status: "Success",
+      message: "Token sent again to email",
+      emailToken,
+    });
+  } catch (err) {
+    return response.status(500).json({
+      status: "Fail",
+      error: err,
+    });
+  }
 });
 
 module.exports = usersRouter;

@@ -6,11 +6,14 @@ import { forgotPassword } from "./../services/forgotPassword";
 
 export default function ForgotPasswordForm() {
   const [forgotPassError, setForgotPassError] = useState(null);
+  const [successForgetPass, setSuccessForgetPass] = useState(false);
   const onSubmit = (values, actions) => {
     forgotPassword({ email: values.email })
       .then((result) => {
         console.log(result);
         actions.resetForm();
+        setForgotPassError(null);
+        setSuccessForgetPass(true);
       })
       .catch((err) => {
         setForgotPassError(err.response.data.error.split("\n"));
@@ -58,16 +61,23 @@ export default function ForgotPasswordForm() {
         <Button variant="primary" type="submit">
           Get Reset Password Link
         </Button>
-        {forgotPassError !== null ? (
-          <div>
-            {forgotPassError.map((error) => (
-              <p className="text-danger">{error}</p>
-            ))}
-          </div>
-        ) : (
-          <p className="text-success"></p>
-        )}
       </Form>
+      {forgotPassError !== null ? (
+        <div>
+          {forgotPassError.map((error) => (
+            <p className="text-danger">{error}</p>
+          ))}
+        </div>
+      ) : (
+        <p className="text-success"></p>
+      )}
+      {successForgetPass ? (
+        <p className="text-success">
+          Check your email for a reset password link
+        </p>
+      ) : (
+        <p></p>
+      )}
     </div>
   );
 }

@@ -4,29 +4,17 @@ module.exports = class Email {
     this.to = user.email;
     this.firstName = user.firstName;
     this.url = url;
-    this.from = "shivamaeryy08@gmail.com";
+    this.from = process.env.EMAIL_USERNAME;
   }
 
   newTransport() {
-    if (process.env.NODE_ENV === "production") {
-      return nodemailer.createTransport({
-        service: "SendGrid",
-        auth: {
-          user: process.env.SEND_GRID_USERNAME,
-          pass: process.env.SEND_GRID_PASSWORD,
-        },
-      });
-    } else {
-      return nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: process.env.EMAIL_PORT,
-        secure: false,
-        auth: {
-          user: process.env.EMAIL_USERNAME,
-          pass: process.env.EMAIL_PASSWORD,
-        },
-      });
-    }
+    return nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+    });
   }
 
   async send(subject, message) {
@@ -46,7 +34,7 @@ module.exports = class Email {
   async sendWelcomeToApp() {
     await this.send(
       "Welcome to the PHC Portal",
-      `Welcome to the main PHC login page, visit ${this.url} to login`
+      `Welcome to the main PHC login page, visit ${this.url} to verify your email`
     );
   }
 
@@ -57,24 +45,3 @@ module.exports = class Email {
     );
   }
 };
-/* const sendEmail = async (options) => {
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  });
-
-  const mailOptions = {
-    from: "Shivam Aery <hello@shivam.io>",
-    to: options.email,
-    subject: options.email,
-    text: options.message,
-    //html: <b>options.message</b>,
-  };
-
-  await transporter.sendMail(mailOptions);
-}; */
