@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const { validate } = require("deep-email-validator");
 const crypto = require("crypto");
 const usersRouter = require("express").Router();
 const User = require("../models/user");
@@ -31,11 +31,13 @@ usersRouter.post(
   "/",
   body("email")
     .isString()
+    .trim()
     .isEmail()
     .normalizeEmail()
     .withMessage("Email entered is not a valid email"),
   body("password")
     .isString()
+    .trim()
     .isStrongPassword({
       minLength: 8,
       maxLength: 10,
@@ -86,7 +88,20 @@ usersRouter.post(
 
   async (request, response) => {
     const errors = validationResult(request).array();
+    console.log(request.body.username.indexOf(" ") >= 0);
     let list_errors = "";
+    let validate_email = await validate({
+      email: request.body.email,
+      sender: process.env.EMAIL_USERNAME,
+      validateRegex: true,
+      validateMx: true,
+      validateTypo: true,
+      validateDisposable: true,
+      validateSMTP: false,
+    });
+    if (validate_email.valid !== true) {
+      list_errors += "Email entered is not a real email\n";
+    }
     for (let i = 0; i < errors.length; i++) {
       list_errors += errors[i].msg + "\n";
     }
@@ -105,27 +120,15 @@ usersRouter.post(
     const usernameExists = await User.findOne({ username: userInfo.username });
     let exists_errors = "";
     if (emailExists !== null) {
-      /* return response.status(400).json({
-        status: "Fail",
-        error: "There already exists a user with the given email",
-      }); */
       exists_errors += "There already exists a user with the given email\n";
     }
 
     if (phoneNumberExists !== null) {
-      /*  return response.status(400).json({
-        status: "Fail",
-        error: "There already exists a user with the given phone number",
-      }); */
       exists_errors +=
         "There already exists a user with the given phone number\n";
     }
 
     if (usernameExists !== null) {
-      /*  return response.status(400).json({
-        status: "Fail",
-        error: "There already exists a user with the given username",
-      }); */
       exists_errors += "There already exists a user with the given username\n";
     }
     if (exists_errors) {
@@ -211,6 +214,7 @@ usersRouter.patch(
   body("email")
     .isString()
     .isEmail()
+    .trim()
     .normalizeEmail()
     .withMessage("Email entered is not a valid email"),
   body("username")
@@ -246,6 +250,19 @@ usersRouter.patch(
   async (request, response) => {
     const errors = validationResult(request).array();
     let list_errors = "";
+    let validate_email = await validate({
+      email: request.body.email,
+      sender: process.env.EMAIL_USERNAME,
+      validateRegex: true,
+      validateMx: true,
+      validateTypo: true,
+      validateDisposable: true,
+      validateSMTP: false,
+    });
+    if (validate_email.valid !== true) {
+      list_errors += "Email entered is not a real email\n";
+    }
+
     for (let i = 0; i < errors.length; i++) {
       list_errors += errors[i].msg + "\n";
     }
