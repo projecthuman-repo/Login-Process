@@ -38,6 +38,7 @@ usersRouter.post(
   body("password")
     .isString()
     .trim()
+    .escape()
     .isStrongPassword({
       minLength: 8,
       maxLength: 10,
@@ -88,7 +89,6 @@ usersRouter.post(
 
   async (request, response) => {
     const errors = validationResult(request).array();
-    console.log(request.body.username.indexOf(" ") >= 0);
     let list_errors = "";
     let validate_email = await validate({
       email: request.body.email,
@@ -213,8 +213,8 @@ usersRouter.patch(
   "/update/account",
   body("email")
     .isString()
-    .isEmail()
     .trim()
+    .isEmail()
     .normalizeEmail()
     .withMessage("Email entered is not a valid email"),
   body("username")

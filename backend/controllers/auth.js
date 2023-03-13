@@ -87,6 +87,7 @@ authRouter.patch(
   body("password")
     .isString()
     .trim()
+    .escape()
     .isStrongPassword({
       minLength: 8,
       maxLength: 10,
