@@ -257,6 +257,35 @@ usersRouter.patch(
     }
     const infoToChange = request.body;
     const user = request.user;
+    const emailExists = await User.findOne({ email: infoToChange.email });
+    const phoneNumberExists = await User.findOne({
+      phoneNumber: infoToChange.phoneNumber,
+    });
+    const usernameExists = await User.findOne({
+      username: infoToChange.username,
+    });
+    let exists_errors = "";
+    if (user.email !== infoToChange.email && emailExists !== null) {
+      exists_errors += "There already exists a user with the given email\n";
+    }
+
+    if (
+      user.phoneNumber !== infoToChange.phoneNumber &&
+      phoneNumberExists !== null
+    ) {
+      exists_errors +=
+        "There already exists a user with the given phone number\n";
+    }
+
+    if (user.username !== infoToChange.username && usernameExists !== null) {
+      exists_errors += "There already exists a user with the given username\n";
+    }
+    if (exists_errors) {
+      return response.status(400).json({
+        status: "Fail",
+        error: exists_errors,
+      });
+    }
     user.firstName = infoToChange.firstName;
     user.lastName = infoToChange.lastName;
     user.username = infoToChange.username;
@@ -266,7 +295,7 @@ usersRouter.patch(
 
     return response.status(200).json({
       status: "Success",
-      data: user,
+      user,
     });
 
     // user.passwordHash =

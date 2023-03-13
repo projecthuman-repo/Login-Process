@@ -66,11 +66,11 @@ loginRouter.post(
       { expiresIn: "20m" } //Change to 20 minutes, research and found it to be recommended
     );
 
-    response.cookie("jwt", token, {
-      expires: new Date(Date.now() + 2592000000), //set expiration date of cookie to 30 days from now
-      secure: false, //only used with HTTPS
-      httpOnly: true, //cookie cannot be accessed or modified by browser, prevents cross side scripting attacks
-    });
+    // response.cookie("jwt", token, {
+    //   expires: new Date(Date.now() + 2592000000), //set expiration date of cookie to 30 days from now
+    //   secure: false, //only used with HTTPS
+    //   httpOnly: true, //cookie cannot be accessed or modified by browser, prevents cross side scripting attacks
+    // });
 
     response.status(200).json({
       status: "Success",
