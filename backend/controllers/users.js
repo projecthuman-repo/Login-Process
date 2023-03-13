@@ -147,22 +147,6 @@ usersRouter.post(
       emailToken: emailToken,
     });
 
-    const userForToken = {
-      username: user.username,
-      id: user._id,
-    };
-
-    // token expires in 20 min
-    const token = jwt.sign(userForToken, process.env.SECRET, {
-      expiresIn: "20m",
-    });
-
-    response.cookie("jwt", token, {
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), //set expiration date of cookie to 30 days from now
-      secure: false, //only used with HTTPS
-      httpOnly: true, //cookie cannot be accessed or modified by browser, prevents cross side scripting attacks
-    });
-
     const savedUser = await user.save();
 
     const url = `http://localhost:3000/verification/?token=${emailToken}`;
@@ -177,7 +161,6 @@ usersRouter.post(
 
     response.status(201).json({
       status: "Success",
-      token,
       emailToken,
       savedUser,
     });
@@ -222,5 +205,72 @@ usersRouter.patch("/resend/email/:emailToken", async (request, response) => {
     });
   }
 });
+
+usersRouter.patch(
+  "/update/account",
+  body("email")
+    .isString()
+    .isEmail()
+    .normalizeEmail()
+    .withMessage("Email entered is not a valid email"),
+  body("username")
+    .isString()
+    .not()
+    .isEmpty()
+    .trim()
+    .escape()
+    .withMessage("Invalid input for username"),
+  body("firstName")
+    .isString()
+    .not()
+    .isEmpty()
+    .trim()
+    .escape()
+    .withMessage("Invalid input for first name"),
+  body("lastName")
+    .isString()
+    .not()
+    .isEmpty()
+    .trim()
+    .escape()
+    .withMessage("Invalid input for username"),
+  body("phoneNumber")
+    .isString()
+    .not()
+    .isEmpty()
+    .trim()
+    .escape()
+    .isMobilePhone()
+    .withMessage("Invalid input for phone number"),
+  protect,
+  async (request, response) => {
+    const errors = validationResult(request).array();
+    let list_errors = "";
+    for (let i = 0; i < errors.length; i++) {
+      list_errors += errors[i].msg + "\n";
+    }
+    if (list_errors) {
+      return response.status(400).json({
+        status: "Fail",
+        error: list_errors,
+      });
+    }
+    const infoToChange = request.body;
+    const user = request.user;
+    user.firstName = infoToChange.firstName;
+    user.lastName = infoToChange.lastName;
+    user.username = infoToChange.username;
+    user.phoneNumber = infoToChange.phoneNumber;
+    user.email = infoToChange.email;
+    await user.save();
+
+    return response.status(200).json({
+      status: "Success",
+      data: user,
+    });
+
+    // user.passwordHash =
+  }
+);
 
 module.exports = usersRouter;
