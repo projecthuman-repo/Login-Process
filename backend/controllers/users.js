@@ -181,6 +181,7 @@ usersRouter.patch("/verification/", async (request, response) => {
     });
   }
   user.isVerified = true;
+  user.emailToken = undefined;
   await user.save();
   return response.json({
     status: "Success",
@@ -318,5 +319,9 @@ usersRouter.patch(
     // user.passwordHash =
   }
 );
+
+usersRouter.get("/view/account", protect, async (request, response) => {
+  return response.status(200).json(request.user);
+});
 
 module.exports = usersRouter;
