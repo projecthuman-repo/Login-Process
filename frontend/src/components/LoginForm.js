@@ -3,7 +3,9 @@ import { schema } from "./../schemas/loginSchema";
 import { React, useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { login } from "./../services/login";
+import axios from "axios";
 import jwt_decode from "jwt-decode";
+import { getAuthToken } from "./../util/auth";
 export default function LoginForm() {
   const [loginError, setLoginError] = useState(null);
   const handleCallbackResponse = (response) => {
@@ -41,6 +43,8 @@ export default function LoginForm() {
     })
       .then((data) => {
         actions.resetForm();
+        const token = data.token;
+        localStorage.setItem("token", token);
         console.log("Successfully logged in user ", data);
         setLoginError(null);
       })
