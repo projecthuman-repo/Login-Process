@@ -324,4 +324,17 @@ usersRouter.get("/view/account", protect, async (request, response) => {
   return response.status(200).json(request.user);
 });
 
+usersRouter.delete("/delete/account", protect, async (request, response) => {
+  const id = request.user._id;
+  try {
+    await User.findByIdAndDelete(id);
+    return response.status(204).send("User deleted successfully");
+  } catch (e) {
+    return response.status(500).json({
+      status: "Fail",
+      message: "User could not be deleted",
+    });
+  }
+});
+
 module.exports = usersRouter;
