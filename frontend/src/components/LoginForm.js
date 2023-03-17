@@ -3,11 +3,11 @@ import { schema } from "./../schemas/loginSchema";
 import { React, useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { login } from "./../services/login";
-import axios from "axios";
 import jwt_decode from "jwt-decode";
-import { getAuthToken } from "./../util/auth";
+import { useNavigate } from "react-router-dom";
 export default function LoginForm() {
   const [loginError, setLoginError] = useState(null);
+  const navigate = useNavigate();
   const handleCallbackResponse = (response) => {
     const userInfo = jwt_decode(response.credential);
     console.log(userInfo);
@@ -47,6 +47,7 @@ export default function LoginForm() {
         localStorage.setItem("token", token);
         console.log("Successfully logged in user ", data);
         setLoginError(null);
+        navigate("/homepage");
       })
       .catch((err) => {
         setLoginError(err.response.data.error.split("\n"));

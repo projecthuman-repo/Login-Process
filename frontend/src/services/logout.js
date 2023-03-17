@@ -1,5 +1,4 @@
-import { useNavigate } from "react-router-dom";
-export function Action() {
-  const navigate = useNavigate();
+export function Logout() {
+ 
   localStorage.removeItem("token");
 }

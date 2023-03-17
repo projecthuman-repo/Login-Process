@@ -1,6 +1,6 @@
 import { Button } from "react-bootstrap";
 import { deleteAccount } from "../services/deleteAccount";
-export default function DeleteAccount() {
+export default function AccountInfo() {
   function removeAccount() {
     deleteAccount()
       .then((data) => console.log(data))
@@ -12,5 +12,6 @@ export default function DeleteAccount() {
     <Button variant="primary" type="submit" onClick={removeAccount}>
       Delete Account
     </Button>
+    
   );
 }

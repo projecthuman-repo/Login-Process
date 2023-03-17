@@ -8,7 +8,7 @@ import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import Verification from "./components/Verification";
 import { Routes, Route } from "react-router-dom";
-import DeleteAccount from "./components/DeleteAccount";
+import AccountInfo from "./components/AccountInfo";
 import HomePage from "./components/HomePage";
 const App = () => {
   return (
@@ -23,7 +23,7 @@ const App = () => {
         ></Route>
         <Route exact path="/resetPassword" element={<ResetPassword />}></Route>
         <Route exact path="/verification" element={<Verification />}></Route>
-        <Route exact path="/delete/account" element={<DeleteAccount />}></Route>
+        <Route exact path="/view/account" element={<AccountInfo />}></Route>
         <Route exact path="/homepage" element={<HomePage />}></Route>
       </Routes>
     </div>
