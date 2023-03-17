@@ -25,8 +25,18 @@ const router = createBrowserRouter(
       <Route exact path="/forgotPassword" element={<ForgotPassword />}></Route>
       <Route exact path="/resetPassword" element={<ResetPassword />}></Route>
       <Route exact path="/verification" element={<Verification />}></Route>
-      <Route exact path="/view/account" element={<AccountInfo />}></Route>
-      <Route exact path="/homepage" element={<HomePage />}></Route>
+      <Route
+        exact
+        path="/view/account"
+        element={<AccountInfo />}
+        loader={checkAuthLoader}
+      ></Route>
+      <Route
+        exact
+        path="/homepage"
+        element={<HomePage />}
+        loader={checkAuthLoader}
+      ></Route>
       <Route exact path="*" element={<NotFound />}></Route>
     </Route>
   )

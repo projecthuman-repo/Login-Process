@@ -181,7 +181,7 @@ usersRouter.patch("/verification/", async (request, response) => {
     });
   }
   user.isVerified = true;
-  user.emailToken = undefined;
+  //user.emailToken = undefined;
   await user.save();
   return response.json({
     status: "Success",
