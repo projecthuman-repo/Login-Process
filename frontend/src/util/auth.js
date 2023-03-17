@@ -8,4 +8,5 @@ export function checkAuthLoader() {
   if (!token) {
     return redirect("/");
   }
+  return token;
 }
