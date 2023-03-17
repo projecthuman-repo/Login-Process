@@ -5,36 +5,10 @@ import { Form, Button } from "react-bootstrap";
 import { login } from "./../services/login";
 import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 export default function LoginForm() {
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();
-  const handleCallbackResponse = (response) => {
-    const userInfo = jwt_decode(response.credential);
-    console.log(userInfo);
-
-    const user = {
-      firstName: userInfo.given_name,
-      lastName: userInfo.family_name,
-      registrationUsername: userInfo.email,
-      email: userInfo.email,
-      // we need something to add phone number
-      // pfpLink: userInfo.picture - optional
-    };
-    // setUser(user) - immediate sign in
-  };
-
-  useEffect(() => {
-    /* global google */
-    google.accounts.id.initialize({
-      client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-      callback: handleCallbackResponse,
-    });
-
-    google.accounts.id.renderButton(document.getElementById("signInDiv"), {
-      theme: "outline",
-      size: "large",
-    });
-  }, []);
   const [phoneNumber, setPhoneNumber] = useState("");
   const onSubmit = (values, actions) => {
     login({
@@ -135,6 +109,15 @@ export default function LoginForm() {
       <div>
         <a href="/register">Don't have an account? Sign up</a>
       </div>
+      <GoogleLogin
+        onSuccess={(credentialResponse) => {
+          console.log(credentialResponse);
+        }}
+        onError={() => {
+          console.log("Login Failed");
+        }}
+      />
+      ;
     </div>
   );
 }
