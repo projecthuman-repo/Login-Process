@@ -45,6 +45,9 @@ export default function LoginForm() {
         actions.resetForm();
         const token = data.token;
         localStorage.setItem("token", token);
+        const expiration = new Date();
+        expiration.setMinutes(expiration.getMinutes() + 60);
+        localStorage.setItem("expiration", expiration.toISOString());
         console.log("Successfully logged in user ", data);
         setLoginError(null);
         navigate("/homepage");

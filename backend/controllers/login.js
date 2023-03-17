@@ -59,12 +59,9 @@ loginRouter.post(
     };
 
     // token expires in 60 * 60 seconds (1hr)
-    const token = jwt.sign(
-      userForToken,
-      process.env.SECRET,
-      /*     { expiresIn: "60 * 60" } */
-      { expiresIn: "20m" } //Change to 20 minutes, research and found it to be recommended
-    );
+    const token = jwt.sign(userForToken, process.env.SECRET, {
+      expiresIn: "1h",
+    });
 
     // response.cookie("jwt", token, {
     //   expires: new Date(Date.now() + 2592000000), //set expiration date of cookie to 30 days from now
