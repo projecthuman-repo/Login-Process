@@ -5,7 +5,6 @@ const { body, validationResult } = require("express-validator");
 const authRouter = require("express").Router();
 const Email = require("./../utils/email");
 const User = require("../models/user");
-const { reset } = require("nodemon");
 
 const protect = async (request, response, next) => {
   //Obtain token
@@ -87,6 +86,8 @@ authRouter.patch(
   "/resetPassword/",
   body("password")
     .isString()
+    .trim()
+    .escape()
     .isStrongPassword({
       minLength: 8,
       maxLength: 10,
@@ -141,12 +142,10 @@ authRouter.patch(
     user.passwordResetExpires = undefined;
     user.passwordResetToken = undefined; //removing user reset token after user changed password
     await user.save();
-   
+
     response.status(200).json({
       status: "Success",
       message: "Successfully reset password",
     });
   }
 );
-
-

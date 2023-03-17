@@ -1,9 +1,9 @@
 import axios from "axios";
-const baseUrl = "/api/authentication/resetPassword";
+const url = "/api/authentication/resetPassword";
 
 export const resetPassword = async (token, password) => {
   const response = await axios.patch(
-    `${baseUrl}/?resetToken=${token}`,
+    `${url}/?resetToken=${token}`,
     password
   );
   return response.data;

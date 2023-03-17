@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const { validate } = require("deep-email-validator");
 const crypto = require("crypto");
 const usersRouter = require("express").Router();
 const User = require("../models/user");
@@ -31,11 +31,14 @@ usersRouter.post(
   "/",
   body("email")
     .isString()
+    .trim()
     .isEmail()
     .normalizeEmail()
     .withMessage("Email entered is not a valid email"),
   body("password")
     .isString()
+    .trim()
+    .escape()
     .isStrongPassword({
       minLength: 8,
       maxLength: 10,
@@ -87,6 +90,18 @@ usersRouter.post(
   async (request, response) => {
     const errors = validationResult(request).array();
     let list_errors = "";
+    let validate_email = await validate({
+      email: request.body.email,
+      sender: process.env.EMAIL_USERNAME,
+      validateRegex: true,
+      validateMx: true,
+      validateTypo: true,
+      validateDisposable: true,
+      validateSMTP: false,
+    });
+    if (validate_email.valid !== true) {
+      list_errors += "Email entered is not a real email\n";
+    }
     for (let i = 0; i < errors.length; i++) {
       list_errors += errors[i].msg + "\n";
     }
@@ -105,27 +120,15 @@ usersRouter.post(
     const usernameExists = await User.findOne({ username: userInfo.username });
     let exists_errors = "";
     if (emailExists !== null) {
-      /* return response.status(400).json({
-        status: "Fail",
-        error: "There already exists a user with the given email",
-      }); */
       exists_errors += "There already exists a user with the given email\n";
     }
 
     if (phoneNumberExists !== null) {
-      /*  return response.status(400).json({
-        status: "Fail",
-        error: "There already exists a user with the given phone number",
-      }); */
       exists_errors +=
         "There already exists a user with the given phone number\n";
     }
 
     if (usernameExists !== null) {
-      /*  return response.status(400).json({
-        status: "Fail",
-        error: "There already exists a user with the given username",
-      }); */
       exists_errors += "There already exists a user with the given username\n";
     }
     if (exists_errors) {
@@ -147,22 +150,6 @@ usersRouter.post(
       emailToken: emailToken,
     });
 
-    const userForToken = {
-      username: user.username,
-      id: user._id,
-    };
-
-    // token expires in 20 min
-    const token = jwt.sign(userForToken, process.env.SECRET, {
-      expiresIn: "20m",
-    });
-
-    response.cookie("jwt", token, {
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), //set expiration date of cookie to 30 days from now
-      secure: false, //only used with HTTPS
-      httpOnly: true, //cookie cannot be accessed or modified by browser, prevents cross side scripting attacks
-    });
-
     const savedUser = await user.save();
 
     const url = `http://localhost:3000/verification/?token=${emailToken}`;
@@ -177,7 +164,6 @@ usersRouter.post(
 
     response.status(201).json({
       status: "Success",
-      token,
       emailToken,
       savedUser,
     });
@@ -195,6 +181,7 @@ usersRouter.patch("/verification/", async (request, response) => {
     });
   }
   user.isVerified = true;
+  //user.emailToken = undefined;
   await user.save();
   return response.json({
     status: "Success",
@@ -219,6 +206,133 @@ usersRouter.patch("/resend/email/:emailToken", async (request, response) => {
     return response.status(500).json({
       status: "Fail",
       error: err,
+    });
+  }
+});
+
+usersRouter.patch(
+  "/update/account",
+  body("email")
+    .isString()
+    .trim()
+    .isEmail()
+    .normalizeEmail()
+    .withMessage("Email entered is not a valid email"),
+  body("username")
+    .isString()
+    .not()
+    .isEmpty()
+    .trim()
+    .escape()
+    .withMessage("Invalid input for username"),
+  body("firstName")
+    .isString()
+    .not()
+    .isEmpty()
+    .trim()
+    .escape()
+    .withMessage("Invalid input for first name"),
+  body("lastName")
+    .isString()
+    .not()
+    .isEmpty()
+    .trim()
+    .escape()
+    .withMessage("Invalid input for username"),
+  body("phoneNumber")
+    .isString()
+    .not()
+    .isEmpty()
+    .trim()
+    .escape()
+    .isMobilePhone()
+    .withMessage("Invalid input for phone number"),
+  protect,
+  async (request, response) => {
+    const errors = validationResult(request).array();
+    let list_errors = "";
+    let validate_email = await validate({
+      email: request.body.email,
+      sender: process.env.EMAIL_USERNAME,
+      validateRegex: true,
+      validateMx: true,
+      validateTypo: true,
+      validateDisposable: true,
+      validateSMTP: false,
+    });
+    if (validate_email.valid !== true) {
+      list_errors += "Email entered is not a real email\n";
+    }
+
+    for (let i = 0; i < errors.length; i++) {
+      list_errors += errors[i].msg + "\n";
+    }
+    if (list_errors) {
+      return response.status(400).json({
+        status: "Fail",
+        error: list_errors,
+      });
+    }
+    const infoToChange = request.body;
+    const user = request.user;
+    const emailExists = await User.findOne({ email: infoToChange.email });
+    const phoneNumberExists = await User.findOne({
+      phoneNumber: infoToChange.phoneNumber,
+    });
+    const usernameExists = await User.findOne({
+      username: infoToChange.username,
+    });
+    let exists_errors = "";
+    if (user.email !== infoToChange.email && emailExists !== null) {
+      exists_errors += "There already exists a user with the given email\n";
+    }
+
+    if (
+      user.phoneNumber !== infoToChange.phoneNumber &&
+      phoneNumberExists !== null
+    ) {
+      exists_errors +=
+        "There already exists a user with the given phone number\n";
+    }
+
+    if (user.username !== infoToChange.username && usernameExists !== null) {
+      exists_errors += "There already exists a user with the given username\n";
+    }
+    if (exists_errors) {
+      return response.status(400).json({
+        status: "Fail",
+        error: exists_errors,
+      });
+    }
+    user.firstName = infoToChange.firstName;
+    user.lastName = infoToChange.lastName;
+    user.username = infoToChange.username;
+    user.phoneNumber = infoToChange.phoneNumber;
+    user.email = infoToChange.email;
+    await user.save();
+
+    return response.status(200).json({
+      status: "Success",
+      user,
+    });
+
+    // user.passwordHash =
+  }
+);
+
+usersRouter.get("/view/account", protect, async (request, response) => {
+  return response.status(200).json(request.user);
+});
+
+usersRouter.delete("/delete/account", protect, async (request, response) => {
+  const id = request.user._id;
+  try {
+    await User.findByIdAndDelete(id);
+    return response.status(204).send("User deleted successfully");
+  } catch (e) {
+    return response.status(500).json({
+      status: "Fail",
+      message: "User could not be deleted",
     });
   }
 });

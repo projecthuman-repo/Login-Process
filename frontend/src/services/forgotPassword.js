@@ -1,7 +1,7 @@
 import axios from "axios";
-const baseUrl = "/api/authentication/forgotPassword";
+const url = "/api/authentication/forgotPassword";
 
 export const forgotPassword = async (user) => {
-  const response = await axios.post(baseUrl, user);
+  const response = await axios.post(url, user);
   return response.data;
 };

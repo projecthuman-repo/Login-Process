@@ -20,8 +20,10 @@
   "homepage": "https://github.com/projecthuman-repo/Login-Process#readme",
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "deep-email-validator": "^0.1.21",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-async-errors": "^3.1.1",

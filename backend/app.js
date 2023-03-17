@@ -8,6 +8,7 @@ const app = express();
 //MIDDLEWARE
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
+const compression = require("compression");
 const xss = require("xss-clean");
 const cors = require("cors"); // required for frontend
 const usersRouter = require("./controllers/users");
@@ -46,6 +47,8 @@ app.use(mongoSanitize());
 //Data sanitization against XSS
 app.use(xss());
 
+//Compress response data
+app.use(compression());
 app.use(middleware.requestLogger);
 app.use(morgan("dev"));
 
