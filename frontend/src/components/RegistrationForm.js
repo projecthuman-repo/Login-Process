@@ -16,6 +16,11 @@ export default function RegistrationForm() {
   const [emailToken, setEmailToken] = useState(null);
   //add backend method to check if user exists before allowing registration
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [buttonOn, setButtonOn] = useState(false);
+  function turnButtonOn() {
+    setButtonOn(true);
+  }
+
   function resendLink() {
     resendVerificationLink(user, emailToken)
       .then((data) => {
@@ -145,7 +150,7 @@ export default function RegistrationForm() {
         )}
 
         <Form.Group controlId="formBasicUsername">
-          <Form.Label>Username</Form.Label>
+          <Form.Label className="">Username</Form.Label>
           <Form.Control
             type="username"
             name="username"
@@ -205,8 +210,12 @@ export default function RegistrationForm() {
           </p>
         </div>
         {/* submit button */}
-        <ReCAPTCHA sitekey={process.env.REACT_APP_SITE_KEY} ref={captchaRef} />
-        <Button variant="primary" type="submit">
+        <ReCAPTCHA
+          sitekey={process.env.REACT_APP_SITE_KEY}
+          ref={captchaRef}
+          onChange={turnButtonOn}
+        />
+        <Button disabled={!buttonOn} variant="primary" type="submit">
           Register
         </Button>
       </Form>
