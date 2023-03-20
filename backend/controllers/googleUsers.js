@@ -12,16 +12,13 @@ googleUsersRouter.get("/", async (request, response) => {
 });
 
 googleUsersRouter.post("/", async (request, response) => {
-  const errors = validationResult(request);
-  if (!errors.isEmpty()) {
-    return response.status(401).json({
-      status: "Fail",
-      errors: errors.array(),
+  const { firstName, lastName, email } = request.body;
+  if (GoogleUser.find({ email: email }) !== null) {
+    return response.status(200).json({
+      status: "Success",
+      message: "User successfully logged in",
     });
   }
-
-  const { firstName, lastName, email } = request.body;
-
   const googleUser = new GoogleUser({
     firstName,
     lastName,
@@ -31,6 +28,7 @@ googleUsersRouter.post("/", async (request, response) => {
   const savedGoogleUser = await googleUser.save();
   response.status(201).json({
     status: "Success",
+    message: "Successfully created user",
     savedGoogleUser,
   });
 });

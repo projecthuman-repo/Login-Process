@@ -6,6 +6,7 @@ import PhoneInput from "react-phone-number-input";
 import { useFormik } from "formik";
 import { schema } from "./../schemas/registrationSchema";
 import { resendVerificationLink } from "./../services/resendVerificationLink";
+import ReCAPTCHA from "react-google-recaptcha";
 export default function RegistrationForm() {
   const [registrationError, setRegistrationError] = useState(null);
   const [hasRegistered, setHasRegistered] = useState(false);
@@ -56,25 +57,19 @@ export default function RegistrationForm() {
         //console.log(registrationError);
       });
   };
-  const {
-    values,
-    errors,
-    handleBlur,
-    touched,
-    handleChange,
-    handleSubmit,
-  } = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-      firstName: "",
-      lastName: "",
-      username: "",
-      phoneNumber: "",
-    },
-    validationSchema: schema,
-    onSubmit,
-  });
+  const { values, errors, handleBlur, touched, handleChange, handleSubmit } =
+    useFormik({
+      initialValues: {
+        email: "",
+        password: "",
+        firstName: "",
+        lastName: "",
+        username: "",
+        phoneNumber: "",
+      },
+      validationSchema: schema,
+      onSubmit,
+    });
 
   if (phoneNumber !== "") values.phoneNumber = phoneNumber;
 
@@ -198,6 +193,7 @@ export default function RegistrationForm() {
           </p>
         </div>
         {/* submit button */}
+        <ReCAPTCHA sitekey={process.env.REACT_APP_SITE_KEY} />
         <Button variant="primary" type="submit">
           Register
         </Button>
