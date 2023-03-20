@@ -153,8 +153,19 @@ authRouter.patch(
 
 authRouter.post("/verifyCaptcha", async (request, response) => {
   const { token } = request.body;
-
-  response = await axios.post(
+  console.log(token);
+  response_captcha = await axios.post(
     `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.SECRET_CAPTCHA_KEY}&response=${token}`
   );
+  if (response_captcha.status === 200) {
+    response.status(200).json({
+      status: "Success",
+      message: "Human user",
+    });
+  } else {
+    response.status(401).json({
+      status: "Fail",
+      message: "Bot detected",
+    });
+  }
 });

@@ -31,8 +31,12 @@ export default function RegistrationForm() {
     const token = captchaRef.current.getValue();
     console.log(token);
     verifyCaptcha(token)
-      .then((data) => console.log(data))
-      .catch((e) => console.log(e));
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     captchaRef.current.reset();
     registerUser({
       email: values.email,
