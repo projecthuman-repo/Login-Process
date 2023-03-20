@@ -7,7 +7,7 @@ import RegistrationForm from "./components/RegistrationForm";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import Verification from "./components/Verification";
-import { Routes, Route, RouterProvider } from "react-router-dom";
+import { Route, RouterProvider } from "react-router-dom";
 import AccountInfo from "./components/AccountInfo";
 import HomePage from "./components/HomePage";
 import {

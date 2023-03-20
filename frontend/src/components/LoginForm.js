@@ -1,9 +1,8 @@
 import { useFormik } from "formik";
 import { schema } from "./../schemas/loginSchema";
-import { React, useState, useEffect } from "react";
+import { React, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { login } from "./../services/login";
-import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { addGoogleUser } from "../services/addGoogleUser";
@@ -11,7 +10,6 @@ import axios from "axios";
 export default function LoginForm() {
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();
-  const [phoneNumber, setPhoneNumber] = useState("");
   const googleLogin = useGoogleLogin({
     onSuccess: (codeResponse) => {
       const user = codeResponse;
@@ -73,22 +71,15 @@ export default function LoginForm() {
         //  actions.resetForm();
       });
   };
-  const {
-    values,
-    errors,
-    handleBlur,
-    isSubmitting,
-    touched,
-    handleChange,
-    handleSubmit,
-  } = useFormik({
-    initialValues: {
-      password: "",
-      username: "",
-    },
-    validationSchema: schema,
-    onSubmit,
-  });
+  const { values, errors, handleBlur, touched, handleChange, handleSubmit } =
+    useFormik({
+      initialValues: {
+        password: "",
+        username: "",
+      },
+      validationSchema: schema,
+      onSubmit,
+    });
 
   return (
     <div>

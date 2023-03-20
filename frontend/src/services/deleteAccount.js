@@ -3,7 +3,7 @@ import { getAuthToken } from "./../util/auth";
 const url = "/api/users/delete/account";
 
 export const deleteAccount = async () => {
-  const response = await axios.delete(url, {
+  await axios.delete(url, {
     headers: {
       Authorization: `Bearer ${getAuthToken()}`,
     },
