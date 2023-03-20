@@ -6,6 +6,7 @@ import { login } from "./../services/login";
 import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
+import { addGoogleUser } from "../services/addGoogleUser";
 import axios from "axios";
 export default function LoginForm() {
   const [loginError, setLoginError] = useState(null);
@@ -33,6 +34,17 @@ export default function LoginForm() {
         .then((res) => {
           const profile = res.data;
           console.log(profile);
+          addGoogleUser({
+            firstName: profile.given_name,
+            lastName: profile.family_name,
+            email: profile.email,
+          })
+            .then((data) => {
+              console.log(data);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
         })
         .catch((err) => console.log(err));
       navigate("/homepage");
