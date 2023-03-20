@@ -5,14 +5,12 @@ import { registerUser } from "./../services/registration";
 import PhoneInput from "react-phone-number-input";
 import { useFormik } from "formik";
 import { schema } from "./../schemas/registrationSchema";
-import { useNavigate } from "react-router-dom";
 import { resendVerificationLink } from "./../services/resendVerificationLink";
 export default function RegistrationForm() {
   const [registrationError, setRegistrationError] = useState(null);
   const [hasRegistered, setHasRegistered] = useState(false);
   const [user, setUser] = useState(null);
   const [emailToken, setEmailToken] = useState(null);
-  const navigate = useNavigate();
   //add backend method to check if user exists before allowing registration
   const [phoneNumber, setPhoneNumber] = useState("");
   function resendLink() {
@@ -62,7 +60,6 @@ export default function RegistrationForm() {
     values,
     errors,
     handleBlur,
-    isSubmitting,
     touched,
     handleChange,
     handleSubmit,

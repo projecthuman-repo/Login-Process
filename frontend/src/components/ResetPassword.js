@@ -25,22 +25,15 @@ export default function ResetPasswordForm() {
         setResetError(err.response.data.error.split("\n"));
       });
   };
-  const {
-    values,
-    errors,
-    handleBlur,
-    isSubmitting,
-    touched,
-    handleChange,
-    handleSubmit,
-  } = useFormik({
-    initialValues: {
-      password: "",
-      confirmPassword: "",
-    },
-    validationSchema: schema,
-    onSubmit,
-  });
+  const { values, errors, handleBlur, touched, handleChange, handleSubmit } =
+    useFormik({
+      initialValues: {
+        password: "",
+        confirmPassword: "",
+      },
+      validationSchema: schema,
+      onSubmit,
+    });
 
   return (
     <div>
