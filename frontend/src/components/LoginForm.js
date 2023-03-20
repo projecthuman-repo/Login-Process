@@ -5,11 +5,36 @@ import { Form, Button } from "react-bootstrap";
 import { login } from "./../services/login";
 import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import { GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 export default function LoginForm() {
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();
   const [phoneNumber, setPhoneNumber] = useState("");
+  const googleLogin = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      const user = codeResponse;
+      console.log(user);
+      axios
+        .get(
+          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.access_token}`,
+              Accept: "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          const profile = res.data;
+          console.log(profile);
+        })
+        .catch((err) => console.log(err));
+      navigate("/homepage");
+    },
+    onError: (error) => setLoginError("Login failed: ", error),
+  });
+
   const onSubmit = (values, actions) => {
     login({
       password: values.password,
@@ -109,15 +134,7 @@ export default function LoginForm() {
       <div>
         <a href="/register">Don't have an account? Sign up</a>
       </div>
-      <GoogleLogin
-        onSuccess={(credentialResponse) => {
-          console.log(credentialResponse);
-        }}
-        onError={() => {
-          console.log("Login Failed");
-        }}
-      />
-      ;
+      <Button onClick={() => googleLogin()}>Sign in with Google 🚀 </Button>
     </div>
   );
 }
