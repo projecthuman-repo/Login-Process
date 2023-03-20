@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useRef } from "react";
 import { Form, Button } from "react-bootstrap";
 import "react-phone-number-input/style.css";
 import { registerUser } from "./../services/registration";
@@ -7,8 +7,10 @@ import { useFormik } from "formik";
 import { schema } from "./../schemas/registrationSchema";
 import { resendVerificationLink } from "./../services/resendVerificationLink";
 import ReCAPTCHA from "react-google-recaptcha";
+import { verifyCaptcha } from "../services/verifyCaptcha";
 export default function RegistrationForm() {
   const [registrationError, setRegistrationError] = useState(null);
+  const captchaRef = useRef(null);
   const [hasRegistered, setHasRegistered] = useState(false);
   const [user, setUser] = useState(null);
   const [emailToken, setEmailToken] = useState(null);
@@ -26,6 +28,12 @@ export default function RegistrationForm() {
       });
   }
   const onSubmit = (values, actions) => {
+    const token = captchaRef.current.getValue();
+    console.log(token);
+    verifyCaptcha(token)
+      .then((data) => console.log(data))
+      .catch((e) => console.log(e));
+    captchaRef.current.reset();
     registerUser({
       email: values.email,
       password: values.password,
@@ -36,9 +44,9 @@ export default function RegistrationForm() {
     })
       .then((data) => {
         actions.resetForm();
-        console.log(data);
+        // console.log(data);
         setPhoneNumber("");
-        console.log("Successfully registered user ", data);
+        // console.log("Successfully registered user ", data);
         setRegistrationError(null);
         setHasRegistered(true);
         setUser(data.savedUser);
@@ -193,7 +201,7 @@ export default function RegistrationForm() {
           </p>
         </div>
         {/* submit button */}
-        <ReCAPTCHA sitekey={process.env.REACT_APP_SITE_KEY} />
+        <ReCAPTCHA sitekey={process.env.REACT_APP_SITE_KEY} ref={captchaRef} />
         <Button variant="primary" type="submit">
           Register
         </Button>
