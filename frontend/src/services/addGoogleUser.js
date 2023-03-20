@@ -1,5 +1,5 @@
 import axios from "axios";
-const url = "/api/googleusers";
+const url = "/api/googleUsers";
 
 export const addGoogleUser = async (user) => {
   const response = await axios.post(url, user);

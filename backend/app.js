@@ -14,6 +14,8 @@ const cors = require("cors"); // required for frontend
 const usersRouter = require("./controllers/users");
 const loginRouter = require("./controllers/login");
 const googleUsersRouter = require("./controllers/googleUsers");
+const facebookUsersRouter = require("./controllers/facebookUsers");
+const instagramUsersRouter = require("./controllers/instagramUsers");
 const authRouter = require("./controllers/auth").authRouter;
 const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
@@ -54,7 +56,9 @@ app.use(morgan("dev"));
 
 app.use("/api/users", usersRouter);
 app.use("/api/login", loginRouter);
-app.use("/api/googleusers", googleUsersRouter);
+app.use("/api/googleUsers", googleUsersRouter);
+app.use("/api/instagramUsers", instagramUsersRouter);
+app.use("/api/facebookUsers", facebookUsersRouter);
 app.use("/api/authentication", authRouter);
 
 app.use(middleware.unknownEndpoint);
