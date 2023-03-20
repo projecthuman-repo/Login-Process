@@ -14,13 +14,18 @@ export default function LoginForm() {
   const googleLogin = useGoogleLogin({
     onSuccess: (codeResponse) => {
       const user = codeResponse;
+      const token = user.access_token;
       console.log(user);
+      localStorage.setItem("token", token);
+      const expiration = new Date();
+      expiration.setMinutes(expiration.getMinutes() + 60);
+      localStorage.setItem("expiration", expiration.toISOString());
       axios
         .get(
-          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
+          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${token}`,
           {
             headers: {
-              Authorization: `Bearer ${user.access_token}`,
+              Authorization: `Bearer ${token}`,
               Accept: "application/json",
             },
           }
