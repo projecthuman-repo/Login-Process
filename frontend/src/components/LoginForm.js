@@ -1,41 +1,55 @@
 import { useFormik } from "formik";
 import { schema } from "./../schemas/loginSchema";
-import { React, useState, useEffect } from "react";
+import { React, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { login } from "./../services/login";
-import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { useGoogleLogin } from "@react-oauth/google";
+import { addGoogleUser } from "../services/addGoogleUser";
+import axios from "axios";
 export default function LoginForm() {
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();
-  const handleCallbackResponse = (response) => {
-    const userInfo = jwt_decode(response.credential);
-    console.log(userInfo);
+  const googleLogin = useGoogleLogin({
+    onSuccess: (codeResponse) => {
+      const user = codeResponse;
+      const token = user.access_token;
+      console.log(user);
+      localStorage.setItem("token", token);
+      const expiration = new Date();
+      expiration.setMinutes(expiration.getMinutes() + 60);
+      localStorage.setItem("expiration", expiration.toISOString());
+      axios
+        .get(
+          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${token}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              Accept: "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          const profile = res.data;
+          console.log(profile);
+          addGoogleUser({
+            firstName: profile.given_name,
+            lastName: profile.family_name,
+            email: profile.email,
+          })
+            .then((data) => {
+              console.log(data);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        })
+        .catch((err) => console.log(err));
+      navigate("/homepage");
+    },
+    onError: (error) => setLoginError("Login failed: ", error),
+  });
 
-    const user = {
-      firstName: userInfo.given_name,
-      lastName: userInfo.family_name,
-      registrationUsername: userInfo.email,
-      email: userInfo.email,
-      // we need something to add phone number
-      // pfpLink: userInfo.picture - optional
-    };
-    // setUser(user) - immediate sign in
-  };
-
-  useEffect(() => {
-    /* global google */
-    google.accounts.id.initialize({
-      client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
-      callback: handleCallbackResponse,
-    });
-
-    google.accounts.id.renderButton(document.getElementById("signInDiv"), {
-      theme: "outline",
-      size: "large",
-    });
-  }, []);
-  const [phoneNumber, setPhoneNumber] = useState("");
   const onSubmit = (values, actions) => {
     login({
       password: values.password,
@@ -57,22 +71,15 @@ export default function LoginForm() {
         //  actions.resetForm();
       });
   };
-  const {
-    values,
-    errors,
-    handleBlur,
-    isSubmitting,
-    touched,
-    handleChange,
-    handleSubmit,
-  } = useFormik({
-    initialValues: {
-      password: "",
-      username: "",
-    },
-    validationSchema: schema,
-    onSubmit,
-  });
+  const { values, errors, handleBlur, touched, handleChange, handleSubmit } =
+    useFormik({
+      initialValues: {
+        password: "",
+        username: "",
+      },
+      validationSchema: schema,
+      onSubmit,
+    });
 
   return (
     <div>
@@ -135,6 +142,7 @@ export default function LoginForm() {
       <div>
         <a href="/register">Don't have an account? Sign up</a>
       </div>
+      <Button onClick={() => googleLogin()}>Sign in with Google 🚀 </Button>
     </div>
   );
 }

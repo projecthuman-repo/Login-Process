@@ -1,20 +1,26 @@
-import { React, useState } from "react";
+import { React, useState, useRef } from "react";
 import { Form, Button } from "react-bootstrap";
 import "react-phone-number-input/style.css";
 import { registerUser } from "./../services/registration";
 import PhoneInput from "react-phone-number-input";
 import { useFormik } from "formik";
 import { schema } from "./../schemas/registrationSchema";
-import { useNavigate } from "react-router-dom";
 import { resendVerificationLink } from "./../services/resendVerificationLink";
+import ReCAPTCHA from "react-google-recaptcha";
+import { verifyCaptcha } from "../services/verifyCaptcha";
 export default function RegistrationForm() {
   const [registrationError, setRegistrationError] = useState(null);
+  const captchaRef = useRef(null);
   const [hasRegistered, setHasRegistered] = useState(false);
   const [user, setUser] = useState(null);
   const [emailToken, setEmailToken] = useState(null);
-  const navigate = useNavigate();
   //add backend method to check if user exists before allowing registration
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [buttonOn, setButtonOn] = useState(false);
+  function turnButtonOn() {
+    setButtonOn(true);
+  }
+
   function resendLink() {
     resendVerificationLink(user, emailToken)
       .then((data) => {
@@ -27,6 +33,16 @@ export default function RegistrationForm() {
       });
   }
   const onSubmit = (values, actions) => {
+    const token = captchaRef.current.getValue();
+    console.log(token);
+    verifyCaptcha(token)
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    captchaRef.current.reset();
     registerUser({
       email: values.email,
       password: values.password,
@@ -37,9 +53,9 @@ export default function RegistrationForm() {
     })
       .then((data) => {
         actions.resetForm();
-        console.log(data);
+        // console.log(data);
         setPhoneNumber("");
-        console.log("Successfully registered user ", data);
+        // console.log("Successfully registered user ", data);
         setRegistrationError(null);
         setHasRegistered(true);
         setUser(data.savedUser);
@@ -58,26 +74,19 @@ export default function RegistrationForm() {
         //console.log(registrationError);
       });
   };
-  const {
-    values,
-    errors,
-    handleBlur,
-    isSubmitting,
-    touched,
-    handleChange,
-    handleSubmit,
-  } = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-      firstName: "",
-      lastName: "",
-      username: "",
-      phoneNumber: "",
-    },
-    validationSchema: schema,
-    onSubmit,
-  });
+  const { values, errors, handleBlur, touched, handleChange, handleSubmit } =
+    useFormik({
+      initialValues: {
+        email: "",
+        password: "",
+        firstName: "",
+        lastName: "",
+        username: "",
+        phoneNumber: "",
+      },
+      validationSchema: schema,
+      onSubmit,
+    });
 
   if (phoneNumber !== "") values.phoneNumber = phoneNumber;
 
@@ -141,7 +150,7 @@ export default function RegistrationForm() {
         )}
 
         <Form.Group controlId="formBasicUsername">
-          <Form.Label>Username</Form.Label>
+          <Form.Label className="">Username</Form.Label>
           <Form.Control
             type="username"
             name="username"
@@ -201,7 +210,12 @@ export default function RegistrationForm() {
           </p>
         </div>
         {/* submit button */}
-        <Button variant="primary" type="submit">
+        <ReCAPTCHA
+          sitekey={process.env.REACT_APP_SITE_KEY}
+          ref={captchaRef}
+          onChange={turnButtonOn}
+        />
+        <Button disabled={!buttonOn} variant="primary" type="submit">
           Register
         </Button>
       </Form>

@@ -5,6 +5,7 @@ const { body, validationResult } = require("express-validator");
 const authRouter = require("express").Router();
 const Email = require("./../utils/email");
 const User = require("../models/user");
+const axios = require("axios");
 
 const protect = async (request, response, next) => {
   //Obtain token
@@ -149,3 +150,22 @@ authRouter.patch(
     });
   }
 );
+
+authRouter.post("/verifyCaptcha", async (request, response) => {
+  const { token } = request.body;
+  console.log(token);
+  response_captcha = await axios.post(
+    `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.SECRET_CAPTCHA_KEY}&response=${token}`
+  );
+  if (response_captcha.status === 200) {
+    response.status(200).json({
+      status: "Success",
+      message: "Human user",
+    });
+  } else {
+    response.status(401).json({
+      status: "Fail",
+      message: "Bot detected",
+    });
+  }
+});

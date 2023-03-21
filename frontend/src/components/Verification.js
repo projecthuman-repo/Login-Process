@@ -1,6 +1,6 @@
 import { verifyUser } from "../services/verification";
 import { React, useState } from "react";
-import { redirect, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 export default function Verification() {
   const [searchParams, setSearchParams] = useSearchParams();

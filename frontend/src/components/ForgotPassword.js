@@ -4,7 +4,6 @@ import { React, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { forgotPassword } from "./../services/forgotPassword";
 
-
 export default function ForgotPasswordForm() {
   const [forgotPassError, setForgotPassError] = useState(null);
   const [successForgetPass, setSuccessForgetPass] = useState(false);
@@ -21,21 +20,14 @@ export default function ForgotPasswordForm() {
         // actions.resetForm();
       });
   };
-  const {
-    values,
-    errors,
-    handleBlur,
-    isSubmitting,
-    touched,
-    handleChange,
-    handleSubmit,
-  } = useFormik({
-    initialValues: {
-      email: "",
-    },
-    validationSchema: schema,
-    onSubmit,
-  });
+  const { values, errors, handleBlur, touched, handleChange, handleSubmit } =
+    useFormik({
+      initialValues: {
+        email: "",
+      },
+      validationSchema: schema,
+      onSubmit,
+    });
 
   return (
     <div>
