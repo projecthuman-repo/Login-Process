@@ -18,6 +18,8 @@ const User = require("../models/user");
 /**
  * Controller method to log in user
  * @memberof module:login~loginRouter
+ * @param {Object} request The request
+ * @param {Object} response The response
  * @param {string} request.body.username The user's username
  * @param {string} request.body.password The user's password
  * @returns {string} token
@@ -58,14 +60,14 @@ loginRouter.post(
     // Check if entered password is same as hashed password
     const passwordCorrect =
       user === null ? false : await bcrypt.compare(password, user.passwordHash);
-
+    // If user doesn't exist or password isn't correct, return error
     if (!(user && passwordCorrect)) {
       return response.status(401).json({
         status: "Fail",
         error: "Invalid username or password",
       });
     }
-
+    // If user is not verified, prevent login
     if (user.isVerified === false) {
       return response.status(401).json({
         status: "Fail",
@@ -79,22 +81,18 @@ loginRouter.post(
       id: user._id,
     };
 
-    // token expires in 60 * 60 seconds (1hr)
+    // token expires 1hr
+    // Sign jwt on login, used for authorization
+
     const token = jwt.sign(userForToken, process.env.SECRET, {
       expiresIn: "1h",
     });
-
-    // response.cookie("jwt", token, {
-    //   expires: new Date(Date.now() + 2592000000), //set expiration date of cookie to 30 days from now
-    //   secure: false, //only used with HTTPS
-    //   httpOnly: true, //cookie cannot be accessed or modified by browser, prevents cross side scripting attacks
-    // });
 
     response.status(200).json({
       status: "Success",
       token,
       username: user.username,
-      firstName: user.firstName, //can add more later
+      firstName: user.firstName,
     });
   }
 );

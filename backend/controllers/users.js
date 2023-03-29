@@ -1,3 +1,13 @@
+/**
+ * @module users
+ * @const bcrypt
+ * @const crypto
+ * @const User models/user
+ * @const protect /auth.protect
+ * @const usersRouter
+ * @function validate
+ */
+
 const bcrypt = require("bcrypt");
 const { validate } = require("deep-email-validator");
 const crypto = require("crypto");
@@ -9,6 +19,12 @@ const Email = require("./../utils/email");
 
 /**
  * Test endpoint to check whether authorization is working properly
+ * @function
+ * @memberof module:users~usersRouter
+ * @param {Callback} protect protect middleware
+ * @param {Object} request.user The authenticated user
+ * @param {Object} request The request
+ * @param {Object} response The response
  */
 usersRouter.get("/testauth", protect, async (request, response) => {
   response.json({
@@ -17,7 +33,13 @@ usersRouter.get("/testauth", protect, async (request, response) => {
 });
 /**
  * Controller method to get the list of users registered in the login system
- * @returns users - list of objects, numberOfUsers - integer
+ * @function
+ * @memberof module:users~usersRouter
+ * @param {Callback} protect protect middleware
+ * @param {Object} request The request
+ * @param {Object} response The response
+ * @returns {Object[]} users
+ * @returns {Number} numberOfUsers
  */
 usersRouter.get("/", async (request, response) => {
   const users = await User.find({});
@@ -29,12 +51,17 @@ usersRouter.get("/", async (request, response) => {
 });
 /**
  * Controller method to register a user
- * @param {string} email Email of the user
- * @param {string} password Password of the user
- * @param {string} firstName First name of the user
- * @param {string} lastName Last name of the user
- * @param {string} phoneNumber Phone number of the user
- * @returns emailToken - string and savedUser - User object
+ * @function
+ * @memberof module:users~usersRouter
+ * @param {Object} request The request
+ * @param {Object} response The response
+ * @param {string} request.body.password Password of the user
+ * @param {string} request.body.email Email of the user
+ * @param {string} request.body.firstName First name of the user
+ * @param {string} request.body.lastName Last name of the user
+ * @param {string} request.body.phoneNumber Phone number of the user
+ * @returns {string} emailToken
+ * @returns {Object} savedUser
  */
 usersRouter.post(
   "/",
@@ -186,8 +213,12 @@ usersRouter.post(
   }
 );
 /**
- * Controller method to verify user via a emailtoken
- * @param {string} emailToken Email token must be sent as a part of request body
+ * Controller method to verify user via an emailtoken
+ * @function
+ * @param {Object} request The request
+ * @param {Object} response The response
+ * @memberof module:users~usersRouter
+ * @param {string} request.query.token Email token to verify account
  * @returns token Email Token that was sent to the user
  */
 
@@ -213,8 +244,12 @@ usersRouter.patch("/verification/", async (request, response) => {
 });
 /**
  * Resends the verification link to the user
+ * @function
+ * @memberof module:users~usersRouter
+ * @param {Object} request The request
+ * @param {Object} response The response
  * @param {string} emailToken emailToken used to verify user account
- * @returns emailToken 
+ * @returns {String} emailToken
  */
 usersRouter.patch("/resend/email/:emailToken", async (request, response) => {
   const emailToken = request.params.emailToken;
@@ -237,12 +272,14 @@ usersRouter.patch("/resend/email/:emailToken", async (request, response) => {
 });
 /**
  * Update user account info
- * @param {string} email Email of the user
- * @param {string} password Password of the user
- * @param {string} firstName First name of the user
- * @param {string} lastName Last name of the user
- * @param {string} phoneNumber Phone number of the user
- * @returns User
+ * @function
+ * @memberof module:users~usersRouter
+ * @param {string} request.body.email Email of the user
+ * @param {string} request.body.password Password of the user
+ * @param {string} request.body.firstName First name of the user
+ * @param {string} request.body.lastName Last name of the user
+ * @param {string} request.body.phoneNumber Phone number of the user
+ * @returns {Object} User
  */
 usersRouter.patch(
   "/update/account",
@@ -283,6 +320,7 @@ usersRouter.patch(
     .withMessage("Invalid input for phone number"),
   protect,
   async (request, response) => {
+    // Get errors of validation of body above
     const errors = validationResult(request).array();
     let list_errors = "";
     let validate_email = await validate({
@@ -309,13 +347,17 @@ usersRouter.patch(
     }
     const infoToChange = request.body;
     const user = request.user;
+    // Check if email already exists
     const emailExists = await User.findOne({ email: infoToChange.email });
+    // Check if phone number already exists
     const phoneNumberExists = await User.findOne({
       phoneNumber: infoToChange.phoneNumber,
     });
+    // Check if username already exists
     const usernameExists = await User.findOne({
       username: infoToChange.username,
     });
+    // Display error if email already taken, username already taken or phone number already taken
     let exists_errors = "";
     if (user.email !== infoToChange.email && emailExists !== null) {
       exists_errors += "There already exists a user with the given email\n";
@@ -349,16 +391,33 @@ usersRouter.patch(
       status: "Success",
       user,
     });
-
-    // user.passwordHash =
   }
 );
-
+/**
+ * View user account information
+ * @function
+ * @memberof module:users~usersRouter
+ * @param {Object} request The request
+ * @param {Object} response The response
+ * @param {Object} request.user The authenticated user
+ * @param {Callback} protect protect middleware
+ * @returns {Object} User
+ */
 usersRouter.get("/view/account", protect, async (request, response) => {
   return response.status(200).json(request.user);
 });
-
+/**
+ * Delete user account information
+ * @function
+ * @memberof module:users~usersRouter
+ * @param {Object} request The request
+ * @param {Object} response The response
+ * @param {Object} request.user._id The authenticated user's id
+ * @param {Callback} protect protect middleware
+ * @returns {undefined}
+ */
 usersRouter.delete("/delete/account", protect, async (request, response) => {
+  // Obtain authenticated user's id
   const id = request.user._id;
   try {
     await User.findByIdAndDelete(id);
