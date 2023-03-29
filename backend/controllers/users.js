@@ -7,17 +7,18 @@ const { body, validationResult } = require("express-validator");
 const protect = require("./auth").protect;
 const Email = require("./../utils/email");
 
-usersRouter.get("/", async (request, response) => {
-  const users = await User.find({});
-  response.json(users);
-});
-
+/**
+ * Test endpoint to check whether authorization is working properly
+ */
 usersRouter.get("/testauth", protect, async (request, response) => {
   response.json({
     message: "You are authorized to access testauth",
   });
 });
-
+/**
+ * Controller method to get the list of users registered in the login system
+ * @returns users - list of objects, numberOfUsers - integer
+ */
 usersRouter.get("/", async (request, response) => {
   const users = await User.find({});
   response.json({
@@ -26,7 +27,15 @@ usersRouter.get("/", async (request, response) => {
     users,
   });
 });
-
+/**
+ * Controller method to register a user
+ * @param {string} email Email of the user
+ * @param {string} password Password of the user
+ * @param {string} firstName First name of the user
+ * @param {string} lastName Last name of the user
+ * @param {string} phoneNumber Phone number of the user
+ * @returns emailToken - string and savedUser - User object
+ */
 usersRouter.post(
   "/",
   body("email")
@@ -88,8 +97,10 @@ usersRouter.post(
     .withMessage("Invalid input for phone number"),
 
   async (request, response) => {
+    // Return result of express validator validations above
     const errors = validationResult(request).array();
     let list_errors = "";
+    // Validate that email is real and not a fake/spam email
     let validate_email = await validate({
       email: request.body.email,
       sender: process.env.EMAIL_USERNAME,
@@ -114,20 +125,23 @@ usersRouter.post(
 
     const userInfo = request.body;
     const emailExists = await User.findOne({ email: userInfo.email });
+    // Check if phoneNumber already exists in the system
     const phoneNumberExists = await User.findOne({
       phoneNumber: userInfo.phoneNumber,
     });
+    // Check if username already exists in the system
     const usernameExists = await User.findOne({ username: userInfo.username });
     let exists_errors = "";
+    // Add error if email already exists, email must be unique
     if (emailExists !== null) {
       exists_errors += "There already exists a user with the given email\n";
     }
-
+    // Add error if phoneNumber already exists, phoneNumber must be unique
     if (phoneNumberExists !== null) {
       exists_errors +=
         "There already exists a user with the given phone number\n";
     }
-
+    // Add error if username already exists, username must be unique
     if (usernameExists !== null) {
       exists_errors += "There already exists a user with the given username\n";
     }
@@ -139,6 +153,8 @@ usersRouter.post(
     }
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(userInfo.password, saltRounds);
+    // Generate email token to be sent to user's email to let them verify their account
+    // Create and save user
     const emailToken = crypto.randomBytes(32).toString("hex");
     const user = new User({
       firstName: userInfo.firstName,
@@ -151,7 +167,7 @@ usersRouter.post(
     });
 
     const savedUser = await user.save();
-
+    // Send email to user to welcome them to the app and verify their email
     const url = `http://localhost:3000/verification/?token=${emailToken}`;
     try {
       await new Email(user, url).sendWelcomeToApp();
@@ -169,10 +185,16 @@ usersRouter.post(
     });
   }
 );
+/**
+ * Controller method to verify user via a emailtoken
+ * @param {string} emailToken Email token must be sent as a part of request body
+ * @returns token Email Token that was sent to the user
+ */
 
 usersRouter.patch("/verification/", async (request, response) => {
   const token = request.query.token;
   const user = await User.findOne({ emailToken: token });
+  // If no user associated with the token, user is not registered, send error
   if (!user) {
     return response.status(401).json({
       status: "Fail",
@@ -180,18 +202,22 @@ usersRouter.patch("/verification/", async (request, response) => {
         "No user account associated with token, please go and register an account!",
     });
   }
+  // Verify user and save user
   user.isVerified = true;
-  //user.emailToken = undefined;
   await user.save();
   return response.json({
     status: "Success",
     token,
-    message: "Please check your email to verify your account!",
+    message: "User has been successfully verified",
   });
 });
+/**
+ * Resends the verification link to the user
+ * @param {string} emailToken emailToken used to verify user account
+ * @returns emailToken 
+ */
 usersRouter.patch("/resend/email/:emailToken", async (request, response) => {
   const emailToken = request.params.emailToken;
-  console.log(emailToken);
   const user = request.body;
   const url = `http://localhost:3000/verification/?token=${emailToken}`;
   try {
@@ -209,7 +235,15 @@ usersRouter.patch("/resend/email/:emailToken", async (request, response) => {
     });
   }
 });
-
+/**
+ * Update user account info
+ * @param {string} email Email of the user
+ * @param {string} password Password of the user
+ * @param {string} firstName First name of the user
+ * @param {string} lastName Last name of the user
+ * @param {string} phoneNumber Phone number of the user
+ * @returns User
+ */
 usersRouter.patch(
   "/update/account",
   body("email")

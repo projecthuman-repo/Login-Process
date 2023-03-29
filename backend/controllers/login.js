@@ -3,7 +3,12 @@ const bcrypt = require("bcrypt");
 const { body, validationResult } = require("express-validator");
 const loginRouter = require("express").Router();
 const User = require("../models/user");
-
+/**
+ * Controller method to log in user
+ * @param {string} username The user's username
+ * @param {string} password The user's password
+ * @returns token - string, username - string, firstName - string
+ */
 loginRouter.post(
   "/",
   body("username")

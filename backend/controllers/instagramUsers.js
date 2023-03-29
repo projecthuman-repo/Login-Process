@@ -1,6 +1,10 @@
 const instagramUsersRouter = require("express").Router();
-const { body, validationResult } = require("express-validator");
 const InstagramUser = require("../models/instagramUser");
+
+/**
+ * This function will send a list of all instagram users in the database of signed up users
+ * @returns instagramUsers - list of objects, numberOfInstagramUsers - integer
+ */
 
 instagramUsersRouter.get("/", async (request, response) => {
   const instagramUsers = await InstagramUser.find({});
@@ -10,7 +14,10 @@ instagramUsersRouter.get("/", async (request, response) => {
     data: { instagramUsers },
   });
 });
-
+/**
+ * This function will create a new instagram user when a user signs into the registration system
+ * @returns savedInstagramUser - object
+ */
 instagramUsersRouter.post("/", async (request, response) => {
   const { firstName, lastName, email, phoneNumber } = request.body;
 
