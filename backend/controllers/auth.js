@@ -7,8 +7,16 @@ const Email = require("./../utils/email");
 const User = require("../models/user");
 const axios = require("axios");
 
+/**
+ * This middleware will check if there is a jwt token or cookie in the request headers
+ * which can be used to prevent unauthorized access to other controller methods/functions.
+ * Will check if user is logged in
+ *
+ * @returns undefined
+ */
+
 const protect = async (request, response, next) => {
-  //Obtain token
+  // Check if token or cookie present in request headers
   if (
     request.headers.authorization &&
     request.headers.authorization.startsWith("Bearer")
@@ -24,39 +32,48 @@ const protect = async (request, response, next) => {
       error: "You are not authorized",
     });
   }
-  //Verify token
+  // Verify token
   const decoded = jwt.verify(token, process.env.SECRET);
-  //Check if user associated with token id
+  // Check if user associated with token id
   const user = await User.findById(decoded.id);
+  // If no user found send error message
   if (!user) {
     return response.status(401).json({
       status: "Fail",
       error: "No user associated with token",
     });
   }
-
+  // If user changed password after the jwt was decoded meaning user logged in, send error
   if (user.changedPasswordAfter(decoded.iat)) {
     return response.status(401).json({
       status: "Fail",
       error: "Password was changed, log in again",
     });
   }
+  // Attach user to request object
   request.user = user;
   next();
 };
 
+/**
+ * Sends a reset password link to the email specified in request body
+ *
+ * @returns resetToken - String in response body
+ */
+
 authRouter.post("/forgotPassword", async (request, response) => {
   const user = await User.findOne({ email: request.body.email });
-
+  // If no user associated with email provided, send error message 
   if (!user) {
     return response.status(404).json({
       status: "Fail",
       error: "No user associated with the provided email",
     });
   }
+  // Call instance method to create password reset token and save user
   const resetToken = user.createPasswordResetToken();
   await user.save();
-
+  // Send user password reset email 
   const resetURL = `http://localhost:3000/resetPassword/?resetToken=${resetToken}`;
   try {
     await new Email(user, resetURL).sendPasswordReset();
@@ -67,6 +84,7 @@ authRouter.post("/forgotPassword", async (request, response) => {
       resetToken,
     });
   } catch (err) {
+    // Delete password reset token and password reset expires if they did not receive email
     user.createPasswordResetToken = undefined;
     user.passwordResetExpires = undefined;
     user.save();
@@ -82,6 +100,12 @@ module.exports = {
   authRouter: authRouter,
   protect: protect,
 };
+
+/**
+ * Resets the password of the user to the password sent in the request body
+ *
+ * @returns undefined
+ */
 
 authRouter.patch(
   "/resetPassword/",
@@ -108,6 +132,7 @@ authRouter.patch(
       "Passwords must be between 8-10 characters long, have at least one uppercase letter, lowercase letter, number and symbol"
     ),
   async (request, response) => {
+    // Get errors from express validator validation above
     const errors = validationResult(request).array();
     let list_errors = "";
     for (let i = 0; i < errors.length; i++) {
@@ -120,6 +145,7 @@ authRouter.patch(
       });
     }
     const resetToken = request.query.resetToken;
+    // Hash reset token, prevent anyone from finding reset token via DB
     const hashedToken = crypto
       .createHash("sha256")
       .update(resetToken)
@@ -138,6 +164,7 @@ authRouter.patch(
     }
     const passwordToChangeTo = request.body.password;
     const saltRounds = 10;
+    // Hash password and save user
     const newHashedPassword = await bcrypt.hash(passwordToChangeTo, saltRounds);
     user.passwordHash = newHashedPassword;
     user.passwordResetExpires = undefined;
@@ -150,13 +177,19 @@ authRouter.patch(
     });
   }
 );
-
+/**
+ * Controller method to verify the captcha response from the token in the request body
+ *
+ * @returns undefined
+ */
 authRouter.post("/verifyCaptcha", async (request, response) => {
   const { token } = request.body;
   console.log(token);
+  // Send post request to below link to verify the token from the captcha
   response_captcha = await axios.post(
     `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.SECRET_CAPTCHA_KEY}&response=${token}`
   );
+  // If response captcha status is 200 then human identified else bot detected
   if (response_captcha.status === 200) {
     response.status(200).json({
       status: "Success",

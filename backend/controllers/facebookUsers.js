@@ -1,7 +1,9 @@
 const facebookUsersRouter = require("express").Router();
-const { body, validationResult } = require("express-validator");
 const FacebookUser = require("../models/facebookUser");
-
+/**
+ * This function will send a list of all facebook users in the database of signed up users
+ * @returns facebookUsers - list of objects, numberOfFacebookUsers - integer
+ */
 facebookUsersRouter.get("/", async (request, response) => {
   const facebookUsers = await FacebookUser.find({});
   response.json({
@@ -10,7 +12,10 @@ facebookUsersRouter.get("/", async (request, response) => {
     data: { facebookUsers },
   });
 });
-
+/**
+ * This function will create a new facebook user when a user signs into the registration system
+ * @returns savedFacebookUser - object
+ */
 facebookUsersRouter.post("/", async (request, response) => {
   const { firstName, lastName, email, phoneNumber } = request.body;
 
