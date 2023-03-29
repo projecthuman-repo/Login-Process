@@ -1,7 +1,27 @@
+/**
+ * @module auth
+ * @requires jsonwebtoken,bcrypt,crypto,Email,User,axios,express-validator
+ */
+
+/**
+ * @const jsonwebtoken jsonwebtoken module
+ * @const crypto crypto module
+ * @const bcrypt bcrypt module
+ * @const Email utils/email
+ * @const User models/user
+ * @function body from express validator
+ *
+ */
+
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const { body, validationResult } = require("express-validator");
+/**
+ * @type {object}
+ * @const
+ * @namespace authRouter authRouter
+ */
 const authRouter = require("express").Router();
 const Email = require("./../utils/email");
 const User = require("../models/user");
@@ -11,8 +31,13 @@ const axios = require("axios");
  * This middleware will check if there is a jwt token or cookie in the request headers
  * which can be used to prevent unauthorized access to other controller methods/functions.
  * Will check if user is logged in
- *
- * @returns undefined
+ * @function
+ * @memberof module:auth~authRouter
+ * @param {Object} request The request
+ * @param {Object} response The response
+ * @param {string} request.headers.authorization The jwt/cookie in a bearer token
+ * @param {function} next
+ * @returns {undefined}
  */
 
 const protect = async (request, response, next) => {
@@ -57,13 +82,17 @@ const protect = async (request, response, next) => {
 
 /**
  * Sends a reset password link to the email specified in request body
- *
- * @returns resetToken - String in response body
+ * @function
+ * @memberof module:auth~authRouter
+ * @param {Object} request The request
+ * @param {Object} response The response
+ * @param {string} request.body.email Email of user where forgot password link will be sent
+ * @returns {string} resetToken - String in response body
  */
 
 authRouter.post("/forgotPassword", async (request, response) => {
   const user = await User.findOne({ email: request.body.email });
-  // If no user associated with email provided, send error message 
+  // If no user associated with email provided, send error message
   if (!user) {
     return response.status(404).json({
       status: "Fail",
@@ -73,7 +102,7 @@ authRouter.post("/forgotPassword", async (request, response) => {
   // Call instance method to create password reset token and save user
   const resetToken = user.createPasswordResetToken();
   await user.save();
-  // Send user password reset email 
+  // Send user password reset email
   const resetURL = `http://localhost:3000/resetPassword/?resetToken=${resetToken}`;
   try {
     await new Email(user, resetURL).sendPasswordReset();
@@ -103,8 +132,12 @@ module.exports = {
 
 /**
  * Resets the password of the user to the password sent in the request body
- *
- * @returns undefined
+ * @function
+ * @memberof module:auth~authRouter
+ * @param {Object} request The request
+ * @param {Object} response The response
+ * @param {string} request.body.password New password chosen by user to be used for password reset
+ * @returns {undefined}
  */
 
 authRouter.patch(
@@ -179,8 +212,11 @@ authRouter.patch(
 );
 /**
  * Controller method to verify the captcha response from the token in the request body
- *
- * @returns undefined
+ * @function
+ * @memberof module:auth~authRouter
+ * @param {Object} request The request
+ * @param {Object} response The response
+ * @returns {undefined}
  */
 authRouter.post("/verifyCaptcha", async (request, response) => {
   const { token } = request.body;

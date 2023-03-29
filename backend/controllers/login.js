@@ -1,3 +1,15 @@
+/**
+ * @module login
+ */
+
+/**
+ * @function body
+ * @const jsonwebtoken
+ * @const bcrypt
+ * @const User models/user
+ * @const loginRouter
+ */
+
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { body, validationResult } = require("express-validator");
@@ -5,9 +17,12 @@ const loginRouter = require("express").Router();
 const User = require("../models/user");
 /**
  * Controller method to log in user
- * @param {string} username The user's username
- * @param {string} password The user's password
- * @returns token - string, username - string, firstName - string
+ * @memberof module:login~loginRouter
+ * @param {string} request.body.username The user's username
+ * @param {string} request.body.password The user's password
+ * @returns {string} token
+ * @returns {string} username
+ * @returns {string} firstName
  */
 loginRouter.post(
   "/",
@@ -25,6 +40,7 @@ loginRouter.post(
     .withMessage("Invalid input for password"),
 
   async (request, response) => {
+    // Obtain list of errors from validation of body
     const errors = validationResult(request).array();
     let list_errors = "";
     for (let i = 0; i < errors.length; i++) {
@@ -37,9 +53,9 @@ loginRouter.post(
       });
     }
     const { username, password } = request.body;
-
+    // Get user via username in request body
     const user = await User.findOne({ username });
-
+    // Check if entered password is same as hashed password
     const passwordCorrect =
       user === null ? false : await bcrypt.compare(password, user.passwordHash);
 
