@@ -1,6 +1,13 @@
+/**
+ * Defines yup schema validation for resetPassword
+ * @module resetPassSchema
+ */
+
 import * as yup from "yup";
 //Check if password has min one char, one symbol, one uppercase and one lowercase
 const passwordRules = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)/;
+
+// password must follow rules above, confirmPassword must follow same rules + match password
 
 export const schema = yup.object().shape({
   password: yup

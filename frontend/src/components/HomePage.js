@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Logout } from "../services/logout";
 export default function HomePage() {
   const navigate = useNavigate();
+  // Log user out and redirect to home page
   function logout() {
     Logout();
     navigate("/");

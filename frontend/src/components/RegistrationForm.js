@@ -9,18 +9,19 @@ import { resendVerificationLink } from "./../services/resendVerificationLink";
 import ReCAPTCHA from "react-google-recaptcha";
 import { verifyCaptcha } from "../services/verifyCaptcha";
 export default function RegistrationForm() {
+  // Hooks
   const [registrationError, setRegistrationError] = useState(null);
   const captchaRef = useRef(null);
   const [hasRegistered, setHasRegistered] = useState(false);
   const [user, setUser] = useState(null);
   const [emailToken, setEmailToken] = useState(null);
-  //add backend method to check if user exists before allowing registration
   const [phoneNumber, setPhoneNumber] = useState("");
   const [buttonOn, setButtonOn] = useState(false);
+  // Only allow registration button to be clickable provided captcha is filled out
   function turnButtonOn() {
     setButtonOn(true);
   }
-
+  // Function to resend verification link after registration
   function resendLink() {
     resendVerificationLink(user, emailToken)
       .then((data) => {
@@ -32,6 +33,7 @@ export default function RegistrationForm() {
         console.log(err);
       });
   }
+  // Handle submission
   const onSubmit = (values, actions) => {
     const token = captchaRef.current.getValue();
     console.log(token);
@@ -52,28 +54,21 @@ export default function RegistrationForm() {
       username: values.username,
     })
       .then((data) => {
+        // Clear form
         actions.resetForm();
-        // console.log(data);
         setPhoneNumber("");
-        // console.log("Successfully registered user ", data);
         setRegistrationError(null);
         setHasRegistered(true);
         setUser(data.savedUser);
         setEmailToken(data.emailToken);
-
-        /*         window.setTimeout(() => {
-          navigate("/");
-        }, 1500); */
-        //TO IMPLEMENT REDIRECTUER AND LOGIN HERE
       })
       .catch((err) => {
-        //actions.resetForm();
-        //setPhoneNumber("");
         setRegistrationError(err.response.data.error.split("\n"));
-
-        //console.log(registrationError);
       });
   };
+
+  // Use Formik to handle validation
+
   const { values, errors, handleBlur, touched, handleChange, handleSubmit } =
     useFormik({
       initialValues: {
@@ -87,7 +82,7 @@ export default function RegistrationForm() {
       validationSchema: schema,
       onSubmit,
     });
-
+  // Phone number field is not properly handled by formik
   if (phoneNumber !== "") values.phoneNumber = phoneNumber;
 
   return (
@@ -228,7 +223,7 @@ export default function RegistrationForm() {
       ) : (
         <p></p>
       )}
-
+      {/* If registration successful, verify account using email sent to user's email address, can also click button to resend link */}
       {hasRegistered ? (
         <div>
           {" "}
@@ -243,7 +238,7 @@ export default function RegistrationForm() {
       ) : (
         <p></p>
       )}
-
+      {/* Link to login */}
       <p>
         Have an account? <a href="/">Login</a>
       </p>

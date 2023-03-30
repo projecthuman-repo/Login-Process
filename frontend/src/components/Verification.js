@@ -3,6 +3,7 @@ import { React, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 export default function Verification() {
+  // Hooks
   const [searchParams, setSearchParams] = useSearchParams();
   const [verifyError, setVerifyError] = useState(null);
   const navigate = useNavigate();

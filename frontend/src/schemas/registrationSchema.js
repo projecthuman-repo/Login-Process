@@ -1,7 +1,13 @@
+/**
+ * Defines yup schema validation for registration
+ * @module registrationSchema
+ */
+
 import * as yup from "yup";
 //Check if password has min one char, one symbol, one uppercase and one lowercase
 const passwordRules = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W)/;
 
+// Email must be a valid email and required, password, username, firstName, lastName and phoneNumber must be required and strings
 export const schema = yup.object().shape({
   email: yup
     .string()

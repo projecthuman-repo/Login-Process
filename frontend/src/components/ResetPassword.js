@@ -6,18 +6,21 @@ import { useSearchParams } from "react-router-dom";
 import { resetPassword } from "./../services/resetPassword";
 import { useNavigate } from "react-router-dom";
 export default function ResetPasswordForm() {
+  // Hooks
   const [resetError, setResetError] = useState(null);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [successResetPass, setSuccessResetPass] = useState(false);
+  // Get reset password token from query params
   let resetToken = searchParams.get("resetToken");
+  // Handle submit
   const onSubmit = (values, actions) => {
     resetPassword(resetToken, { password: values.password })
       .then((result) => {
-        console.log(result);
         actions.resetForm();
         setResetError(null);
         setSuccessResetPass(true);
+        // Go to login screen
         navigate("/");
       })
       .catch((err) => {
@@ -25,6 +28,8 @@ export default function ResetPasswordForm() {
         setResetError(err.response.data.error.split("\n"));
       });
   };
+
+  // Formik for validation
   const { values, errors, handleBlur, touched, handleChange, handleSubmit } =
     useFormik({
       initialValues: {

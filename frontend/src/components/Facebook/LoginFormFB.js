@@ -1,13 +1,10 @@
-import React, { Component } from 'react'
-import FacebookLogin from 'react-facebook-login'
-import axios from 'axios'
-
+import React from "react";
+import FacebookLogin from "react-facebook-login";
 
 function LoginFormFB() {
-
   const responseFacebook = (response) => {
-    console.log(response)
-  }
+    console.log(response);
+  };
 
   return (
     <div>
@@ -15,9 +12,10 @@ function LoginFormFB() {
       <FacebookLogin
         appId="543595701245981"
         autoLoad={true}
-        callback={responseFacebook} />
+        callback={responseFacebook}
+      />
     </div>
-  )
+  );
 }
 
-export default LoginFormFB
+export default LoginFormFB;
