@@ -1,7 +1,5 @@
 # Login-Process
 
-# Login-Process
-
 Project Title: P:HC Login-Process
 
 Project Description:
