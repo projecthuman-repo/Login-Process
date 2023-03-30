@@ -18,6 +18,7 @@ const protect = require("./auth").protect;
 const Email = require("./../utils/email");
 
 /**
+ * GET /api/users/testauth
  * Test endpoint to check whether authorization is working properly
  * @function
  * @memberof module:users~usersRouter
@@ -32,6 +33,7 @@ usersRouter.get("/testauth", protect, async (request, response) => {
   });
 });
 /**
+ * GET /api/users/
  * Controller method to get the list of users registered in the login system
  * @function
  * @memberof module:users~usersRouter
@@ -50,6 +52,7 @@ usersRouter.get("/", async (request, response) => {
   });
 });
 /**
+ * POST /api/users/
  * Controller method to register a user
  * @function
  * @memberof module:users~usersRouter
@@ -213,6 +216,7 @@ usersRouter.post(
   }
 );
 /**
+ * PATCH /api/users/verification
  * Controller method to verify user via an emailtoken
  * @function
  * @param {Object} request The request
@@ -243,6 +247,7 @@ usersRouter.patch("/verification/", async (request, response) => {
   });
 });
 /**
+ * PATCH /api/users/resend/email/:emailToken
  * Resends the verification link to the user
  * @function
  * @memberof module:users~usersRouter
@@ -271,6 +276,7 @@ usersRouter.patch("/resend/email/:emailToken", async (request, response) => {
   }
 });
 /**
+ * PATCH /api/users/update/account
  * Update user account info
  * @function
  * @memberof module:users~usersRouter
@@ -394,6 +400,7 @@ usersRouter.patch(
   }
 );
 /**
+ * GET /api/users/view/account
  * View user account information
  * @function
  * @memberof module:users~usersRouter
@@ -407,6 +414,7 @@ usersRouter.get("/view/account", protect, async (request, response) => {
   return response.status(200).json(request.user);
 });
 /**
+ * DELETE /api/users/delete/account
  * Delete user account information
  * @function
  * @memberof module:users~usersRouter

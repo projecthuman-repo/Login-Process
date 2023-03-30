@@ -1,27 +1,39 @@
+/**
+ * @module googleUser
+ */
+
+/**
+ * @requires mongoose
+ * @requires mongoose-unique-validator
+ * @const mongoose
+ * @const uniqueValidator
+ */
+
 const mongoose = require("mongoose");
 const uniqueValidator = require("mongoose-unique-validator");
 
+/**
+ * @constructor googleUser
+ */
 const googleUserSchema = new mongoose.Schema({
   firstName: {
     type: String,
     required: [true, "A user must have a first name"],
     unique: false,
-    //trim: true,
   },
   lastName: {
     type: String,
     required: [true, "A user must have a last name"],
     unique: false,
-    //trim: true,
   },
   email: {
     type: String,
     required: [true, "A user must have an email"],
     unique: true,
-    //trim: true,
   },
 });
 
+// Add better validations for uniqueness
 googleUserSchema.plugin(uniqueValidator);
 
 googleUserSchema.set("toJSON", {

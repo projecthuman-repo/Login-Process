@@ -16,6 +16,7 @@ const { body, validationResult } = require("express-validator");
 const loginRouter = require("express").Router();
 const User = require("../models/user");
 /**
+ * POST /api/login/
  * Controller method to log in user
  * @memberof module:login~loginRouter
  * @param {Object} request The request

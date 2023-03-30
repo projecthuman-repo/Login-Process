@@ -81,6 +81,7 @@ const protect = async (request, response, next) => {
 };
 
 /**
+ * POST /api/authentication/forgotPassword
  * Sends a reset password link to the email specified in request body
  * @function
  * @memberof module:auth~authRouter
@@ -131,6 +132,7 @@ module.exports = {
 };
 
 /**
+ * PATCH /api/authentication/resetPassword/?resetToken={resetToken}
  * Resets the password of the user to the password sent in the request body
  * @function
  * @memberof module:auth~authRouter
@@ -211,6 +213,7 @@ authRouter.patch(
   }
 );
 /**
+ * POST /api/authentication/verifyCaptcha
  * Controller method to verify the captcha response from the token in the request body
  * @function
  * @memberof module:auth~authRouter

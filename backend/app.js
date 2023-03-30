@@ -1,11 +1,37 @@
+/**
+ * @module app
+ */
+
+/**
+ * @requires utils/config, express, express-async-errors, morgan
+ * @const config
+ * @const express
+ * @const morgan
+ * @const app
+ */
+
 const config = require("./utils/config");
 const express = require("express");
 require("express-async-errors"); // eliminates need for try-catch blocks
 const morgan = require("morgan");
-const cookieParser = require("cookie-parser");
 const app = express();
 
 //MIDDLEWARE
+/**
+ * @const helmet sets several http headers for security
+ * @const mongoSanitize helps sanitize mongodb queries against query selector injections
+ * @const compression used to compress size of request
+ * @const xss prevents xss attacks
+ * @const usersRouter
+ * @const loginRouter
+ * @const googleUsersRouter
+ * @const facebookUsersRouter
+ * @const instagramUsersRouter
+ * @const authRouter
+ * @const middleware
+ * @const logger
+ * @const mongoose
+ */
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const compression = require("compression");
@@ -25,6 +51,8 @@ mongoose.set("strictQuery", false);
 
 logger.info("connecting to", config.DATABASE_CONNECTION);
 
+// Set up database connection
+
 mongoose
   .connect(config.DATABASE_CONNECTION, {
     useNewUrlParser: true,
@@ -36,6 +64,9 @@ mongoose
   .catch((err) => {
     logger.info("error connecting to MongoDB:", err.message);
   });
+
+// Set up app middleware
+
 app.use(helmet());
 app.use(cors());
 
@@ -53,6 +84,8 @@ app.use(xss());
 app.use(compression());
 app.use(middleware.requestLogger);
 app.use(morgan("dev"));
+
+// Routers
 
 app.use("/api/users", usersRouter);
 app.use("/api/login", loginRouter);

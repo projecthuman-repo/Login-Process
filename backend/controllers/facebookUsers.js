@@ -6,6 +6,7 @@
 const facebookUsersRouter = require("express").Router();
 const FacebookUser = require("../models/facebookUser");
 /**
+ * GET /api/facebookUsers/
  * This function will send a list of all facebook users in the database of signed up users
  * @memberof module:facebookUsers~facebookUsersRouter
  * @function
@@ -23,6 +24,7 @@ facebookUsersRouter.get("/", async (request, response) => {
   });
 });
 /**
+ * POST /api/facebookUsers/
  * This function will create a new facebook user when a user signs into the registration system
  * @memberof module:facebookUsers~facebookUsersRouter
  * @function
@@ -39,7 +41,7 @@ facebookUsersRouter.post("/", async (request, response) => {
       message: "User successfully logged in",
     });
   }
-    // Create and save facebook user
+  // Create and save facebook user
   const facebookUser = new FacebookUser({
     firstName,
     lastName,

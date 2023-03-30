@@ -7,6 +7,7 @@ const googleUsersRouter = require("express").Router();
 const GoogleUser = require("../models/googleUser");
 
 /**
+ * GET /api/googleUsers/
  * This function will send a list of all google users in the database of signed up users
  * @memberof module:googleUsers~googleUsersRouter
  * @function
@@ -26,12 +27,13 @@ googleUsersRouter.get("/", async (request, response) => {
 });
 
 /**
+ * POST /api/googleUsers/
  * This function will create a new google user when a user signs into the registration system
  * @memberof module:googleUsers~googleUsersRouter
  * @function
  * @param {Object} request The request
  * @param {Object} response The response
- * @returns {Object} savedGoogleUser 
+ * @returns {Object} savedGoogleUser
  */
 
 googleUsersRouter.post("/", async (request, response) => {

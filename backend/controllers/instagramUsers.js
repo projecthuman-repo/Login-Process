@@ -7,6 +7,7 @@ const instagramUsersRouter = require("express").Router();
 const InstagramUser = require("../models/instagramUser");
 
 /**
+ * GET /api/instagramUsers/
  * This function will show the list of all instagram users in the database of signed up users
  * @memberof module:instagramUsers~instagramUsersRouter
  * @function
@@ -25,6 +26,7 @@ instagramUsersRouter.get("/", async (request, response) => {
   });
 });
 /**
+ * POST /api/instagramUsers/
  * This function will create a new instagram user when a user signs into the registration system
  * @memberof module:instagramUsers~instagramUsersRouter
  * @function
