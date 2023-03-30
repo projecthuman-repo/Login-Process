@@ -20,9 +20,9 @@ Features included:
 
 Technologies Used:
 
-Backend - Node.js, Express.js, javascript
-Frontend - React.js, html, css
-Database - MongoDB
+Backend - Node.js, Express.js, javascript <br>
+Frontend - React.js, html, css <br>
+Database - MongoDB <br>
 
 How to install and run project:
 
