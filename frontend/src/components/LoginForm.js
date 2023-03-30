@@ -7,18 +7,24 @@ import { useNavigate } from "react-router-dom";
 import { useGoogleLogin } from "@react-oauth/google";
 import { addGoogleUser } from "../services/addGoogleUser";
 import axios from "axios";
+
+// Component for login page
+
 export default function LoginForm() {
+  // Hooks
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();
+  // Google login
   const googleLogin = useGoogleLogin({
     onSuccess: (codeResponse) => {
       const user = codeResponse;
       const token = user.access_token;
-      console.log(user);
+      // Set token and expiration data of token
       localStorage.setItem("token", token);
       const expiration = new Date();
       expiration.setMinutes(expiration.getMinutes() + 60);
       localStorage.setItem("expiration", expiration.toISOString());
+      // Send request to google api to verify if login was successful and get user info
       axios
         .get(
           `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${token}`,
@@ -30,8 +36,9 @@ export default function LoginForm() {
           }
         )
         .then((res) => {
+          // Profile contains user data
           const profile = res.data;
-          console.log(profile);
+          // Add google user into database
           addGoogleUser({
             firstName: profile.given_name,
             lastName: profile.family_name,
@@ -45,11 +52,12 @@ export default function LoginForm() {
             });
         })
         .catch((err) => console.log(err));
+      // Go to homepage on successfuly login
       navigate("/homepage");
     },
     onError: (error) => setLoginError("Login failed: ", error),
   });
-
+  // Handle form submission
   const onSubmit = (values, actions) => {
     login({
       password: values.password,
@@ -58,6 +66,7 @@ export default function LoginForm() {
       .then((data) => {
         actions.resetForm();
         const token = data.token;
+        // Set token and expiration time/data of token
         localStorage.setItem("token", token);
         const expiration = new Date();
         expiration.setMinutes(expiration.getMinutes() + 60);
@@ -71,6 +80,7 @@ export default function LoginForm() {
         //  actions.resetForm();
       });
   };
+  // Formik for form validation
   const { values, errors, handleBlur, touched, handleChange, handleSubmit } =
     useFormik({
       initialValues: {

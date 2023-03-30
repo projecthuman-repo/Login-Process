@@ -1,6 +1,9 @@
 import { Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { Logout } from "../services/logout";
+
+// Component for home page
+
 export default function HomePage() {
   const navigate = useNavigate();
   // Log user out and redirect to home page

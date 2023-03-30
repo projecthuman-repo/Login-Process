@@ -4,6 +4,8 @@ import { React, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { forgotPassword } from "./../services/forgotPassword";
 
+// Component for forgot password page
+
 export default function ForgotPasswordForm() {
   // Hooks
   const [forgotPassError, setForgotPassError] = useState(null);

@@ -1,5 +1,8 @@
 import { Button } from "react-bootstrap";
 import { deleteAccount } from "../services/deleteAccount";
+
+// Component for deleting and updating account information
+
 export default function AccountInfo() {
   // Helper function to remove account
   function removeAccount() {

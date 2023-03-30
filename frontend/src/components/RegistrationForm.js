@@ -8,6 +8,9 @@ import { schema } from "./../schemas/registrationSchema";
 import { resendVerificationLink } from "./../services/resendVerificationLink";
 import ReCAPTCHA from "react-google-recaptcha";
 import { verifyCaptcha } from "../services/verifyCaptcha";
+
+// Component for registration page
+
 export default function RegistrationForm() {
   // Hooks
   const [registrationError, setRegistrationError] = useState(null);

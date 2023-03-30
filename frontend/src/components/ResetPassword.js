@@ -5,6 +5,9 @@ import { Form, Button } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 import { resetPassword } from "./../services/resetPassword";
 import { useNavigate } from "react-router-dom";
+
+// Component for reset password page
+
 export default function ResetPasswordForm() {
   // Hooks
   const [resetError, setResetError] = useState(null);
