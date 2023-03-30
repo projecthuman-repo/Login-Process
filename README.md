@@ -36,6 +36,6 @@ How to install and run project:
 
 Credits:
 
-Shivam Aery https://github.com/shivamaeryy08
-Jason Feng https://github.com/JingYangFeng
+Shivam Aery https://github.com/shivamaeryy08  <br>
+Jason Feng https://github.com/JingYangFeng  <br>
 David Zhang https://github.com/zdavid4525
