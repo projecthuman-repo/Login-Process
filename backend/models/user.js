@@ -58,6 +58,25 @@ const userSchema = new mongoose.Schema({
     default: false,
   },
 
+  userRank: {
+    type: String,
+    required: [true, "A user must have ranking"],
+    unique: false,
+  },
+
+  userActivity:{
+    type: [String],
+    required: [false],
+    unique: false,
+
+  },
+
+  appName:{
+    type: [String],
+    required : [false],
+    unique: false,
+  },
+
   passwordResetToken: String,
   passwordResetExpires: Date,
   passwordChangedAt: Date,
