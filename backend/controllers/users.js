@@ -16,6 +16,8 @@ const User = require("../models/user");
 const { body, validationResult } = require("express-validator");
 const protect = require("./auth").protect;
 const Email = require("./../utils/email");
+const jwt = require('jsonwebtoken');
+
 
 /**
  * GET /api/users/testauth
@@ -43,14 +45,35 @@ usersRouter.get("/testauth", protect, async (request, response) => {
  * @returns {Object[]} users
  * @returns {Number} numberOfUsers
  */
+
+//POST api/users?username="<enter-username>"
 usersRouter.get("/", async (request, response) => {
-  const users = await User.find({});
-  response.json({
-    status: "Success",
-    numberOfUsers: users.length,
-    users,
-  });
+  const username = request.query.username;
+
+  if (!username) {
+    const users = await User.find({});
+    response.json({
+      status: "Success",
+      numberOfUsers: users.length,
+      users,
+    });
+  } else {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return response.status(404).json({
+        status: "Fail",
+        error: "User not found",
+      });
+    }
+
+    response.json({
+      status: "Success",
+      user,
+    });
+  }
 });
+
 /**
  * POST /api/users/
  * Controller method to register a user
@@ -153,7 +176,16 @@ usersRouter.post(
       });
     }
 
+    //Check user is exist or not. If not, return with error message.
     const userInfo = request.body;
+    const userExists = await User.findOne({ $or: [{ email: userInfo.email }, { username: userInfo.username }] });
+    if (!userExists) {
+      return response.status(400).json({
+        status: "Fail",
+        error: "User doesn't exist",
+      });
+    }
+
     const emailExists = await User.findOne({ email: userInfo.email });
     // Check if phoneNumber already exists in the system
     const phoneNumberExists = await User.findOne({
@@ -215,6 +247,54 @@ usersRouter.post(
     });
   }
 );
+
+/**
+ * POST /api/users/
+ * Update User-App, User-Activity and User-Ranking
+ * @function
+ * @param {Object} request The request
+ * @param {Object} response The response
+ * @memberof module:users~usersRouter
+ * @param {string} request.body._id Id to update various tokens
+ * @returns updated user
+ */
+// Update User-App User-Activity and User-Ranking 
+usersRouter.post('/:id', async (request, response) => {
+  const { id } = request.body._id;
+
+  try {
+    // Find the user by ID
+    const user = await User.findById(id);
+
+    if (!user) {
+      return response.status(404).json({
+        status: 'Fail',
+        error: 'User not found',
+      });
+    }
+
+    // Update User-App, User-Activity, User-Rank information
+    user.appName = request.body.appName || user.appName; // Update appName if provided, or keep the existing value
+    user.userActivity = request.body.userActivity || user.userActivity; // Update userActivity if provided, or keep the existing value
+    user.userRank = request.body.userRank || user.userRank; // Update userRank if provided, or keep the existing value
+
+    // Save the updated user
+    await user.save();
+
+    // Return the updated user
+    response.status(200).json({
+      status: 'Success',
+      user,
+    });
+  } catch (error) {
+    response.status(500).json({
+      status: 'Error',
+      error: 'Internal server error',
+    });
+  }
+});
+
+
 /**
  * PATCH /api/users/verification
  * Controller method to verify user via an emailtoken

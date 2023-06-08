@@ -15,6 +15,7 @@ const mongoose = require("mongoose");
 const crypto = require("crypto");
 const uniqueValidator = require("mongoose-unique-validator");
 
+
 /**
  * @constructor user
  */
@@ -61,6 +62,16 @@ const userSchema = new mongoose.Schema({
   passwordResetToken: String,
   passwordResetExpires: Date,
   passwordChangedAt: Date,
+
+  registrationDate: {
+    type: Date,
+    default: Date.now,
+  },
+  lastLoginDate: {
+    type: Date,
+    default: null,
+  },
+
 });
 // Add better validations for uniqueness
 userSchema.plugin(uniqueValidator);

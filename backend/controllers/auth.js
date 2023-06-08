@@ -131,6 +131,54 @@ module.exports = {
   protect: protect,
 };
 
+
+/**
+ * POST /api/authentication/access/?access_token = {access token}
+ * Sends an access token after creating a refresh and access token
+ * @function
+ * @memberof module:auth~authRouter
+ * @param {Object} request The request
+ * @param {Object} response The response
+ * @param {string} request.body.username Username for which requestoken and accesstoken will be geenrated
+ * @returns {string} accesstoken - String in response body
+ */
+authRouter.post("/access/", async (request, response) => {
+  const { username } = request.body.username;
+
+  try {
+    // Find user based on email
+    const user = await User.findOne({ username });
+
+    // If no user associated with email provided, send error message
+    if (!user) {
+      return response.status(404).json({
+        status: "Fail",
+        error: "No user associated with the provided username",
+      });
+    }
+
+    // Generate access token
+    const accessToken = jwt.sign({ userId: user._id }, 'your-access-token-secret', { expiresIn: '15m' });
+
+    // Generate refresh token
+    const refreshToken = jwt.sign({ userId: user._id }, 'your-refresh-token-secret', { expiresIn: '7d' });
+
+    // Save the refresh token to the user's record in the database
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    return response.status(200).json({
+      status: "Success",
+      accessToken,
+    });
+  } catch (error) {
+    return response.status(500).json({
+      status: "Fail",
+      error: error.message,
+    });
+  }
+});
+
 /**
  * PATCH /api/authentication/resetPassword/?resetToken={resetToken}
  * Resets the password of the user to the password sent in the request body
