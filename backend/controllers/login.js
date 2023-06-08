@@ -82,6 +82,11 @@ loginRouter.post(
       id: user._id,
     };
 
+    // Update the lastLoginDate field
+    user.lastLoginDate = new Date();
+    // Save the updated user record
+    await user.save();
+
     // token expires 1hr
     // Sign jwt on login, used for authorization
 
