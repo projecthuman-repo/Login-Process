@@ -63,6 +63,14 @@ const userSchema = new mongoose.Schema({
   passwordResetExpires: Date,
   passwordChangedAt: Date,
 
+  registrationDate: {
+    type: Date,
+    default: Date.now,
+  },
+  lastLoginDate: {
+    type: Date,
+    default: null,
+  },
 
 });
 // Add better validations for uniqueness
