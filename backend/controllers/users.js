@@ -13,6 +13,9 @@ const { validate } = require("deep-email-validator");
 const crypto = require("crypto");
 const usersRouter = require("express").Router();
 const User = require("../models/user");
+const UserApp = require("../models/userApp");
+const UserRank = require("../models/userRank");
+const UserActivity = require("../models/userActivity");
 const { body, validationResult } = require("express-validator");
 const protect = require("./auth").protect;
 const Email = require("./../utils/email");
@@ -176,15 +179,68 @@ usersRouter.post(
       });
     }
 
-    //Check user is exist or not. If not, return with error message.
+  //Check user is exist or not. If not, return with error message.
+  // Update user register API
+  const registerUser = async (request, response) => {
+  try {
+    // Check if the user already exists
     const userInfo = request.body;
     const userExists = await User.findOne({ $or: [{ email: userInfo.email }, { username: userInfo.username }] });
-    if (!userExists) {
+
+    if (userExists) {
       return response.status(400).json({
         status: "Fail",
-        error: "User doesn't exist",
+        error: "User already exists",
       });
     }
+
+    // Create a new user
+    const newUser = new User(userInfo);
+    await newUser.save();
+
+    // Update UserActivity
+    const userActivity = new UserActivity({
+      UserID: newUser._id,
+      ActivityID: userInfo.activityId,
+      DatePerformed: new Date(),
+      PointsEarned: 0, // Set initial points to 0
+    });
+    await userActivity.save();
+
+    // Update UserRank
+    const userRank = new UserRank({
+      UserID: newUser._id,
+      RankID: userInfo.rankId,
+      AppID: userInfo.appId,
+      DateAchieved: new Date(),
+      IsActive: true, // Set initial rank as active
+    });
+    await userRank.save();
+
+    // Update UserApp
+    const userApp = new UserApp({
+      UserID: newUser._id,
+      AppID: userInfo.appId,
+      LastActivityDate: new Date(),
+      TotalActivityTime: 0, // Set initial total activity time to 0
+      AppRank: userInfo.appRank,
+    });
+    await userApp.save();
+
+    // Return user information
+    return response.status(200).json({
+      status: "Success",
+      userId: newUser._id,
+    });
+  } catch (error) {
+    return response.status(500).json({
+      status: "Error",
+      error: "Internal server error",
+    });
+  }
+};
+
+module.exports = registerUser;
 
     const emailExists = await User.findOne({ email: userInfo.email });
     // Check if phoneNumber already exists in the system
