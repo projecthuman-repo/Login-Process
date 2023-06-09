@@ -71,6 +71,9 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: null,
   },
+  previousPasswords: {
+    type: [String],
+  },
 
 });
 // Add better validations for uniqueness
