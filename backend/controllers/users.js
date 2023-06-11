@@ -199,6 +199,18 @@ const registerUser = async (request, response) => {
       });
     }
 
+    // Check if the user is already connected to the app
+    const userAppExists = await UserApp.findOne({
+      userId: userExists._id,
+      appId: userInfo.appId,
+    });
+    if (userAppExists) {
+      return response.status(400).json({
+        status: 'Fail',
+        error: 'User is already connected to the app',
+      });
+    }
+
     // Create a new user
     const newUser = new User({
       firstName: userInfo.firstName,
