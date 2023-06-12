@@ -13,6 +13,12 @@ const { validate } = require("deep-email-validator");
 const crypto = require("crypto");
 const usersRouter = require("express").Router();
 const User = require("../models/user");
+const UserApp = require("../models/userApp");
+const UserRank = require("../models/userRank");
+const UserActivity = require("../models/userActivity");
+const App = require("../models/app");
+const Activity = require("../models/activity");
+const Rank = require("../models/rank");
 const { body, validationResult } = require("express-validator");
 const protect = require("./auth").protect;
 const Email = require("./../utils/email");
@@ -176,15 +182,128 @@ usersRouter.post(
       });
     }
 
-    //Check user is exist or not. If not, return with error message.
+ // Check user is exist or not. If not, return with an error message.
+ // If user exists, check if connected to app or not
+// Update user register API
+const registerUser = async (request, response) => {
+  try {
     const userInfo = request.body;
-    const userExists = await User.findOne({ $or: [{ email: userInfo.email }, { username: userInfo.username }] });
-    if (!userExists) {
-      return response.status(400).json({
-        status: "Fail",
-        error: "User doesn't exist",
+
+    // Check if the user already exists
+    const userExists = await User.findOne({
+      $or: [{ email: userInfo.email }, { username: userInfo.username }],
+    });
+    if (userExists) {
+      // Check if the user is already connected to the app
+      const userAppExists = await UserApp.findOne({
+        userId: userExists._id,
+        appId: userInfo.appId,
+      });
+      if (userAppExists) {
+        return response.status(400).json({
+          status: 'Fail',
+          error: 'User is already connected to the app',
+        });
+      }
+      else{
+      // Create a new user-app connection
+      const newUserApp = new UserApp({
+        userId: userExists._id,
+        app: userInfo.appId,
+        appVersion: '',
+        lastActivityDate: new Date(),
+        totalActivityTime: 0,
+        appRank:'',
+      });
+      await newUserApp.save();
+
+      return response.status(200).json({
+        status: 'Success',
+        userId: userExists._id,
       });
     }
+    }
+
+    // Create a new user
+    const newUser = new User({
+      firstName: userInfo.firstName,
+      lastName: userInfo.lastName,
+      username: userInfo.username,
+      password: userInfo.password,
+      email: userInfo.email,
+      phoneNumber: userInfo.phoneNumber,
+      emailToken: '',
+      isVerified: false,
+      passwordResetToken: '',
+      passwordResetExpires: null,
+      passwordChangesAt: null,
+      registrationDate: new Date(),
+      lastLoginDate: null,
+      previousPasswords: [],
+    });
+    await newUser.save();
+
+    // Get the activity details
+    const activity = await Activity.findById(userInfo.activityId);
+    if (!activity) {
+      return response.status(400).json({
+        status: 'Fail',
+        error: 'Activity not found',
+      });
+    }
+
+    // Update UserActivity
+    const userActivity = new UserActivity({
+      userId: newUser._id,
+      activityId: userInfo.activityId,
+      datePerformed: new Date(),
+      pointsEarned: activity.activityPoints,
+    });
+    await userActivity.save();
+
+    // Update UserApp
+    const userApp = new UserApp({
+      userId: newUser._id,
+      appId: userInfo.appId,
+      appVersion: '',
+      lastActivityDate: new Date(),
+      totalActivityDate: 0,
+      totalPoints: activity.activityPoints,
+      currentRank: '',
+    });
+    await userApp.save();
+
+    // Check if the user achieved a rank
+    const rank = await Rank.findOne({ rankPoints: { $lte: userApp.totalPoints } }).sort('-rankPoints');
+    if (rank) {
+      // Update UserRank
+      const userRank = new UserRank({
+        userId: newUser._id,
+        appId: userInfo.appId,
+        rankId: rank.rankId,
+        dateAchieved: new Date(),
+      });
+      await userRank.save();
+
+      // Update UserApp with the new rank
+      userApp.currentRank = rank.rankId;
+      await userApp.save();
+    }
+
+    return response.status(200).json({
+      status: 'Success',
+      userId: newUser._id,
+    });
+  } catch (error) {
+    return response.status(500).json({
+      status: 'Error',
+      error: 'Internal server error',
+    });
+  }
+};
+
+module.exports = registerUser;
+
 
     const emailExists = await User.findOne({ email: userInfo.email });
     // Check if phoneNumber already exists in the system
