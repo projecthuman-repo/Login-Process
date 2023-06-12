@@ -183,6 +183,7 @@ usersRouter.post(
     }
 
  // Check user is exist or not. If not, return with an error message.
+ // If user exists, check if connected to app or not
 // Update user register API
 const registerUser = async (request, response) => {
   try {
@@ -193,22 +194,34 @@ const registerUser = async (request, response) => {
       $or: [{ email: userInfo.email }, { username: userInfo.username }],
     });
     if (userExists) {
-      return response.status(400).json({
-        status: 'Fail',
-        error: 'User already exists',
+      // Check if the user is already connected to the app
+      const userAppExists = await UserApp.findOne({
+        userId: userExists._id,
+        appId: userInfo.appId,
+      });
+      if (userAppExists) {
+        return response.status(400).json({
+          status: 'Fail',
+          error: 'User is already connected to the app',
+        });
+      }
+      else{
+      // Create a new user-app connection
+      const newUserApp = new UserApp({
+        userId: userExists._id,
+        app: userInfo.appId,
+        appVersion: '',
+        lastActivityDate: new Date(),
+        totalActivityTime: 0,
+        appRank:'',
+      });
+      await newUserApp.save();
+
+      return response.status(200).json({
+        status: 'Success',
+        userId: userExists._id,
       });
     }
-
-    // Check if the user is already connected to the app
-    const userAppExists = await UserApp.findOne({
-      userId: userExists._id,
-      appId: userInfo.appId,
-    });
-    if (userAppExists) {
-      return response.status(400).json({
-        status: 'Fail',
-        error: 'User is already connected to the app',
-      });
     }
 
     // Create a new user
