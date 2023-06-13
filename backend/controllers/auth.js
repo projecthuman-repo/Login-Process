@@ -209,13 +209,12 @@ authRouter.patch(
       pointsForContainingLower: 10,
       pointsForContainingUpper: 10,
       pointsForContainingNumber: 10,
-      pointsForContainingSymbol: 10, //in case we want to let the user know how good their password is
+      pointsForContainingSymbol: 10,
     })
     .withMessage(
       "Passwords must be between 8-10 characters long, have at least one uppercase letter, lowercase letter, number and symbol"
     ),
   async (request, response) => {
-    // Get errors from express validator validation above
     const errors = validationResult(request).array();
     let list_errors = "";
     for (let i = 0; i < errors.length; i++) {
@@ -227,8 +226,8 @@ authRouter.patch(
         error: list_errors,
       });
     }
+
     const resetToken = request.query.resetToken;
-    // Hash reset token, prevent anyone from finding reset token via DB
     const hashedToken = crypto
       .createHash("sha256")
       .update(resetToken)
@@ -236,7 +235,7 @@ authRouter.patch(
 
     const user = await User.findOne({
       passwordResetToken: hashedToken,
-      passwordResetExpires: { $gt: Date.now() }, //check that password reset token has not expired
+      passwordResetExpires: { $gt: Date.now() },
     });
 
     if (!user) {
@@ -245,13 +244,30 @@ authRouter.patch(
         error: "Token is invalid or expired",
       });
     }
+
     const passwordToChangeTo = request.body.password;
     const saltRounds = 10;
-    // Hash password and save user
     const newHashedPassword = await bcrypt.hash(passwordToChangeTo, saltRounds);
+
+    // Check if the new password matches any of the previous passwords
+    if (user.previousPasswords.some((prevPassword) => bcrypt.compareSync(passwordToChangeTo, prevPassword))) {
+      return response.status(400).json({
+        status: "Fail",
+        error: "New password must be different from previous passwords",
+      });
+    }
+
+    // Add the current password to the previousPasswords array
+    user.previousPasswords.push(user.passwordHash);
+
+    // Limit the number of previous passwords to 5
+    if (user.previousPasswords.length > 5) {
+      user.previousPasswords.shift(); // Remove the oldest password
+    }
+
     user.passwordHash = newHashedPassword;
     user.passwordResetExpires = undefined;
-    user.passwordResetToken = undefined; //removing user reset token after user changed password
+    user.passwordResetToken = undefined;
     await user.save();
 
     response.status(200).json({
@@ -260,6 +276,9 @@ authRouter.patch(
     });
   }
 );
+
+
+
 /**
  * POST /api/authentication/verifyCaptcha
  * Controller method to verify the captcha response from the token in the request body
