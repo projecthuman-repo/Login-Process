@@ -7,7 +7,8 @@ const Rank = require("../models/rank");
 const App = require("../models/app");
 
 router.post('/verify', async (req, res) => {
-  const { appid, activityid, access_token } = req.body;
+  const { appid, activityid } = req.body;
+  const access_token = req.headers.authorization.split(' ')[1];
 
   try {
     // Verify access_token
@@ -19,18 +20,22 @@ router.post('/verify', async (req, res) => {
     const userId = decoded.userId;
 
     // Update user activity
-    const user = await User.findOneAndUpdate(
-      { access_token },
-      { $push: { activities: activityid } },
-      { new: true }
-    );
+    const userActivity = new UserActivity({
+      userId: userId,
+      activityId: activityid
+    });
 
-    // Update user rank
+    await userActivity.save();
+
+    // Update user rank if necessary
+    const user = await User.findById(userId);
     const activity = await Activity.findById(activityid);
-    const rank = await Rank.findOne({ rankPoints: { $lte: activity.activityPoints } }).sort({ rankPoints: -1 });
 
-    if (rank) {
-      user.rank = rank.rankName;
+    if (activity.activityPoints >= user.rankPoints) {
+      const rank = await Rank.findOne({ rankPoints: { $lte: activity.activityPoints } }).sort({ rankPoints: -1 });
+      if (rank) {
+        user.rank = rank.rankName;
+      }
     }
 
     await user.save();
@@ -41,5 +46,6 @@ router.post('/verify', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 module.exports = router;
