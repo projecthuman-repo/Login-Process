@@ -27,17 +27,29 @@ router.post('/verify', async (req, res) => {
 
     await userActivity.save();
 
-    // Update user rank if necessary
-    const user = await User.findById(userId);
-    const activity = await Activity.findById(activityid);
-
-    if (activity.activityPoints >= user.rankPoints) {
-      const rank = await Rank.findOne({ rankPoints: { $lte: activity.activityPoints } }).sort({ rankPoints: -1 });
-      if (rank) {
-        user.rank = rank.rankName;
-      }
-    }
-
+     // Update user rank if necessary
+     const user = await User.findById(userId);
+     const activity = await Activity.findById(activityid);
+ 
+     if (activity.activityPoints >= user.rankPoints) {
+       const rank = await Rank.findOne({ rankPoints: { $lte: activity.activityPoints } }).sort({ rankPoints: -1 });
+ 
+       if (rank) {
+         user.rank = rank.rankName;
+ 
+         // Check if user already has a UserRank entry for the new rank
+         const userRank = await UserRank.findOne({ userId: userId, rankId: rank.rankId });
+ 
+         if (!userRank) {
+           const newUserRank = new UserRank({
+             userId: userId,
+             rankId: rank.rankId
+           });
+ 
+           await newUserRank.save();
+         }
+       }
+     }
     await user.save();
 
     res.json({ userid: user.id });
