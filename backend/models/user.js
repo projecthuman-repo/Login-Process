@@ -72,7 +72,8 @@ const userSchema = new mongoose.Schema({
     default: null,
   },
   previousPasswords: {
-    type: [String],
+     type: [String],
+     trim: true,
   },
 
 });
