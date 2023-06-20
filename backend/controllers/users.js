@@ -205,6 +205,12 @@ const registerUser = async (request, response) => {
           error: 'User is already connected to the app',
         });
       }
+      else if (!userInfo.appId) {
+        return response.status(400).json({
+          status: 'Fail',
+          error: 'No appId provided',
+        });
+      }
       else{
       // Create a new user-app connection
       const newUserApp = new UserApp({
