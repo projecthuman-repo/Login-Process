@@ -59,25 +59,31 @@ export default function LoginForm() {
   });
   // Handle form submission
   const onSubmit = (values, actions) => {
-    login({
-      password: values.password,
+    axios
+    .post("/api/login", {
       username: values.username,
+      password: values.password,
     })
-      .then((data) => {
+    .then((response) => {
         actions.resetForm();
-        const token = data.token;
+        const token = response.data.token;
         // Set token and expiration time/data of token
         localStorage.setItem("token", token);
         const expiration = new Date();
         expiration.setMinutes(expiration.getMinutes() + 60);
         localStorage.setItem("expiration", expiration.toISOString());
-        console.log("Successfully logged in user ", data);
+        console.log("Successfully logged in user ", response.data);
         setLoginError(null);
         navigate("/homepage");
       })
       .catch((err) => {
-        setLoginError(err.response.data.error.split("\n"));
-        //  actions.resetForm();
+        console.log(err); // Log the error object to the console
+        if (err.response && err.response.data && err.response.data.error) {
+          setLoginError(err.response.data.error);
+        } else {
+          setLoginError("An error occurred during login.");
+        }
+        actions.resetForm();
       });
   };
   // Formik for form validation
@@ -138,10 +144,14 @@ export default function LoginForm() {
       </Form>
       {loginError !== null ? (
         <div>
-          {loginError.map((error) => (
+        {Array.isArray(loginError) ? (
+          loginError.map((error) => (
             <p className="text-danger">{error}</p>
-          ))}
-        </div>
+          ))
+        ) : (
+          <p className="text-danger">{loginError}</p>
+        )}
+      </div>
       ) : (
         <p className="text-success"></p>
       )}
