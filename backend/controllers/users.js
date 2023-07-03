@@ -40,6 +40,7 @@ usersRouter.get("/testauth", protect, async (request, response) => {
     message: "You are authorized to access testauth",
   });
 });
+
 /**
  * GET /api/users/
  * Controller method to get the list of users registered in the login system
@@ -93,73 +94,75 @@ usersRouter.get("/", async (request, response) => {
  * @param {string} request.body.lastName Last name of the user
  * @param {string} request.body.phoneNumber Phone number of the user
  * @returns {string} emailToken
- * @returns {Object} savedUser
+ * @returns {Object} newUser
  */
+
+// POST method to register a user
 usersRouter.post(
   "/",
-  body("email")
-    .isString()
-    .trim()
-    .isEmail()
-    .normalizeEmail()
-    .withMessage("Email entered is not a valid email"),
-  body("password")
-    .isString()
-    .trim()
-    .escape()
-    .isStrongPassword({
-      minLength: 8,
-      maxLength: 10,
-      minLowercase: 1,
-      minUppercase: 1,
-      minNumbers: 1,
-      minSymbols: 1,
-      returnScore: false,
-      pointsPerUnique: 1,
-      pointsPerRepeat: 0.5,
-      pointsForContainingLower: 10,
-      pointsForContainingUpper: 10,
-      pointsForContainingNumber: 10,
-      pointsForContainingSymbol: 10, //in case we want to let the user know how good their password is
-    })
-    .withMessage(
-      "Passwords must be between 8-10 characters long, have at least one uppercase letter, lowercase letter, number and symbol"
-    ),
-  body("username")
-    .isString()
-    .not()
-    .isEmpty()
-    .trim()
-    .escape()
-    .withMessage("Invalid input for username"),
-  body("firstName")
-    .isString()
-    .not()
-    .isEmpty()
-    .trim()
-    .escape()
-    .withMessage("Invalid input for first name"),
-  body("lastName")
-    .isString()
-    .not()
-    .isEmpty()
-    .trim()
-    .escape()
-    .withMessage("Invalid input for username"),
-  body("phoneNumber")
-    .isString()
-    .not()
-    .isEmpty()
-    .trim()
-    .escape()
-    .isMobilePhone()
-    .withMessage("Invalid input for phone number"),
-
+  [
+    body("email")
+      .isString()
+      .trim()
+      .isEmail()
+      .normalizeEmail()
+      .withMessage("Email entered is not a valid email"),
+    body("password")
+      .isString()
+      .trim()
+      .escape()
+      .isStrongPassword({
+        minLength: 8,
+        maxLength: 10,
+        minLowercase: 1,
+        minUppercase: 1,
+        minNumbers: 1,
+        minSymbols: 1,
+        returnScore: false,
+        pointsPerUnique: 1,
+        pointsPerRepeat: 0.5,
+        pointsForContainingLower: 10,
+        pointsForContainingUpper: 10,
+        pointsForContainingNumber: 10,
+        pointsForContainingSymbol: 10,
+      })
+      .withMessage(
+        "Passwords must be between 8-10 characters long, have at least one uppercase letter, lowercase letter, number and symbol"
+      ),
+    body("username")
+      .isString()
+      .not()
+      .isEmpty()
+      .trim()
+      .escape()
+      .withMessage("Invalid input for username"),
+    body("firstName")
+      .isString()
+      .not()
+      .isEmpty()
+      .trim()
+      .escape()
+      .withMessage("Invalid input for first name"),
+    body("lastName")
+      .isString()
+      .not()
+      .isEmpty()
+      .trim()
+      .escape()
+      .withMessage("Invalid input for username"),
+    body("phoneNumber")
+      .isString()
+      .not()
+      .isEmpty()
+      .trim()
+      .escape()
+      .isMobilePhone()
+      .withMessage("Invalid input for phone number"),
+  ],
   async (request, response) => {
-    // Return result of express validator validations above
     const errors = validationResult(request).array();
     let list_errors = "";
-    // Validate that email is real and not a fake/spam email
+
     let validate_email = await validate({
       email: request.body.email,
       sender: process.env.EMAIL_USERNAME,
@@ -169,12 +172,15 @@ usersRouter.post(
       validateDisposable: true,
       validateSMTP: false,
     });
+
     if (validate_email.valid !== true) {
       list_errors += "Email entered is not a real email\n";
     }
+
     for (let i = 0; i < errors.length; i++) {
       list_errors += errors[i].msg + "\n";
     }
+
     if (list_errors) {
       return response.status(400).json({
         status: "Fail",
@@ -182,6 +188,10 @@ usersRouter.post(
       });
     }
 
+    // Call the registerUser controller method and pass the request body
+    registerUser(request, response);
+  }
+);
  // Check user is exist or not. If not, return with an error message.
  // If user exists, check if connected to app or not
 // Update user register API
@@ -260,7 +270,7 @@ const registerUser = async (request, response) => {
     // Generate email token to be sent to user's email to let them verify their account
     // Create and save user
     const emailToken = crypto.randomBytes(32).toString("hex");
-    const user = new User({
+    const newUser = new User({
       firstName: userInfo.firstName,
       lastName: userInfo.lastName,
       username: userInfo.username,
@@ -277,7 +287,10 @@ const registerUser = async (request, response) => {
       previousPasswords: [],
     });
 
-    const savedUser = await user.save();
+    const result = await newUser.save();
+    const resultObject = result.toObject();
+    delete resultObject.password;
+    response.json(resultObject);
 
     // Get the activity details
     const activity = await Activity.findById(userInfo.activityId);
@@ -290,7 +303,7 @@ const registerUser = async (request, response) => {
 
     // Update UserActivity
     const userActivity = new UserActivity({
-      userId: savedUser._id,
+      userId: newUser._id,
       activityId: userInfo.activityId,
       datePerformed: new Date(),
       pointsEarned: activity.activityPoints,
@@ -299,7 +312,7 @@ const registerUser = async (request, response) => {
 
     // Update UserApp
     const userApp = new UserApp({
-      userId: savedUser._id,
+      userId: newUser._id,
       appId: userInfo.appId,
       appVersion: '',
       lastActivityDate: new Date(),
@@ -314,7 +327,7 @@ const registerUser = async (request, response) => {
     if (rank) {
       // Update UserRank
       const userRank = new UserRank({
-        userId: savedUser._id,
+        userId: newUser._id,
         appId: userInfo.appId,
         rankId: rank.rankId,
         dateAchieved: new Date(),
@@ -329,7 +342,7 @@ const registerUser = async (request, response) => {
     // Send email to user to welcome them to the app and verify their email
     const url = `http://localhost:3000/verification/?token=${emailToken}`;
     try {
-      await new Email(savedUser, url).sendWelcomeToApp();
+      await new Email(user, url).sendWelcomeToApp();
     } catch (err) {
       return response.status(500).json({
         status: "Fail",
@@ -340,7 +353,7 @@ const registerUser = async (request, response) => {
     response.status(201).json({
       status: "Success",
       emailToken,
-      savedUser,
+      newUser,
     });
   } catch (error) {
     return response.status(500).json({
@@ -352,8 +365,11 @@ const registerUser = async (request, response) => {
 
 module.exports = registerUser;
 
-  }
-);
+
+
+
+
+
 
 /**
  * POST /api/users/
@@ -366,8 +382,8 @@ module.exports = registerUser;
  * @returns updated user
  */
 // Update User-App User-Activity and User-Ranking 
-usersRouter.post('/:id', async (request, response) => {
-  const { id } = request.body._id;
+usersRouter.get('/:id', async (request, response) => {
+  const { id } = request.params;
 
   try {
     // Find the user by ID
