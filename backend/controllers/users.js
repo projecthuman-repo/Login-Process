@@ -205,9 +205,16 @@ const registerUser = async (request, response) => {
     });
     if (userExists) {
       // Check if the user is already connected to the app
+      const app = await App.findOne({appId: userInfo.appId});
+      if (app == null) {
+        return response.status(400).json({
+          status: 'Fail',
+          error: 'No appId provided',
+        });
+      }
       const userAppExists = await UserApp.findOne({
         userId: userExists._id,
-        appId: userInfo.appId,
+        appId: app._id,
       });
       if (userAppExists) {
         return response.status(400).json({
@@ -215,12 +222,6 @@ const registerUser = async (request, response) => {
           error: 'User is already connected to the app',
         });
       } 
-      else if (!userInfo.appId) {
-        return response.status(400).json({
-          status: 'Fail',
-          error: 'No appId provided',
-        });
-      }
        else {
         // Create a new user-app connection
         const newUserApp = new UserApp({
@@ -292,7 +293,7 @@ const registerUser = async (request, response) => {
    await newUser.save();
 
    //Get the activity details
-    const activity = await Activity.findById(userInfo.activityId);
+    const activity = await Activity.findById(1);
     if (!activity) {
       return response.status(400).json({
         status: 'Fail',
@@ -303,20 +304,20 @@ const registerUser = async (request, response) => {
    // Update UserActivity
     const userActivity = new UserActivity({
       userId: newUser._id,
-      activityId: userInfo.activityId,
+      activityId: activity._id,
       datePerformed: new Date(),
-      pointsEarned: Activity.activityPoints,
+      pointsEarned: activity.activityPoints,
     });
     await userActivity.save();
 
     // Update UserApp
     const userApp = new UserApp({
       userId: newUser._id,
-      appId: userInfo.appId,
+      appId: app._id,
       appVersion: '',
       lastActivityDate: new Date(),
       totalActivityDate: 0,
-      totalPoints: Activity.activityPoints,
+      totalPoints: activity.activityPoints,
       currentRank: '',
     });
     await userApp.save();
@@ -327,13 +328,13 @@ const registerUser = async (request, response) => {
       // Update UserRank
       const userRank = new UserRank({
         userId: newUser._id,
-        appId: userInfo.appId,
+        appId: app._id,
         rankId: rank.rankId,
         dateAchieved: new Date(),
       });
       await userRank.save();
 
-    //   // Update UserApp with the new rank
+      // Update UserApp with the new rank
       userApp.currentRank = rank.rankId;
       await userApp.save();
     }
