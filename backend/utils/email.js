@@ -27,11 +27,13 @@ module.exports = class Email {
    */
   newTransport() {
     return nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD,
-      },
+      host: "smtp.gmail.com",
+      port: 465,
+      secure: true, // Use SSL/TLS
+    auth: {
+    user: process.env.EMAIL_USERNAME,
+    pass: process.env.EMAIL_PASSWORD,
+  },
     });
   }
   /**

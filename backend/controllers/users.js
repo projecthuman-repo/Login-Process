@@ -205,21 +205,24 @@ const registerUser = async (request, response) => {
     });
     if (userExists) {
       // Check if the user is already connected to the app
+      const app = await App.findOne({appId: userInfo.appId});
+      if (app == null) {
+        return response.status(400).json({
+          status: 'Fail',
+          error: 'No appId provided',
+        });
+      }
       const userAppExists = await UserApp.findOne({
         userId: userExists._id,
-        appId: userInfo.appId,
+        appId: app._id,
       });
       if (userAppExists) {
         return response.status(400).json({
           status: 'Fail',
           error: 'User is already connected to the app',
         });
-      } else if (!userInfo.appId) {
-        return response.status(400).json({
-          status: 'Fail',
-          error: 'No appId provided',
-        });
-      } else {
+      } 
+       else {
         // Create a new user-app connection
         const newUserApp = new UserApp({
           userId: userExists._id,
@@ -287,13 +290,10 @@ const registerUser = async (request, response) => {
       previousPasswords: [],
     });
 
-    const result = await newUser.save();
-    const resultObject = result.toObject();
-    delete resultObject.password;
-    response.json(resultObject);
+   await newUser.save();
 
-    // Get the activity details
-    const activity = await Activity.findById(userInfo.activityId);
+   //Get the activity details
+    const activity = await Activity.findById(1);
     if (!activity) {
       return response.status(400).json({
         status: 'Fail',
@@ -301,10 +301,10 @@ const registerUser = async (request, response) => {
       });
     }
 
-    // Update UserActivity
+   // Update UserActivity
     const userActivity = new UserActivity({
       userId: newUser._id,
-      activityId: userInfo.activityId,
+      activityId: activity._id,
       datePerformed: new Date(),
       pointsEarned: activity.activityPoints,
     });
@@ -313,7 +313,7 @@ const registerUser = async (request, response) => {
     // Update UserApp
     const userApp = new UserApp({
       userId: newUser._id,
-      appId: userInfo.appId,
+      appId: app._id,
       appVersion: '',
       lastActivityDate: new Date(),
       totalActivityDate: 0,
@@ -322,13 +322,13 @@ const registerUser = async (request, response) => {
     });
     await userApp.save();
 
-    // Check if the user achieved a rank
+    // // Check if the user achieved a rank
     const rank = await Rank.findOne({ rankPoints: { $lte: userApp.totalPoints } }).sort('-rankPoints');
     if (rank) {
       // Update UserRank
       const userRank = new UserRank({
         userId: newUser._id,
-        appId: userInfo.appId,
+        appId: app._id,
         rankId: rank.rankId,
         dateAchieved: new Date(),
       });
@@ -342,11 +342,12 @@ const registerUser = async (request, response) => {
     // Send email to user to welcome them to the app and verify their email
     const url = `http://localhost:3000/verification/?token=${emailToken}`;
     try {
-      await new Email(user, url).sendWelcomeToApp();
+      await new Email(newUser, url).sendWelcomeToApp();
     } catch (err) {
+      console.log(err);
       return response.status(500).json({
         status: "Fail",
-        error: err,
+        error: err.message,
       });
     }
 
@@ -355,18 +356,19 @@ const registerUser = async (request, response) => {
       emailToken,
       newUser,
     });
-  } catch (error) {
+  } 
+  catch (error) {
+    console.error(error); // Log the error to the console for debugging purposes
+
     return response.status(500).json({
       status: "Error",
-      error: "Internal server error",
+      error: error.message, // Return the actual error message in the response
     });
-  }
+}
+
 };
 
 module.exports = registerUser;
-
-
-
 
 
 
