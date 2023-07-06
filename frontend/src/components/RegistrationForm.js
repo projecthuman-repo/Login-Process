@@ -1,4 +1,4 @@
-import { React, useState, useRef } from "react";
+import { React, useState, useRef, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import "react-phone-number-input/style.css";
 import { registerUser } from "./../services/registration";
@@ -8,6 +8,8 @@ import { schema } from "./../schemas/registrationSchema";
 import { resendVerificationLink } from "./../services/resendVerificationLink";
 import ReCAPTCHA from "react-google-recaptcha";
 import { verifyCaptcha } from "../services/verifyCaptcha";
+import { useSearchParams } from "react-router-dom";
+
 
 // Component for registration page
 
@@ -20,6 +22,12 @@ export default function RegistrationForm() {
   const [emailToken, setEmailToken] = useState(null);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [buttonOn, setButtonOn] = useState(false);
+
+// Inside your component
+const [searchParams] = useSearchParams();
+  const appId = searchParams.get("appId");
+
+
   // Only allow registration button to be clickable provided captcha is filled out
   function turnButtonOn() {
     setButtonOn(true);
@@ -48,14 +56,15 @@ export default function RegistrationForm() {
         console.log(err);
       });
     captchaRef.current.reset();
-    registerUser({
-      email: values.email,
-      password: values.password,
-      phoneNumber: values.phoneNumber,
-      firstName: values.firstName,
-      lastName: values.lastName,
-      username: values.username,
-    })
+      registerUser({
+        email: values.email,
+        password: values.password,
+        phoneNumber: values.phoneNumber,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        username: values.username,
+        appId: appId, // Include the appId in the request payload
+      })
       .then((data) => {
         // Clear form
         actions.resetForm();

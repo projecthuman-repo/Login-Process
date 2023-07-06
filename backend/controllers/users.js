@@ -198,7 +198,8 @@ usersRouter.post(
 const registerUser = async (request, response) => {
   try {
     const userInfo = request.body;
-
+    const {appId} = userInfo;
+    
     // Check if the user already exists
     const userExists = await User.findOne({
       $or: [{ email: userInfo.email }, { username: userInfo.username }],
@@ -223,7 +224,7 @@ const registerUser = async (request, response) => {
         });
       } 
        else {
-        // Create a new user-app connection
+        //Create a new user-app connection
         const newUserApp = new UserApp({
           userId: userExists._id,
           app: userInfo.appId,
@@ -313,7 +314,7 @@ const registerUser = async (request, response) => {
     // Update UserApp
     const userApp = new UserApp({
       userId: newUser._id,
-      appId: app._id,
+      appId: appId,
       appVersion: '',
       lastActivityDate: new Date(),
       totalActivityDate: 0,
@@ -328,7 +329,7 @@ const registerUser = async (request, response) => {
       // Update UserRank
       const userRank = new UserRank({
         userId: newUser._id,
-        appId: app._id,
+        appId: appId,
         rankId: rank.rankId,
         dateAchieved: new Date(),
       });
