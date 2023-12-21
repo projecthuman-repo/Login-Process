@@ -10,7 +10,6 @@
  * @const app
  */
 
-const config = require("./utils/config");
 const express = require("express");
 require("express-async-errors"); // eliminates need for try-catch blocks
 const morgan = require("morgan");
@@ -44,26 +43,9 @@ const facebookUsersRouter = require("./controllers/facebookUsers");
 const instagramUsersRouter = require("./controllers/instagramUsers");
 const authRouter = require("./controllers/auth").authRouter;
 const middleware = require("./utils/middleware");
-const logger = require("./utils/logger");
-const mongoose = require("mongoose");
 
-mongoose.set("strictQuery", false);
-
-logger.info("connecting to", config.DATABASE_CONNECTION);
-
-// Set up database connection
-
-mongoose
-  .connect(config.DATABASE_CONNECTION, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => {
-    logger.info("Db connection was successful");
-  })
-  .catch((err) => {
-    logger.info("error connecting to MongoDB:", err.message);
-  });
+// Import db/connection.js to connect to databases 
+require("./db/connection");
 
 // Set up app middleware
 

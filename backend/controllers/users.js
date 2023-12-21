@@ -16,14 +16,14 @@ const User = require("../models/user");
 const UserApp = require("../models/userApp");
 const UserRank = require("../models/userRank");
 const UserActivity = require("../models/userActivity");
+const CrossPlatformUser = require("../models/cross-platform/User");
 const App = require("../models/app");
 const Activity = require("../models/activity");
 const Rank = require("../models/rank");
 const { body, validationResult } = require("express-validator");
 const protect = require("./auth").protect;
 const Email = require("./../utils/email");
-const jwt = require('jsonwebtoken');
-
+const jwt = require("jsonwebtoken");
 
 /**
  * GET /api/users/testauth
@@ -149,7 +149,7 @@ usersRouter.post(
       .isEmpty()
       .trim()
       .escape()
-      .withMessage("Invalid input for username"),
+      .withMessage("Invalid input for last name"),
     body("phoneNumber")
       .isString()
       .not()
@@ -192,8 +192,8 @@ usersRouter.post(
     registerUser(request, response);
   }
 );
- // Check user is exist or not. If not, return with an error message.
- // If user exists, check if connected to app or not
+// Check user is exist or not. If not, return with an error message.
+// If user exists, check if connected to app or not
 // Update user register API
 const registerUser = async (request, response) => {
   try {
@@ -205,11 +205,11 @@ const registerUser = async (request, response) => {
     });
     if (userExists) {
       // Check if the user is already connected to the app
-      const app = await App.findOne({appId: userInfo.appId});
+      const app = await App.findOne({ appId: userInfo.appId });
       if (app == null) {
         return response.status(400).json({
-          status: 'Fail',
-          error: 'No appId provided',
+          status: "Fail",
+          error: "No appId provided",
         });
       }
       const userAppExists = await UserApp.findOne({
@@ -218,24 +218,23 @@ const registerUser = async (request, response) => {
       });
       if (userAppExists) {
         return response.status(400).json({
-          status: 'Fail',
-          error: 'User is already connected to the app',
+          status: "Fail",
+          error: "User is already connected to the app",
         });
-      } 
-       else {
+      } else {
         // Create a new user-app connection
         const newUserApp = new UserApp({
           userId: userExists._id,
           app: userInfo.appId,
-          appVersion: '',
+          appVersion: "",
           lastActivityDate: new Date(),
           totalActivityTime: 0,
-          appRank: '',
+          appRank: "",
         });
         await newUserApp.save();
 
         return response.status(200).json({
-          status: 'Success',
+          status: "Success",
           userId: userExists._id,
         });
       }
@@ -255,7 +254,8 @@ const registerUser = async (request, response) => {
     }
     // Add error if phoneNumber already exists, phoneNumber must be unique
     if (phoneNumberExists !== null) {
-      exists_errors += "There already exists a user with the given phone number\n";
+      exists_errors +=
+        "There already exists a user with the given phone number\n";
     }
     // Add error if username already exists, username must be unique
     if (usernameExists !== null) {
@@ -282,7 +282,7 @@ const registerUser = async (request, response) => {
       phoneNumber: userInfo.phoneNumber,
       emailToken: emailToken,
       isVerified: false,
-      passwordResetToken: '',
+      passwordResetToken: "",
       passwordResetExpires: null,
       passwordChangesAt: null,
       registrationDate: new Date(),
@@ -290,18 +290,37 @@ const registerUser = async (request, response) => {
       previousPasswords: [],
     });
 
-   await newUser.save();
+    await newUser.save();
 
-   //Get the activity details
+    // CrossPlatformUser manages the 3 web app users (lotuslearning, regenquest, spotstitch)
+    // In this scenario, we assume that the user is creating with LotusLearning
+    // If the user is already registered with other platform, create a new CrossPlatformUser
+    const crossPlatformUserExists = await CrossPlatformUser.findOne({
+      $or: [{ email: newUser.email }, { phoneNumber: newUser.phoneNumber }],
+    });
+    if (crossPlatformUserExists) {
+      crossPlatformUserExists.lotuslearningUserId = newUser._id;
+      await crossPlatformUserExists.save();
+    } else {
+      const newCrossPlatformUser = new CrossPlatformUser({
+        email: newUser.email,
+        phoneNumber: newUser.phoneNumber,
+        lotuslearningUserId: newUser._id,
+      });
+      await newCrossPlatformUser.save();
+    }
+
+    //Get the activity details
     const activity = await Activity.findById(1);
+
     if (!activity) {
       return response.status(400).json({
-        status: 'Fail',
-        error: 'Activity not found',
+        status: "Fail",
+        error: "Activity not found",
       });
     }
 
-   // Update UserActivity
+    // Update UserActivity
     const userActivity = new UserActivity({
       userId: newUser._id,
       activityId: activity._id,
@@ -314,16 +333,18 @@ const registerUser = async (request, response) => {
     const userApp = new UserApp({
       userId: newUser._id,
       appId: app._id,
-      appVersion: '',
+      appVersion: "",
       lastActivityDate: new Date(),
       totalActivityDate: 0,
       totalPoints: activity.activityPoints,
-      currentRank: '',
+      currentRank: "",
     });
     await userApp.save();
 
     // // Check if the user achieved a rank
-    const rank = await Rank.findOne({ rankPoints: { $lte: userApp.totalPoints } }).sort('-rankPoints');
+    const rank = await Rank.findOne({
+      rankPoints: { $lte: userApp.totalPoints },
+    }).sort("-rankPoints");
     if (rank) {
       // Update UserRank
       const userRank = new UserRank({
@@ -356,22 +377,17 @@ const registerUser = async (request, response) => {
       emailToken,
       newUser,
     });
-  } 
-  catch (error) {
+  } catch (error) {
     console.error(error); // Log the error to the console for debugging purposes
 
     return response.status(500).json({
       status: "Error",
       error: error.message, // Return the actual error message in the response
     });
-}
-
+  }
 };
 
 module.exports = registerUser;
-
-
-
 
 /**
  * POST /api/users/
@@ -383,8 +399,8 @@ module.exports = registerUser;
  * @param {string} request.body._id Id to update various tokens
  * @returns updated user
  */
-// Update User-App User-Activity and User-Ranking 
-usersRouter.get('/:id', async (request, response) => {
+// Update User-App User-Activity and User-Ranking
+usersRouter.get("/:id", async (request, response) => {
   const { id } = request.params;
 
   try {
@@ -393,8 +409,8 @@ usersRouter.get('/:id', async (request, response) => {
 
     if (!user) {
       return response.status(404).json({
-        status: 'Fail',
-        error: 'User not found',
+        status: "Fail",
+        error: "User not found",
       });
     }
 
@@ -408,17 +424,16 @@ usersRouter.get('/:id', async (request, response) => {
 
     // Return the updated user
     response.status(200).json({
-      status: 'Success',
+      status: "Success",
       user,
     });
   } catch (error) {
     response.status(500).json({
-      status: 'Error',
-      error: 'Internal server error',
+      status: "Error",
+      error: "Internal server error",
     });
   }
 });
-
 
 /**
  * PATCH /api/users/verification
@@ -492,6 +507,7 @@ usersRouter.patch("/resend/email/:emailToken", async (request, response) => {
  * @param {string} request.body.phoneNumber Phone number of the user
  * @returns {Object} User
  */
+
 usersRouter.patch(
   "/update/account",
   body("email")
@@ -591,12 +607,22 @@ usersRouter.patch(
         error: exists_errors,
       });
     }
+
     user.firstName = infoToChange.firstName;
     user.lastName = infoToChange.lastName;
     user.username = infoToChange.username;
     user.phoneNumber = infoToChange.phoneNumber;
     user.email = infoToChange.email;
     await user.save();
+
+    // CrossPlatformUser manages the 3 web app users (lotuslearning, regenquest, spotstitch)
+    // In this scenario, we assume that the user has created with LotusLearning
+    const crossPlatformUserExists = await CrossPlatformUser.findOne({
+      lotuslearningUserId: user._id,
+    });
+    crossPlatformUserExists.email = user.email;
+    crossPlatformUserExists.phoneNumber = user.phoneNumber;
+    await crossPlatformUserExists.save();
 
     return response.status(200).json({
       status: "Success",
@@ -632,10 +658,20 @@ usersRouter.get("/view/account", protect, async (request, response) => {
 usersRouter.delete("/delete/account", protect, async (request, response) => {
   // Obtain authenticated user's id
   const id = request.user._id;
+  const crossPlatformUser = await CrossPlatformUser.findOne({
+    lotuslearningUserId: id,
+  });
   try {
     await User.findByIdAndDelete(id);
+
+    // CrossPlatformUser manages the 3 web app users (lotuslearning, regenquest, spotstitch)
+    // Not deleting the CrossPlatformUser, but setting the lotuslearningUserId to empty string
+    crossPlatformUser.lotuslearningUserId = "";
+    await crossPlatformUser.save();
+
     return response.status(204).send("User deleted successfully");
   } catch (e) {
+    console.log(e);
     return response.status(500).json({
       status: "Fail",
       message: "User could not be deleted",
