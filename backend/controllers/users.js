@@ -294,7 +294,7 @@ const registerUser = async (request, response) => {
 
     // CrossPlatformUser manages the 3 web app users (lotuslearning, regenquest, spotstitch)
     // In this scenario, we assume that the user is creating with LotusLearning
-    // If the user is already registered with other platform, create a new CrossPlatformUser
+    // If the CrossPlatformUser has not been created with other platform, create a new one
     const crossPlatformUserExists = await CrossPlatformUser.findOne({
       $or: [{ email: newUser.email }, { phoneNumber: newUser.phoneNumber }],
     });
