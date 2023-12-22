@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 const config = require("../utils/config");
-const logger = require("../utils/logger");
 mongoose.set("strictQuery", false);
-
-logger.info("connecting to default", config.DATABASE_CONNECTION);
-logger.info("connecting to CrossPlatform", config.DATABASE_CONNECTION);
 
 // Connection options (optional)
 const dbOptions = {
@@ -12,33 +8,42 @@ const dbOptions = {
   useUnifiedTopology: true,
 };
 
-// Connect to the default database using mongoose.connect
-mongoose
-  .connect(config.DATABASE_CONNECTION, dbOptions)
-  .then(() => {
-    logger.info("Connected to the default database");
-  })
-  .catch((err) => {
-    logger.info("error connecting to the default database:", err.message);
-  });
+// Connect to the test database
+const connectToTestDatabase = async () => {
+  try {
+    await mongoose.connect(config.DATABASE_CONNECTION, dbOptions);
+    console.log("Connected to the test database");
+  } catch (error) {
+    throw new Error(`Connecting to the test database: ${error}`);
+  }
+};
 
-// Create a connection to the CrossPlatform database using createConnection
-const crossPlatformDbConnection = mongoose.createConnection(
+// Create a connection to the CrossPlatform database
+const crossPlatformDatabase = mongoose.createConnection(
   config.DATABASE_CROSS_PLATFORM_CONNECTION,
   dbOptions
 );
 
-// Connection event handlers for the CrossPlatform database
-crossPlatformDbConnection
-  .on("connected", () => {
+const connectToCrossPlatformDatabase = async () => {
+  try {
+    await crossPlatformDatabase.asPromise();
     console.log("Connected to the CrossPlatform database");
-  })
-  .on("error", (error) => {
-    console.error("Error connecting to the CrossPlatform database:", error);
-  });
+  } catch (error) {
+    throw new Error(`Connecting to the CrossPlatform database: ${error}`);
+  }
+};
 
-// Export the connections for external use
+// Connect to all databases
+const connectToDatabases = async () => {
+  try {
+    await connectToTestDatabase();
+    await connectToCrossPlatformDatabase();
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 module.exports = {
-  defaultDBConnection: mongoose.connection,
-  crossPlatformDbConnection,
+  connectToDatabases,
+  crossPlatformDatabase,
 };

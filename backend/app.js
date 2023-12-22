@@ -44,11 +44,7 @@ const instagramUsersRouter = require("./controllers/instagramUsers");
 const authRouter = require("./controllers/auth").authRouter;
 const middleware = require("./utils/middleware");
 
-// Import db/connection.js to connect to databases 
-require("./db/connection");
-
 // Set up app middleware
-
 app.use(helmet());
 app.use(cors());
 
