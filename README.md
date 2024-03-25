@@ -6,7 +6,7 @@ Project Description:
 
 The P:HC Login-Process serves as a login/registration system for users
 that want to make an account with P:HC and other apps under the organization.
-Update Project
+
 Features included:
 
 - Registering a user
