@@ -26,6 +26,7 @@ const app = express();
  * @const googleUsersRouter
  * @const facebookUsersRouter
  * @const instagramUsersRouter
+ * @const mastodonUserRouter
  * @const authRouter
  * @const middleware
  * @const logger
@@ -41,6 +42,7 @@ const loginRouter = require("./controllers/login");
 const googleUsersRouter = require("./controllers/googleUsers");
 const facebookUsersRouter = require("./controllers/facebookUsers");
 const instagramUsersRouter = require("./controllers/instagramUsers");
+const mastodonUserRouter = require("./controllers/mastodonUsers")
 const authRouter = require("./controllers/auth").authRouter;
 const middleware = require("./utils/middleware");
 
@@ -70,6 +72,7 @@ app.use("/api/login", loginRouter);
 app.use("/api/googleUsers", googleUsersRouter);
 app.use("/api/instagramUsers", instagramUsersRouter);
 app.use("/api/facebookUsers", facebookUsersRouter);
+app.use("/api/mastodonUsers", mastodonUserRouter)
 app.use("/api/authentication", authRouter);
 
 app.use(middleware.unknownEndpoint);
