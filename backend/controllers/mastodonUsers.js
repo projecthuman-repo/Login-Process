@@ -12,7 +12,7 @@ mastodonUserRouter.post("/login", async (req, res) => {
   try {
     const mastodonApp = await Mastodon.createOAuthApp();
     console.log(
-      "Please save 'id', 'client_id', and 'client_secret' in your program and use it from now on!"
+      // "Please save 'id', 'client_id', and 'client_secret' in your program and use it from now on!"
     );
     console.log(mastodonApp);
 
@@ -21,7 +21,7 @@ mastodonUserRouter.post("/login", async (req, res) => {
 
     const authUrl = await Mastodon.getAuthorizationUrl(clientId, clientSecret);
     console.log(
-      "This is the authorization URL. Open it in your browser and authorize with your account!"
+      // "This is the authorization URL. Open it in your browser and authorize with your account!"
     );
     console.log(authUrl);
 
