@@ -12,7 +12,7 @@ mastodonUserRouter.post("/login", async (req, res) => {
   try {
     const mastodonApp = await Mastodon.createOAuthApp();
     console.log(
-      // "Please save 'id', 'client_id', and 'client_secret' in your program and use it from now on!"
+      "Please save 'id', 'client_id', and 'client_secret' in your program and use it from now on!"
     );
     console.log(mastodonApp);
 
@@ -21,9 +21,77 @@ mastodonUserRouter.post("/login", async (req, res) => {
 
     const authUrl = await Mastodon.getAuthorizationUrl(clientId, clientSecret);
     console.log(
-      // "This is the authorization URL. Open it in your browser and authorize with your account!"
+      "This is the authorization URL. Open it in your browser and authorize with your account!"
     );
     console.log(authUrl);
+
+    res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>Form</title>
+    </head>
+    <body>
+      <div id="root"></div>
+      <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+      <script src="https://unpkg.com/babel-standalone@^6.26.0/babel.min.js"></script>
+      <script type="text/babel">
+        class Form extends React.Component {
+          constructor(props) {
+            super(props);
+            this.state = {
+              name: '',
+              email: '',
+              phone: ''
+            };
+          }
+
+          handleChange = (e) => {
+            this.setState({ [e.target.name]: e.target.value });
+          };
+
+          handleSubmit = async (e) => {
+            e.preventDefault();
+            const formData = {
+              name: this.state.name,
+              email: this.state.email,
+              phone: this.state.phone
+            };
+
+            const response = await fetch('/save-data', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(formData)
+            });
+
+            const data = await response.text();
+            console.log(data);
+          };
+
+          render() {
+            return (
+              <form onSubmit={this.handleSubmit}>
+                <label>Name:</label>
+                <input type="text" name="name" value={this.state.name} onChange={this.handleChange} /><br />
+                <label>Email:</label>
+                <input type="email" name="email" value={this.state.email} onChange={this.handleChange} /><br />
+                <label>Phone:</label>
+                <input type="text" name="phone" value={this.state.phone} onChange={this.handleChange} /><br />
+                <button type="submit">Save</button>
+              </form>
+            );
+          }
+        }
+
+        ReactDOM.render(<Form />, document.getElementById('root'));
+      </script>
+    </body>
+    </html>
+  `);
 
     prompt.get(["code"], async (err, result) => {
       if (err) {
