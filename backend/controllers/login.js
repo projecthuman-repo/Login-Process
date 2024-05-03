@@ -91,7 +91,7 @@ loginRouter.post(
     // Sign jwt on login, used for authorization
 
     const token = jwt.sign(userForToken, 'your-access-token-secret', {
-      expiresIn: "1h",
+      expiresIn: "3D",
     });
 
     response.status(200).json({

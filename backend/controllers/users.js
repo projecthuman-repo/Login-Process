@@ -311,6 +311,7 @@ const registerUser = async (request, response) => {
     }
 
     //Get the activity details
+    /*
     const activity = await Activity.findById(1);
 
     if (!activity) {
@@ -359,7 +360,7 @@ const registerUser = async (request, response) => {
       userApp.currentRank = rank.rankId;
       await userApp.save();
     }
-
+*/
     // Send email to user to welcome them to the app and verify their email
     const url = `http://localhost:3000/verification/?token=${emailToken}`;
     try {
