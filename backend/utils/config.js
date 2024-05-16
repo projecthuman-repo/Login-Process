@@ -10,8 +10,8 @@ require("dotenv").config({ path: "./config.env" });
  * @const DATABASE_CONNECTION url for database connection
  */
 const PORT = process.env.PORT
-const DATABASE_CONNECTION = process.env.DATABASE_CONNECTION  
-const DATABASE_CROSS_PLATFORM_CONNECTION = process.env.DATABASE_CROSS_PLATFORM_CONNECTION  
+const DATABASE_CONNECTION = process.env.DATABASE_CONNECTION || process.env.LOCAL_URI
+const DATABASE_CROSS_PLATFORM_CONNECTION = process.env.DATABASE_CROSS_PLATFORM_CONNECTION || process.env.LOCAL_URI
 
 module.exports = {
   PORT,

@@ -27,6 +27,13 @@ const User = require("../models/user");
  * @returns {string} username
  * @returns {string} firstName
  */
+
+function isEmail(value) {
+  const validPattern = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/;
+  return validPattern.test(value);
+}
+
+
 loginRouter.post(
   "/",
   body("username")
@@ -55,9 +62,19 @@ loginRouter.post(
         error: list_errors,
       });
     }
-    const { username, password } = request.body;
+    const { username,  password } = request.body;
+    //const { username, email, password } = request.body;
+    console.log(request.body,"Body");
+    //console.log(isEmail(username), "isEmail?");
     // Get user via username in request body
-    const user = await User.findOne({ username });
+    let user = null;
+    if(isEmail(username))
+      user = await User.findOne({ email: username });
+    else {
+      user = await User.findOne({ username: username })
+    }
+    console.log(user, ": User");
+    //const email = await User.findOne({ username });
     // Check if entered password is same as hashed password
     const passwordCorrect =
       user === null ? false : await bcrypt.compare(password, user.passwordHash);
@@ -91,7 +108,7 @@ loginRouter.post(
     // Sign jwt on login, used for authorization
 
     const token = jwt.sign(userForToken, 'your-access-token-secret', {
-      expiresIn: "1h",
+      expiresIn: "3D",
     });
 
     response.status(200).json({
