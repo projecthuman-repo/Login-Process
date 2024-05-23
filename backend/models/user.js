@@ -52,6 +52,10 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
 
+  picture: {
+    type: String,
+  },
+
   emailToken: String,
 
   isVerified: {

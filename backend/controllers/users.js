@@ -280,6 +280,7 @@ const registerUser = async (request, response) => {
       passwordHash: passwordHash,
       email: userInfo.email,
       phoneNumber: userInfo.phoneNumber,
+      picture: userInfo.picture ? userInfo.picture : " ",
       emailToken: emailToken,
       isVerified: false,
       passwordResetToken: "",
@@ -546,6 +547,13 @@ usersRouter.patch(
     .escape()
     .isMobilePhone()
     .withMessage("Invalid input for phone number"),
+  body("picture")
+    .isString()
+    .not()
+    .isEmpty()
+    .trim()
+    .escape()
+    .withMessage("Invalid input for picture"),
   protect,
   async (request, response) => {
     // Get errors of validation of body above
@@ -614,6 +622,7 @@ usersRouter.patch(
     user.username = infoToChange.username;
     user.phoneNumber = infoToChange.phoneNumber;
     user.email = infoToChange.email;
+    user.picture = infoToChange.picture;
     await user.save();
 
     // CrossPlatformUser manages the 3 web app users (lotuslearning, regenquest, spotstitch)
