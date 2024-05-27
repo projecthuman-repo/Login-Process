@@ -1,0 +1,88 @@
+.login-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-field {
+    width: 400px;
+    height: 48px;
+    padding-left: 18px;
+    font-size: 16px;
+    border: none;
+    border-bottom: 1px solid black;
+    margin: 0px 0px 20px 0px;
+}
+
+.input-field:focus {
+    outline: none;
+}
+
+.submit-button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.submit-button {
+    font-size: 18px;
+    color: black;
+    cursor: pointer;
+    border-radius: 20px;
+    width: 140px;
+    height: 40px;
+    margin: 10px 0px 0px 0px;
+}
+
+.social-button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.social-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    color: black;
+    cursor: pointer;
+    width: 55px;
+    height: 55px;
+    margin: 5px 15px 15px 0px;
+}
+
+.social-button img {
+    width: 40px;
+    height: 40px;
+}
+
+.line-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.line {
+    height: 1px;
+    width: 100px;
+    border: 0;
+    background: black;
+    margin: 20px 0px 20px 0px;
+}
+
+.search-container {
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px; /* adjust as needed */
+    transform: translateY(-50%);
+}
