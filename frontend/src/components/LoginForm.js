@@ -168,7 +168,7 @@ export default function LoginForm() {
                     )}
                 </div>
             ) : (
-                <p className="text-success"></p>
+                <p className="success-message"></p>
             )}
             {/* Forgot Password */}
             <p className="sub-text"><a href="/forgotPassword">Forgot Password?</a></p>
