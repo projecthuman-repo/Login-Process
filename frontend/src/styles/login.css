@@ -3,20 +3,21 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background-color: white;
+    box-shadow: 0 4px 8px lightgrey; 
+    width: 500px;
+    padding: 30px; /* Edits how close elements are to the edge of the div. */
+    border-radius: 10px; /* Edits roundness of the div. */
+    margin: 20px 0px 0px 20px; /* Edits how close the div is to the edge of the screen. */
 }
 
 .input-field {
     width: 400px;
     height: 48px;
     padding-left: 18px;
+    border-radius: 5px;
     font-size: 16px;
-    border: none;
-    border-bottom: 1px solid black;
     margin: 0px 0px 20px 0px;
-}
-
-.input-field:focus {
-    outline: none;
 }
 
 .submit-button-container {
@@ -28,10 +29,10 @@
 
 .submit-button {
     font-size: 18px;
-    color: black;
     cursor: pointer;
     border-radius: 20px;
-    width: 140px;
+    border: none;
+    width: 120px;
     height: 40px;
     margin: 10px 0px 0px 0px;
 }
@@ -48,11 +49,11 @@
     justify-content: center;
     align-items: center;
     font-size: 18px;
-    color: black;
     cursor: pointer;
+    border: none;
     width: 55px;
     height: 55px;
-    margin: 5px 15px 15px 0px;
+    margin: 5px 15px 15px 15px;
 }
 
 .social-button img {
@@ -65,7 +66,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-
+    margin: 5px 0px 10px 0px;
 }
 
 .line {
@@ -73,16 +74,4 @@
     width: 100px;
     border: 0;
     background: black;
-    margin: 20px 0px 20px 0px;
-}
-
-.search-container {
-    position: relative;
-}
-
-.search-icon {
-    position: absolute;
-    top: 50%;
-    right: 10px; /* adjust as needed */
-    transform: translateY(-50%);
 }

@@ -11,7 +11,7 @@ import axios from "axios";
 import "../styles/login.css";
 import "../styles/font.css";
 
-// Component for login page
+// Component for Login Page
 
 export default function LoginForm() {
     // Hooks
@@ -108,9 +108,9 @@ export default function LoginForm() {
 
     return (
         <div className="login-page"> 
-            <h2 className="main-heading">Log in to your Project: Human City account.</h2>
+            <h2 className="main-heading">Sign in to your Project: Human City account.</h2>
                 <Form onSubmit={handleSubmit}>
-                    {/* Username */}
+                    {/* Username Form */}
                     <Form.Group controlId="formBasicUsername">
                         <Form.Control
                             className="input-field"
@@ -126,11 +126,11 @@ export default function LoginForm() {
                         />
                     </Form.Group>
                         {errors.username && touched.username ? (
-                            <p className="required-message">{errors.username}</p>
+                            <p className="required-message">*{errors.username}</p>
                         ) : (
                             ""
                         )}
-                    {/* Password */}
+                    {/* Password Form */}
                     <Form.Group controlId="formBasicPassword">
                         <Form.Control
                             className="input-field"
@@ -146,15 +146,15 @@ export default function LoginForm() {
                         />
                     </Form.Group>
                     {errors.password && touched.password ? (
-                        <p className="required-message">{errors.password}</p>
+                        <p className="required-message">*{errors.password}</p>
                     ) : (
                         ""
                     )}
                     {/* Submit Button */}
                     <div className="submit-button-container">
-                    <Button className="submit-button" variant="primary" type="submit">
-                        Log In
-                    </Button>
+                        <Button className="submit-button" variant="primary" type="submit">
+                            Sign In
+                        </Button>
                     </div>
                 </Form>
             {loginError !== null ? (
@@ -170,33 +170,31 @@ export default function LoginForm() {
             ) : (
                 <p className="text-success"></p>
             )}
-            <a className="sub-text" href="/forgotPassword">Forgot Password?</a>
-
-            {/* TODO: Fix alignment issues with these buttons to match the rest of the page. */}
-            
-            {/*<div className="line-container">
+            {/* Forgot Password */}
+            <p className="sub-text"><a href="/forgotPassword">Forgot Password?</a></p>
+            {/* Social Media Sign In */}
+            <div className="line-container">
                 <div class="line"></div>
-                <p>&nbsp;&nbsp;Or&nbsp;&nbsp;</p>
+                <p>&nbsp;&nbsp;Or Sign In With&nbsp;&nbsp;</p>
                 <div class="line"></div>
             </div>
             <div className="social-button-container">
                 <Button className="social-button">
-                    <img src="google.png" alt="Google" />
+                    <img src="SocialMedia/facebook.png" alt="Facebook" />
                 </Button>
                 <Button className="social-button">
-                    <img src="facebook.png" alt="Google" />
+                    <img src="SocialMedia/x.svg" alt="X" />
                 </Button>
                 <Button className="social-button">
-                    <img src="x.svg" alt="Google" />
+                    <img src="SocialMedia/instagram.png" alt="Instagram" />
                 </Button>
-            </div>*/} 
-
+                <Button className="social-button">
+                    <img src="SocialMedia/google.png" alt="Google" />
+                </Button>
+            </div> 
             <div id="signInDiv"></div>
             {/* Link to Sign Up */}
             <p className="sub-text">Don't have an account yet? <a href="/register">Sign Up!</a></p>
-        {/*     <Button onClick={() => googleLogin()}>
-                Sign in with Google 🚀{" "}
-            </Button>*/} 
         </div>
     );
 }
