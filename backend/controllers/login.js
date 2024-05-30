@@ -62,7 +62,7 @@ loginRouter.post(
         error: list_errors,
       });
     }
-    const { username,  password } = request.body;
+    const { username,  password, mainmail } = request.body;
     //const { username, email, password } = request.body;
     console.log(request.body,"Body");
     //console.log(isEmail(username), "isEmail?");
@@ -72,6 +72,10 @@ loginRouter.post(
       user = await User.findOne({ email: username });
     else {
       user = await User.findOne({ username: username })
+    }
+    let mainEmail = null;
+    if(mainmail){
+      mainEmail = await User.findOne({ email: mainmail });
     }
     console.log(user, ": User");
     //const email = await User.findOne({ username });
@@ -102,7 +106,6 @@ loginRouter.post(
     // Update the lastLoginDate field
     user.lastLoginDate = new Date();
     // Save the updated user record
-    await user.save();
 
     // token expires 1hr
     // Sign jwt on login, used for authorization
@@ -111,11 +114,25 @@ loginRouter.post(
       expiresIn: "3D",
     });
 
+    if(mainEmail != null){
+      const userIdStr = user._id.toString();
+      if (!mainEmail.otherAccounts.has(userIdStr)) {
+        mainEmail.otherAccounts.set(userIdStr, [user.username, user.picture, user.token,password]);
+        console.log("Main Email: ", mainEmail);
+        await mainEmail.save();
+      }
+    } 
+
+    user.token = token;
+    await user.save();
+    
+
     response.status(200).json({
       status: "Success",
       token,
       username: user.username,
       firstName: user.firstName,
+      otherAccounts: user.otherAccounts,
     });
   }
 );
