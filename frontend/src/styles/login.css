@@ -8,11 +8,12 @@
     width: 500px;
     padding: 30px; /* Edits how close elements are to the edge of the div. */
     border-radius: 10px; /* Edits roundness of the div. */
-    margin: 20px 0px 0px 20px; /* Edits how close the div is to the edge of the screen. */
+    margin: 6rem 8rem; /* Edits how close the div is to the edge of the screen. */
 }
 
 .input-field {
-    width: 400px;
+    width: 26rem !important; 
+    /* did the above because the form-control id was overriding the width from the input-field */
     height: 48px;
     padding-left: 18px;
     border-radius: 5px;
@@ -30,7 +31,7 @@
 .submit-button {
     font-size: 18px;
     cursor: pointer;
-    border-radius: 20px;
+    border-radius: 50px !important;
     border: none;
     width: 120px;
     height: 40px;
@@ -45,14 +46,15 @@
 }
 
 .social-button {
-    display: flex;
+    display: flex !important;
     justify-content: center;
     align-items: center;
     font-size: 18px;
     cursor: pointer;
     border: none;
-    width: 55px;
-    height: 55px;
+    width: 50px;
+    height: 50px;
+    padding: 2rem;
     margin: 5px 15px 15px 15px;
 }
 

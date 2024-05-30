@@ -108,6 +108,7 @@ export default function LoginForm() {
 
     return (
         <div className="login-page"> 
+        <div>placeholder for the image for regenquest </div>
             <h2 className="main-heading">Sign in to your Project: Human City account.</h2>
                 <Form onSubmit={handleSubmit}>
                     {/* Username Form */}
@@ -171,7 +172,7 @@ export default function LoginForm() {
                 <p className="success-message"></p>
             )}
             {/* Forgot Password */}
-            <p className="sub-text"><a href="/forgotPassword">Forgot Password?</a></p>
+            <p className="sub-text"><a className="link-text" href="/forgotPassword">Forgot Password?</a></p>
             {/* Social Media Sign In */}
             <div className="line-container">
                 <div class="line"></div>
@@ -194,7 +195,7 @@ export default function LoginForm() {
             </div> 
             <div id="signInDiv"></div>
             {/* Link to Sign Up */}
-            <p className="sub-text">Don't have an account yet? <a href="/register">Sign Up!</a></p>
+            <p className="sub-text">Don't have an account yet? <a className="link-text" href="/register">Sign Up!</a></p>
         </div>
     );
 }
