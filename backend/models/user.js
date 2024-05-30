@@ -56,6 +56,10 @@ const userSchema = new mongoose.Schema({
     type: String,
   },
 
+  token: {
+    type: String,
+  },
+
   emailToken: String,
 
   isVerified: {
@@ -79,6 +83,11 @@ const userSchema = new mongoose.Schema({
      type: [String],
      trim: true,
   },
+  otherAccounts: {
+    type: Map,
+    of: [String],
+    ref: 'User'
+},
 
 });
 // Add better validations for uniqueness
