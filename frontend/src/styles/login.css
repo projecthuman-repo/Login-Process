@@ -8,7 +8,7 @@
     width: 500px;
     padding: 30px; /* Edits how close elements are to the edge of the div. */
     border-radius: 10px; /* Edits roundness of the div. */
-    margin: 20px 0px 0px 20px; /* Edits how close the div is to the edge of the screen. */
+    margin: 30px 0px 0px 30px; /* Edits how close the div is to the edge of the screen. */
 }
 
 .input-field {

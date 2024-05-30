@@ -6,11 +6,13 @@ import PhoneInput from "react-phone-number-input";
 import { useFormik } from "formik";
 import { schema } from "./../schemas/registrationSchema";
 import { resendVerificationLink } from "./../services/resendVerificationLink";
-import ReCAPTCHA from "react-google-recaptcha";
+// import ReCAPTCHA from "react-google-recaptcha";
 import { verifyCaptcha } from "../services/verifyCaptcha";
 import { useSearchParams } from "react-router-dom";
+import "../styles/registration.css";
+import "../styles/font.css";
 
-// Component for registration page
+// Component for Registration Page
 
 export default function RegistrationForm() {
     // Hooks
@@ -19,7 +21,6 @@ export default function RegistrationForm() {
     const [hasRegistered, setHasRegistered] = useState(false);
     const [user, setUser] = useState(null);
     const [emailToken, setEmailToken] = useState(null);
-    const [phoneNumber, setPhoneNumber] = useState("");
     const [buttonOn, setButtonOn] = useState(false);
     const [params] = useSearchParams();
     // Only allow registration button to be clickable provided captcha is filled out
@@ -62,7 +63,6 @@ export default function RegistrationForm() {
             .then((data) => {
                 // Clear form
                 actions.resetForm();
-                setPhoneNumber("");
                 setRegistrationError(null);
                 setHasRegistered(true);
                 setUser(data.savedUser);
@@ -83,98 +83,39 @@ export default function RegistrationForm() {
                 firstName: "",
                 lastName: "",
                 username: "",
-                phoneNumber: "",
             },
             validationSchema: schema,
             onSubmit,
         });
-    // Phone number field is not properly handled by formik
-    if (phoneNumber !== "") values.phoneNumber = phoneNumber;
 
     return (
-        <div>
-            <h2>Register</h2>
-            <Form onSubmit={handleSubmit}>
-                {/* email */}
-                <Form.Group controlId="formBasicEmail">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control
-                        type="email"
-                        name="email"
-                        value={values.email}
-                        onChange={handleChange}
-                        placeholder="Email"
-                        onBlur={handleBlur}
-                        isInvalid={errors.email && touched.email ? true : false}
-                    />
-                </Form.Group>
-                {errors.email && touched.email ? (
-                    <p className="text-danger">{errors.email}</p>
-                ) : (
-                    ""
-                )}
-                {/* password */}
-                <Form.Group controlId="formBasicPassword">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control
-                        type="password"
-                        name="password"
-                        value={values.password}
-                        onChange={handleChange}
-                        placeholder="Password"
-                        onBlur={handleBlur}
-                        isInvalid={
-                            errors.password && touched.password ? true : false
-                        }
-                    />
-                </Form.Group>
-                {errors.password && touched.password ? (
-                    <p className="text-danger">{errors.password}</p>
-                ) : (
-                    ""
-                )}
-
-                <Form.Group controlId="formBasicPhoneNumber">
-                    <Form.Label>Phone Number</Form.Label>
-                    <PhoneInput
-                        type="phoneNumber"
-                        name="phoneNumber"
-                        value={phoneNumber}
-                        defaultCountry="CA"
-                        onChange={setPhoneNumber}
-                        placeholder="Phone number"
-                        onBlur={handleBlur}
-                    />
-                </Form.Group>
-                {errors.phoneNumber && touched.phoneNumber ? (
-                    <p className="text-danger">{errors.phoneNumber}</p>
-                ) : (
-                    ""
-                )}
-
-                <Form.Group controlId="formBasicUsername">
-                    <Form.Label className="">Username</Form.Label>
-                    <Form.Control
-                        type="username"
-                        name="username"
-                        value={values.username}
-                        onChange={handleChange}
-                        placeholder="Username"
-                        onBlur={handleBlur}
-                        isInvalid={
-                            errors.username && touched.username ? true : false
-                        }
-                    />
-                </Form.Group>
-                {errors.username && touched.username ? (
-                    <p className="text-danger">{errors.username}</p>
-                ) : (
-                    ""
-                )}
-
+        <div className="registration-body">
+        <div className="registration-page">
+            <h2 className="main-heading">Sign up for a Project: Human City account.</h2>
+            <div className="social-button-container">
+                <Button className="social-button">
+                    <img src="SocialMedia/facebook.png" alt="Facebook" />
+                </Button>
+                <Button className="social-button">
+                    <img src="SocialMedia/x.svg" alt="X" />
+                </Button>
+                <Button className="social-button">
+                    <img src="SocialMedia/instagram.png" alt="Instagram" />
+                </Button>
+                <Button className="social-button">
+                    <img src="SocialMedia/google.png" alt="Google" />
+                </Button>
+            </div>
+            <div className="line-container">
+                <div className="line"></div>
+                <p>&nbsp;&nbsp;Or Sign Up With&nbsp;&nbsp;</p>
+                <div className="line"></div>
+            </div>
+            <Form className="form-container" onSubmit={handleSubmit}>
+                {/* First Name */}
                 <Form.Group controlId="formBasicFirstName">
-                    <Form.Label>First Name</Form.Label>
                     <Form.Control
+                        className="input-field"
                         type="firstName"
                         name="firstName"
                         value={values.firstName}
@@ -187,14 +128,14 @@ export default function RegistrationForm() {
                     />
                 </Form.Group>
                 {errors.firstName && touched.firstName ? (
-                    <p className="text-danger">{errors.firstName}</p>
+                    <p className="required-message">{errors.firstName}</p>
                 ) : (
                     ""
                 )}
-
+                {/* Last Name */}
                 <Form.Group controlId="formBasicLastName">
-                    <Form.Label>Last Name</Form.Label>
                     <Form.Control
+                        className="input-field"
                         type="lastName"
                         name="lastName"
                         value={values.lastName}
@@ -207,32 +148,93 @@ export default function RegistrationForm() {
                     />
                 </Form.Group>
                 {errors.lastName && touched.lastName ? (
-                    <p className="text-danger">{errors.lastName}</p>
+                    <p className="required-message">{errors.lastName}</p>
                 ) : (
                     ""
                 )}
+                {/* Email */}
+                <Form.Group controlId="formBasicEmail">
+                    <Form.Control
+                        className="input-field"
+                        type="email"
+                        name="email"
+                        value={values.email}
+                        onChange={handleChange}
+                        placeholder="Email"
+                        onBlur={handleBlur}
+                        isInvalid={errors.email && touched.email ? true : false}
+                    />
+                </Form.Group>
+                {errors.email && touched.email ? (
+                    <p className="required-message">{errors.email}</p>
+                ) : (
+                    ""
+                )}
+                {/* Username */}
+                <Form.Group controlId="formBasicUsername">
+                    <Form.Control
+                        className="input-field"
+                        type="username"
+                        name="username"
+                        value={values.username}
+                        onChange={handleChange}
+                        placeholder="Username"
+                        onBlur={handleBlur}
+                        isInvalid={
+                            errors.username && touched.username ? true : false
+                        }
+                    />
+                </Form.Group>
+                {errors.username && touched.username ? (
+                    <p className="required-message">{errors.username}</p>
+                ) : (
+                    ""
+                )}
+                {/* Password */}
+                <Form.Group controlId="formBasicPassword">
+                    <Form.Control
+                        className="input-field"
+                        type="password"
+                        name="password"
+                        value={values.password}
+                        onChange={handleChange}
+                        placeholder="Password"
+                        onBlur={handleBlur}
+                        isInvalid={
+                            errors.password && touched.password ? true : false
+                        }
+                    />
+                </Form.Group>
+                {errors.password && touched.password ? (
+                    <p className="required-message">{errors.password}</p>
+                ) : (
+                    ""
+                )}
+                {/* Policy Warnings */}
                 <div>
-                    <p>
-                        By signing up you agree to our{" "}
-                        <a href="/terms">terms</a>,
-                        <a href="/privacyPolicy">privacyPolicy</a> and
-                        <a href="/privacyPolicy"> cookiePolicy</a>
+                    <p className="sub-text">
+                        By signing up for a Project: Human City account you agree to our{" "}
+                        <a href="/terms">Terms of Use</a>,{" "}
+                        <a href="/privacyPolicy">Privacy Policy</a> and{" "}
+                        <a href="/privacyPolicy"> Cookie Policy</a>.
                     </p>
                 </div>
-                {/* submit button */}
-                <ReCAPTCHA
+               {/* Submit Button */}
+               {/* <ReCAPTCHA
                     sitekey={process.env.REACT_APP_SITE_KEY}
                     ref={captchaRef}
                     onChange={turnButtonOn}
-                />
-                <Button disabled={!buttonOn} variant="primary" type="submit">
-                    Register
-                </Button>
+                /> */}
+                <div className="submit-button-container">
+                    <Button className="submit-button" disabled={!buttonOn} variant="primary" type="submit">
+                        Register
+                    </Button>
+                </div>
             </Form>
             {registrationError !== null ? (
                 <div>
                     {registrationError.map((error) => (
-                        <p className="text-danger">{error}</p>
+                        <p className="error-message">{error}</p>
                     ))}
                 </div>
             ) : (
@@ -242,9 +244,8 @@ export default function RegistrationForm() {
             {hasRegistered ? (
                 <div>
                     {" "}
-                    <p className="text-success">
-                        Succesfully registered account, please verify your
-                        account using the email sent to you!
+                    <p className="success-message">
+                        Succesfully registered account, please verify your account using the email sent to you!
                     </p>
                     <Button
                         variant="primary"
@@ -258,9 +259,10 @@ export default function RegistrationForm() {
                 <p></p>
             )}
             {/* Link to login */}
-            <p>
-                Have an account? <a href="/">Login</a>
+            <p className="sub-text">
+                Already have an account? <a href="/">Log In!</a>
             </p>
+        </div>
         </div>
     );
 }

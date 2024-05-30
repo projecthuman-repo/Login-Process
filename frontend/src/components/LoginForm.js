@@ -107,6 +107,7 @@ export default function LoginForm() {
         });
 
     return (
+        <div className="login-body">
         <div className="login-page"> 
             <h2 className="main-heading">Sign in to your Project: Human City account.</h2>
                 <Form onSubmit={handleSubmit}>
@@ -126,7 +127,7 @@ export default function LoginForm() {
                         />
                     </Form.Group>
                         {errors.username && touched.username ? (
-                            <p className="required-message">*{errors.username}</p>
+                            <p className="required-message">{errors.username}</p>
                         ) : (
                             ""
                         )}
@@ -146,7 +147,7 @@ export default function LoginForm() {
                         />
                     </Form.Group>
                     {errors.password && touched.password ? (
-                        <p className="required-message">*{errors.password}</p>
+                        <p className="required-message">{errors.password}</p>
                     ) : (
                         ""
                     )}
@@ -174,9 +175,9 @@ export default function LoginForm() {
             <p className="sub-text"><a href="/forgotPassword">Forgot Password?</a></p>
             {/* Social Media Sign In */}
             <div className="line-container">
-                <div class="line"></div>
+                <div className="line"></div>
                 <p>&nbsp;&nbsp;Or Sign In With&nbsp;&nbsp;</p>
-                <div class="line"></div>
+                <div className="line"></div>
             </div>
             <div className="social-button-container">
                 <Button className="social-button">
@@ -195,6 +196,7 @@ export default function LoginForm() {
             <div id="signInDiv"></div>
             {/* Link to Sign Up */}
             <p className="sub-text">Don't have an account yet? <a href="/register">Sign Up!</a></p>
+        </div>
         </div>
     );
 }
