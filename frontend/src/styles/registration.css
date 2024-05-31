@@ -3,6 +3,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin:6rem 8rem;
 }
 
 .input-field {
@@ -13,4 +14,7 @@
     border: none;
     border-bottom: 1px solid black;
     margin: 0px 0px 20px 0px;
+}
+.small-size{
+    font-size: 0.8rem;
 }

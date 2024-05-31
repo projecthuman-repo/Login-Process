@@ -9,6 +9,9 @@ import { resendVerificationLink } from "./../services/resendVerificationLink";
 import ReCAPTCHA from "react-google-recaptcha";
 import { verifyCaptcha } from "../services/verifyCaptcha";
 import { useSearchParams } from "react-router-dom";
+import "../styles/login.css";
+import "../styles/font.css";
+import "../styles/registration.css"
 
 // Component for registration page
 
@@ -23,9 +26,9 @@ export default function RegistrationForm() {
     const [buttonOn, setButtonOn] = useState(false);
     const [params] = useSearchParams();
     // Only allow registration button to be clickable provided captcha is filled out
-    function turnButtonOn() {
-        setButtonOn(true);
-    }
+    // function turnButtonOn() {
+    //     setButtonOn(true);
+    // }
     // Function to resend verification link after registration
     function resendLink() {
         resendVerificationLink(user, emailToken)
@@ -92,8 +95,22 @@ export default function RegistrationForm() {
     if (phoneNumber !== "") values.phoneNumber = phoneNumber;
 
     return (
-        <div>
-            <h2>Register</h2>
+        <div className="registration-page">
+            <h2>Sign Up With Social Media</h2>
+            <div className="social-button-container">
+                <Button className="social-button">
+                    <img src="SocialMedia/facebook.png" alt="Facebook" />
+                </Button>
+                <Button className="social-button">
+                    <img src="SocialMedia/x.svg" alt="X" />
+                </Button>
+                <Button className="social-button">
+                    <img src="SocialMedia/instagram.png" alt="Instagram" />
+                </Button>
+                <Button className="social-button">
+                    <img src="SocialMedia/google.png" alt="Google" />
+                </Button>
+            </div> 
             <Form onSubmit={handleSubmit}>
                 {/* email */}
                 <Form.Group controlId="formBasicEmail">
@@ -212,19 +229,19 @@ export default function RegistrationForm() {
                     ""
                 )}
                 <div>
-                    <p>
+                    <p className="small-size sub-text">
                         By signing up you agree to our{" "}
-                        <a href="/terms">terms</a>,
-                        <a href="/privacyPolicy">privacyPolicy</a> and
-                        <a href="/privacyPolicy"> cookiePolicy</a>
+                        <a className="link-text" href="/terms">Terms</a>,
+                        <a className="link-text"  href="/privacyPolicy">Privacy Policy</a> and
+                        <a className="link-text" href="/privacyPolicy"> Cookie Policy</a>
                     </p>
                 </div>
                 {/* submit button */}
-                <ReCAPTCHA
+                {/* <ReCAPTCHA
                     sitekey={process.env.REACT_APP_SITE_KEY}
                     ref={captchaRef}
                     onChange={turnButtonOn}
-                />
+                /> */}
                 <Button disabled={!buttonOn} variant="primary" type="submit">
                     Register
                 </Button>
