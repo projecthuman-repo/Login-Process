@@ -90,179 +90,186 @@ export default function RegistrationForm() {
 
     return (
         <div className="registration-body">
-        <div className="registration-page">
-            <h2 className="main-heading">Sign up for a Project: Human City account.</h2>
-            <div className="social-button-container">
-                <Button className="social-button">
-                    <img src="SocialMedia/facebook.png" alt="Facebook" />
-                </Button>
-                <Button className="social-button">
-                    <img src="SocialMedia/x.svg" alt="X" />
-                </Button>
-                <Button className="social-button">
-                    <img src="SocialMedia/instagram.png" alt="Instagram" />
-                </Button>
-                <Button className="social-button">
-                    <img src="SocialMedia/google.png" alt="Google" />
-                </Button>
-            </div>
-            <div className="line-container">
-                <div className="line"></div>
-                <p>&nbsp;&nbsp;Or Sign Up With&nbsp;&nbsp;</p>
-                <div className="line"></div>
-            </div>
-            <Form className="form-container" onSubmit={handleSubmit}>
-                {/* First Name */}
-                <Form.Group controlId="formBasicFirstName">
-                    <Form.Control
-                        className="input-field"
-                        type="firstName"
-                        name="firstName"
-                        value={values.firstName}
-                        onChange={handleChange}
-                        placeholder="First Name"
-                        onBlur={handleBlur}
-                        isInvalid={
-                            errors.firstName && touched.firstName ? true : false
-                        }
-                    />
-                </Form.Group>
-                {errors.firstName && touched.firstName ? (
-                    <p className="required-message">{errors.firstName}</p>
-                ) : (
-                    ""
-                )}
-                {/* Last Name */}
-                <Form.Group controlId="formBasicLastName">
-                    <Form.Control
-                        className="input-field"
-                        type="lastName"
-                        name="lastName"
-                        value={values.lastName}
-                        onChange={handleChange}
-                        placeholder="Last Name"
-                        onBlur={handleBlur}
-                        isInvalid={
-                            errors.lastName && touched.lastName ? true : false
-                        }
-                    />
-                </Form.Group>
-                {errors.lastName && touched.lastName ? (
-                    <p className="required-message">{errors.lastName}</p>
-                ) : (
-                    ""
-                )}
-                {/* Email */}
-                <Form.Group controlId="formBasicEmail">
-                    <Form.Control
-                        className="input-field"
-                        type="email"
-                        name="email"
-                        value={values.email}
-                        onChange={handleChange}
-                        placeholder="Email"
-                        onBlur={handleBlur}
-                        isInvalid={errors.email && touched.email ? true : false}
-                    />
-                </Form.Group>
-                {errors.email && touched.email ? (
-                    <p className="required-message">{errors.email}</p>
-                ) : (
-                    ""
-                )}
-                {/* Username */}
-                <Form.Group controlId="formBasicUsername">
-                    <Form.Control
-                        className="input-field"
-                        type="username"
-                        name="username"
-                        value={values.username}
-                        onChange={handleChange}
-                        placeholder="Username"
-                        onBlur={handleBlur}
-                        isInvalid={
-                            errors.username && touched.username ? true : false
-                        }
-                    />
-                </Form.Group>
-                {errors.username && touched.username ? (
-                    <p className="required-message">{errors.username}</p>
-                ) : (
-                    ""
-                )}
-                {/* Password */}
-                <Form.Group controlId="formBasicPassword">
-                    <Form.Control
-                        className="input-field"
-                        type="password"
-                        name="password"
-                        value={values.password}
-                        onChange={handleChange}
-                        placeholder="Password"
-                        onBlur={handleBlur}
-                        isInvalid={
-                            errors.password && touched.password ? true : false
-                        }
-                    />
-                </Form.Group>
-                {errors.password && touched.password ? (
-                    <p className="required-message">{errors.password}</p>
-                ) : (
-                    ""
-                )}
-                {/* Policy Warnings */}
-                <div>
+                {hasRegistered ? (
+                    /* When a user has registered with valid information and it was successful, it will show this verfication page. */
+                    <div> 
+                        {" "} 
+                        <h2 className="main-heading">Verify your account.</h2>
+                        <p className="sub-text">
+                            A confirmation email has been sent to **EMAIL**, please click the link to verify your account.
+                        </p>
+                        <div className="resend-button-container">
+                            <p className="sub-text">
+                                <b>Didn't receieve an email?</b>
+                            </p>
+                            <Button
+                                className="resend-button" 
+                                variant="primary"
+                                type="submit"
+                                onClick={() => resendLink()}
+                            >
+                                Resend Verification Link.
+                            </Button>
+                        </div>
+                    </div>
+                    ) : (
+                    /* When a user hasn't registered yet, it will show the normal signup page. */
+                    <div className="registration-page">
+                    <h2 className="main-heading">Sign up for a Project: Human City account.</h2>
+                    <div className="social-button-container">
+                        <Button className="social-button">
+                            <img src="SocialMedia/facebook.png" alt="Facebook" />
+                        </Button>
+                        <Button className="social-button">
+                            <img src="SocialMedia/x.svg" alt="X" />
+                        </Button>
+                        <Button className="social-button">
+                            <img src="SocialMedia/instagram.png" alt="Instagram" />
+                        </Button>
+                        <Button className="social-button">
+                            <img src="SocialMedia/google.png" alt="Google" />
+                        </Button>
+                    </div>
+                    <div className="line-container">
+                        <div className="line"></div>
+                        <p>&nbsp;&nbsp;Or Sign Up With&nbsp;&nbsp;</p>
+                        <div className="line"></div>
+                    </div>
+                    <Form className="form-container" onSubmit={handleSubmit}>
+                        {/* First Name */}
+                        <Form.Group controlId="formBasicFirstName">
+                            <Form.Control
+                                className="input-field"
+                                type="firstName"
+                                name="firstName"
+                                value={values.firstName}
+                                onChange={handleChange}
+                                placeholder="First Name"
+                                onBlur={handleBlur}
+                                isInvalid={
+                                    errors.firstName && touched.firstName ? true : false
+                                }
+                            />
+                        </Form.Group>
+                        {errors.firstName && touched.firstName ? (
+                            <p className="required-message">{errors.firstName}</p>
+                        ) : (
+                            ""
+                        )}
+                        {/* Last Name */}
+                        <Form.Group controlId="formBasicLastName">
+                            <Form.Control
+                                className="input-field"
+                                type="lastName"
+                                name="lastName"
+                                value={values.lastName}
+                                onChange={handleChange}
+                                placeholder="Last Name"
+                                onBlur={handleBlur}
+                                isInvalid={
+                                    errors.lastName && touched.lastName ? true : false
+                                }
+                            />
+                        </Form.Group>
+                        {errors.lastName && touched.lastName ? (
+                            <p className="required-message">{errors.lastName}</p>
+                        ) : (
+                            ""
+                        )}
+                        {/* Email */}
+                        <Form.Group controlId="formBasicEmail">
+                            <Form.Control
+                                className="input-field"
+                                type="email"
+                                name="email"
+                                value={values.email}
+                                onChange={handleChange}
+                                placeholder="Email"
+                                onBlur={handleBlur}
+                                isInvalid={errors.email && touched.email ? true : false}
+                            />
+                        </Form.Group>
+                        {errors.email && touched.email ? (
+                            <p className="required-message">{errors.email}</p>
+                        ) : (
+                            ""
+                        )}
+                        {/* Username */}
+                        <Form.Group controlId="formBasicUsername">
+                            <Form.Control
+                                className="input-field"
+                                type="username"
+                                name="username"
+                                value={values.username}
+                                onChange={handleChange}
+                                placeholder="Username"
+                                onBlur={handleBlur}
+                                isInvalid={
+                                    errors.username && touched.username ? true : false
+                                }
+                            />
+                        </Form.Group>
+                        {errors.username && touched.username ? (
+                            <p className="required-message">{errors.username}</p>
+                        ) : (
+                            ""
+                        )}
+                        {/* Password */}
+                        <Form.Group controlId="formBasicPassword">
+                            <Form.Control
+                                className="input-field"
+                                type="password"
+                                name="password"
+                                value={values.password}
+                                onChange={handleChange}
+                                placeholder="Password"
+                                onBlur={handleBlur}
+                                isInvalid={
+                                    errors.password && touched.password ? true : false
+                                }
+                            />
+                        </Form.Group>
+                        {errors.password && touched.password ? (
+                            <p className="required-message">{errors.password}</p>
+                        ) : (
+                            ""
+                        )}
+                        {/* Policy Warnings */}
+                        <div>
+                            <p className="sub-text">
+                                By signing up for a Project: Human City account you agree to our{" "}
+                                <a href="/terms">Terms of Use</a>,{" "}
+                                <a href="/privacyPolicy">Privacy Policy</a> and{" "}
+                                <a href="/privacyPolicy"> Cookie Policy</a>.
+                            </p>
+                        </div>
+                    {/* Submit Button */}
+                    {/* <ReCAPTCHA
+                            sitekey={process.env.REACT_APP_SITE_KEY}
+                            ref={captchaRef}
+                            onChange={turnButtonOn}
+                        /> */}
+                        <div className="submit-button-container">
+                            <Button className="submit-button" disabled={!buttonOn} variant="primary" type="submit">
+                                Register
+                            </Button>
+                        </div>
+                    </Form>
+                    {registrationError !== null ? (
+                        <div>
+                            {registrationError.map((error) => (
+                                <p className="error-message">{error}</p>
+                            ))}
+                        </div>
+                    ) : (
+                        <p></p>
+                    )}
+                    {/* Link to login */}
                     <p className="sub-text">
-                        By signing up for a Project: Human City account you agree to our{" "}
-                        <a href="/terms">Terms of Use</a>,{" "}
-                        <a href="/privacyPolicy">Privacy Policy</a> and{" "}
-                        <a href="/privacyPolicy"> Cookie Policy</a>.
+                        Already have an account? <a href="/">Log In!</a>
                     </p>
+                </div>              
+                )}
                 </div>
-               {/* Submit Button */}
-               {/* <ReCAPTCHA
-                    sitekey={process.env.REACT_APP_SITE_KEY}
-                    ref={captchaRef}
-                    onChange={turnButtonOn}
-                /> */}
-                <div className="submit-button-container">
-                    <Button className="submit-button" disabled={!buttonOn} variant="primary" type="submit">
-                        Register
-                    </Button>
-                </div>
-            </Form>
-            {registrationError !== null ? (
-                <div>
-                    {registrationError.map((error) => (
-                        <p className="error-message">{error}</p>
-                    ))}
-                </div>
-            ) : (
-                <p></p>
-            )}
-            {/* If registration successful, verify account using email sent to user's email address, can also click button to resend link */}
-            {hasRegistered ? (
-                <div>
-                    {" "}
-                    <p className="success-message">
-                        Succesfully registered account, please verify your account using the email sent to you!
-                    </p>
-                    <Button
-                        variant="primary"
-                        type="submit"
-                        onClick={() => resendLink()}
-                    >
-                        Resend verification link
-                    </Button>
-                </div>
-            ) : (
-                <p></p>
-            )}
-            {/* Link to login */}
-            <p className="sub-text">
-                Already have an account? <a href="/">Log In!</a>
-            </p>
-        </div>
-        </div>
-    );
+            );
 }

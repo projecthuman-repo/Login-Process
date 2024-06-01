@@ -39,7 +39,7 @@
 
 .submit-button-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
 }
@@ -49,7 +49,27 @@
     cursor: pointer;
     border-radius: 20px;
     border: none;
-    width: 120px;
+    width: 200px;
     height: 40px;
     margin: 10px 0px 0px 0px;
+}
+
+.resend-button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.resend-button {
+    font-size: 16px;
+    color: blue;
+    cursor: pointer;
+    background: none;
+    border-radius: 20px;
+    border: none;
+    width: 195px;
+    height: 35px;
+    padding: 0px;
+    margin: 0px 0px 0px 10px;
 }
