@@ -8,8 +8,8 @@ import { useNavigate } from "react-router-dom";
 // import { addGoogleUser } from "../services/addGoogleUser";
 import { useSearchParams } from "react-router-dom";
 import axios from "axios";
-import "../styles/login.css";
-import "../styles/font.css";
+import "../styles/Login.css";
+import "../styles/Font.css";
 
 // Component for Login Page
 
@@ -108,95 +108,103 @@ export default function LoginForm() {
 
     return (
         <div className="login-body">
-        <div className="login-page"> 
-            <h2 className="main-heading">Sign in to your Project: Human City account.</h2>
-                <Form onSubmit={handleSubmit}>
-                    {/* Username Form */}
-                    <Form.Group controlId="formBasicUsername">
-                        <Form.Control
-                            className="input-field"
-                            type="username"
-                            name="username"
-                            value={values.username}
-                            onChange={handleChange}
-                            placeholder="Username"
-                            onBlur={handleBlur}
-                            isInvalid={
-                                errors.username && touched.username ? true : false
-                            }
-                        />
-                    </Form.Group>
+            <div className="login-page"> 
+                <h2 className="main-heading">Sign in to your Project: Human City account.</h2>
+                    <Form onSubmit={handleSubmit}>
+                        {/*Username*/}
+                        <Form.Group controlId="formBasicUsername">
+                            <Form.Control
+                                className="input-field"
+                                type="username"
+                                name="username"
+                                value={values.username}
+                                onChange={handleChange}
+                                placeholder="Username"
+                                onBlur={handleBlur}
+                                isInvalid={
+                                    errors.username && touched.username ? true : false
+                                }
+                            />
+                        </Form.Group>
                         {errors.username && touched.username ? (
                             <p className="required-message">{errors.username}</p>
                         ) : (
                             ""
                         )}
-                    {/* Password Form */}
-                    <Form.Group controlId="formBasicPassword">
-                        <Form.Control
-                            className="input-field"
-                            type="password"
-                            name="password"
-                            value={values.password}
-                            onChange={handleChange}
-                            placeholder="Password"
-                            onBlur={handleBlur}
-                            isInvalid={
-                                errors.password && touched.password ? true : false
-                            }
-                        />
-                    </Form.Group>
-                    {errors.password && touched.password ? (
-                        <p className="required-message">{errors.password}</p>
-                    ) : (
-                        ""
-                    )}
-                    {/* Submit Button */}
-                    <div className="submit-button-container">
-                        <Button className="submit-button" variant="primary" type="submit">
-                            Sign In
-                        </Button>
+
+                        {/*Password*/}
+                        <Form.Group controlId="formBasicPassword">
+                            <Form.Control
+                                className="input-field"
+                                type="password"
+                                name="password"
+                                value={values.password}
+                                onChange={handleChange}
+                                placeholder="Password"
+                                onBlur={handleBlur}
+                                isInvalid={
+                                    errors.password && touched.password ? true : false
+                                }
+                            />
+                        </Form.Group>
+                        {errors.password && touched.password ? (
+                            <p className="required-message">{errors.password}</p>
+                        ) : (
+                            ""
+                        )}
+
+                        {/*Submit Button*/}
+                        <div className="button-container">
+                            <Button className="signin-button" variant="primary" type="submit">
+                                Sign In
+                            </Button>
+                        </div>
+                    </Form>
+
+                {/*Error Logging In*/}
+                {loginError !== null ? (
+                    <div>
+                        {Array.isArray(loginError) ? (
+                            loginError.map((error) => (
+                                <p className="error-message sub-text">{error}</p>
+                            ))
+                        ) : (
+                            <p className="error-message sub-text">{loginError}</p>
+                        )}
                     </div>
-                </Form>
-            {loginError !== null ? (
-                <div>
-                    {Array.isArray(loginError) ? (
-                        loginError.map((error) => (
-                            <p className="error-message sub-text">{error}</p>
-                        ))
-                    ) : (
-                        <p className="error-message sub-text">{loginError}</p>
-                    )}
+                ) : (
+                    <p className="success-message"></p>
+                )}
+
+                {/*Forgot Password*/}
+                <p className="sub-text"><a href="/forgotPassword">Forgot Password?</a></p>
+                
+                {/*Social Media Sign In*/}
+                <div className="line-container">
+                    <div className="line"></div>
+                    <p>&nbsp;&nbsp;Or Sign In With&nbsp;&nbsp;</p>
+                    <div className="line"></div>
                 </div>
-            ) : (
-                <p className="success-message"></p>
-            )}
-            {/* Forgot Password */}
-            <p className="sub-text"><a href="/forgotPassword">Forgot Password?</a></p>
-            {/* Social Media Sign In */}
-            <div className="line-container">
-                <div className="line"></div>
-                <p>&nbsp;&nbsp;Or Sign In With&nbsp;&nbsp;</p>
-                <div className="line"></div>
+                <div className="social-button-container">
+                    <Button className="social-button">
+                        <img src="SocialMedia/facebook.png" alt="Facebook" />
+                    </Button>
+                    <Button className="social-button">
+                        <img src="SocialMedia/x.svg" alt="X" />
+                    </Button>
+                    <Button className="social-button">
+                        <img src="SocialMedia/instagram.png" alt="Instagram" />
+                    </Button>
+                    <Button className="social-button">
+                        <img src="SocialMedia/google.png" alt="Google" />
+                    </Button>
+                </div>
+                 
+                <div id="signInDiv"></div>
+
+                {/*Link to Sign Up*/}
+                <p className="sub-text">Don't have an account yet? <a href="/register">Sign Up!</a></p>
             </div>
-            <div className="social-button-container">
-                <Button className="social-button">
-                    <img src="SocialMedia/facebook.png" alt="Facebook" />
-                </Button>
-                <Button className="social-button">
-                    <img src="SocialMedia/x.svg" alt="X" />
-                </Button>
-                <Button className="social-button">
-                    <img src="SocialMedia/instagram.png" alt="Instagram" />
-                </Button>
-                <Button className="social-button">
-                    <img src="SocialMedia/google.png" alt="Google" />
-                </Button>
-            </div> 
-            <div id="signInDiv"></div>
-            {/* Link to Sign Up */}
-            <p className="sub-text">Don't have an account yet? <a href="/register">Sign Up!</a></p>
-        </div>
         </div>
     );
 }

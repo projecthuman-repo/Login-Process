@@ -3,10 +3,10 @@ import { schema } from "./../schemas/forgotPassSchema";
 import { React, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { forgotPassword } from "./../services/forgotPassword";
-import "../styles/resetpassword.css";
-import "../styles/font.css";
+import "../styles/ForgotPassword.css";
+import "../styles/Font.css";
 
-// Component for forgot password page
+// Component for Forgot Password Page
 
 export default function ForgotPasswordForm() {
   // Hooks
@@ -43,9 +43,10 @@ export default function ForgotPasswordForm() {
     });
 
   return (
-    <div className="resetpassword-page">
-      <h2>Reset Password</h2>
+    <div className="forgot-password-page">
+      <h2>Forgot Password</h2>
       <Form onSubmit={handleSubmit}>
+        {/*Email*/}
         <Form.Group controlId="formBasicemail">
           <Form.Control
             className="input-field"
@@ -58,20 +59,22 @@ export default function ForgotPasswordForm() {
             // Check if there are errors in field input and if so display errors
             isInvalid={errors.email && touched.email ? true : false}
           />
-          {/* Display errors */}
         </Form.Group>
         {errors.email && touched.email ? (
           <p className="required-message">{errors.email}</p>
         ) : (
           ""
         )}
-        {/* submit button */}
-        <div className="submit-button-container">
-        <Button className="submit-button" variant="primary" type="submit">
-          Send Link
-        </Button>
+
+        {/*Submit Button*/}
+        <div className="button-container">
+          <Button className="link-button" variant="primary" type="submit">
+            Send Link
+          </Button>
         </div>
       </Form>
+
+      {/*Errors*/}
       {forgotPassError !== null ? (
         <div>
           {forgotPassError.map((error) => (
@@ -81,7 +84,8 @@ export default function ForgotPasswordForm() {
       ) : (
         <p className="success-message"></p>
       )}
-      {/* Display message to let user know to check email for reset password link after successfuly filling form */}
+
+      {/*Success -  Email Sent*/}
       {successForgetPass ? (
         <p className="success-message">
           Sent! Check your email for a reset password link.

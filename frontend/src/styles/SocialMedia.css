@@ -1,0 +1,60 @@
+.social-media-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.social-media-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    box-shadow: 0 4px 8px lightgrey; 
+    width: 350px;
+    padding: 20px 130px 30px 130px; /* Edits how close elements are to the edge of the div. */
+    border-radius: 10px; /* Edits roundness of the div. */
+    margin: 20px 0px 0px 0px; /* Edits how close the div is to the edge of the screen. */
+}
+
+.connect-social-button-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.connect-social-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    cursor: pointer;
+    border: none;
+    width: 250px;
+    height: 55px;
+    margin: 5px 15px 15px 15px;
+}
+
+.connect-social-button img {
+    width: 30px;
+    height: 30px;
+    margin: 0px 15px 0px 0px;
+}
+
+.submit-button-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.submit-button {
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 20px;
+    border: none;
+    width: 150px;
+    height: 40px;
+    margin: 15px 15px 15px 15px;
+}

@@ -9,8 +9,8 @@ import { resendVerificationLink } from "./../services/resendVerificationLink";
 // import ReCAPTCHA from "react-google-recaptcha";
 import { verifyCaptcha } from "../services/verifyCaptcha";
 import { useSearchParams } from "react-router-dom";
-import "../styles/registration.css";
-import "../styles/font.css";
+import "../styles/Registration.css";
+import "../styles/Font.css";
 
 // Component for Registration Page
 
@@ -92,7 +92,7 @@ export default function RegistrationForm() {
         <div className="registration-body">
                 {hasRegistered ? (
                     /* When a user has registered with valid information and it was successful, it will show this verfication page. */
-                    <div> 
+                    <div className="verification-page">
                         {" "} 
                         <h2 className="main-heading">Verify your account.</h2>
                         <p className="sub-text">
@@ -136,7 +136,7 @@ export default function RegistrationForm() {
                         <div className="line"></div>
                     </div>
                     <Form className="form-container" onSubmit={handleSubmit}>
-                        {/* First Name */}
+                        {/*First Name*/}
                         <Form.Group controlId="formBasicFirstName">
                             <Form.Control
                                 className="input-field"
@@ -156,7 +156,7 @@ export default function RegistrationForm() {
                         ) : (
                             ""
                         )}
-                        {/* Last Name */}
+                        {/*Last Name*/}
                         <Form.Group controlId="formBasicLastName">
                             <Form.Control
                                 className="input-field"
@@ -176,7 +176,7 @@ export default function RegistrationForm() {
                         ) : (
                             ""
                         )}
-                        {/* Email */}
+                        {/*Email*/}
                         <Form.Group controlId="formBasicEmail">
                             <Form.Control
                                 className="input-field"
@@ -194,7 +194,7 @@ export default function RegistrationForm() {
                         ) : (
                             ""
                         )}
-                        {/* Username */}
+                        {/*Username*/}
                         <Form.Group controlId="formBasicUsername">
                             <Form.Control
                                 className="input-field"
@@ -214,7 +214,7 @@ export default function RegistrationForm() {
                         ) : (
                             ""
                         )}
-                        {/* Password */}
+                        {/*Password*/}
                         <Form.Group controlId="formBasicPassword">
                             <Form.Control
                                 className="input-field"
@@ -234,7 +234,7 @@ export default function RegistrationForm() {
                         ) : (
                             ""
                         )}
-                        {/* Policy Warnings */}
+                        {/*Policy Warnings*/}
                         <div>
                             <p className="sub-text">
                                 By signing up for a Project: Human City account you agree to our{" "}
@@ -243,14 +243,14 @@ export default function RegistrationForm() {
                                 <a href="/privacyPolicy"> Cookie Policy</a>.
                             </p>
                         </div>
-                    {/* Submit Button */}
+                    {/*Signup Button*/}
                     {/* <ReCAPTCHA
                             sitekey={process.env.REACT_APP_SITE_KEY}
                             ref={captchaRef}
                             onChange={turnButtonOn}
                         /> */}
                         <div className="submit-button-container">
-                            <Button className="submit-button" disabled={!buttonOn} variant="primary" type="submit">
+                            <Button className="signup-button" disabled={!buttonOn} variant="primary" type="submit">
                                 Register
                             </Button>
                         </div>
@@ -264,7 +264,7 @@ export default function RegistrationForm() {
                     ) : (
                         <p></p>
                     )}
-                    {/* Link to login */}
+                    {/*Link to Login*/}
                     <p className="sub-text">
                         Already have an account? <a href="/">Log In!</a>
                     </p>

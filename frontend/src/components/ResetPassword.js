@@ -5,8 +5,10 @@ import { Form, Button } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 import { resetPassword } from "./../services/resetPassword";
 import { useNavigate } from "react-router-dom";
+import "../styles/ResetPassword.css";
+import "../styles/Font.css";
 
-// Component for reset password page
+// Component for Reset Password Page
 
 export default function ResetPasswordForm() {
   // Hooks
@@ -44,12 +46,13 @@ export default function ResetPasswordForm() {
     });
 
   return (
-    <div>
+    <div className="reset-password-page">
       <h2>Reset Password</h2>
       <Form onSubmit={handleSubmit}>
+        {/*Password*/}
         <Form.Group controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
           <Form.Control
+            className="input-field"
             type="password"
             name="password"
             value={values.password}
@@ -60,14 +63,15 @@ export default function ResetPasswordForm() {
           />
         </Form.Group>
         {errors.password && touched.password ? (
-          <p className="text-danger">{errors.password}</p>
+          <p className="required-message">{errors.password}</p>
         ) : (
           ""
         )}
 
+        {/*Confirm Password*/}
         <Form.Group controlId="formConfirmBasicPassword">
-          <Form.Label>Confirm Password</Form.Label>
           <Form.Control
+            className="input-field"
             type="password"
             name="confirmPassword"
             value={values.confirmPassword}
@@ -80,26 +84,33 @@ export default function ResetPasswordForm() {
           />
         </Form.Group>
         {errors.confirmPassword && touched.confirmPassword ? (
-          <p className="text-danger">{errors.confirmPassword}</p>
+          <p className="required-message">{errors.confirmPassword}</p>
         ) : (
           ""
         )}
-        {/* submit button */}
-        <Button variant="primary" type="submit">
+
+        {/*Reset Button*/}
+        <div className="button-container">
+        <Button className="reset-button" variant="primary" type="submit">
           Reset Password
         </Button>
+        </div>
       </Form>
+
+      {/*Errors*/}
       {resetError !== null ? (
         <div>
           {resetError.map((error) => (
-            <p className="text-danger">{error}</p>
+            <p className="error-message">{error}</p>
           ))}
         </div>
       ) : (
-        <p className="text-success"></p>
+        <p className="success-message"></p>
       )}
+
+      {/*Success - Password Reset*/}
       {successResetPass ? (
-        <p className="text-success">Successfully reset password!</p>
+        <p className="success-message">Successfully reset password! Redirecting to login...</p>
       ) : (
         <p></p>
       )}
