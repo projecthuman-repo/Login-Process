@@ -44,12 +44,13 @@ export default function ForgotPasswordForm() {
 
   return (
     <div className="forgot-password-page">
-      <h2>Forgot Password</h2>
+      <h2 className="main-heading">Forgot Password</h2>
+      <p className="fp-sub-text">Enter the email address accociated with your account and we'll send you a link to reset your password. </p>
       <Form onSubmit={handleSubmit}>
         {/*Email*/}
         <Form.Group controlId="formBasicemail">
           <Form.Control
-            className="input-field"
+            className="fp-input-field"
             type="email"
             name="email"
             value={values.email}

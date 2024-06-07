@@ -95,6 +95,7 @@ export default function RegistrationForm() {
                     <div className="verification-page">
                         {" "} 
                         <h2 className="main-heading">Verify your account.</h2>
+                        {/*TODO: Replace **EMAIL** with the email the user has entered. */}
                         <p className="sub-text">
                             A confirmation email has been sent to **EMAIL**, please click the link to verify your account.
                         </p>
@@ -135,9 +136,9 @@ export default function RegistrationForm() {
                         <p>&nbsp;&nbsp;Or Sign Up With&nbsp;&nbsp;</p>
                         <div className="line"></div>
                     </div>
-                    <Form className="form-container" onSubmit={handleSubmit}>
+                    <Form onSubmit={handleSubmit}>
                         {/*First Name*/}
-                        <Form.Group controlId="formBasicFirstName">
+                        <Form.Group className="form-container" controlId="formBasicFirstName">
                             <Form.Control
                                 className="input-field"
                                 type="firstName"
@@ -152,12 +153,12 @@ export default function RegistrationForm() {
                             />
                         </Form.Group>
                         {errors.firstName && touched.firstName ? (
-                            <p className="required-message">{errors.firstName}</p>
+                            <p className="login-required-message">{errors.firstName}</p>
                         ) : (
                             ""
                         )}
                         {/*Last Name*/}
-                        <Form.Group controlId="formBasicLastName">
+                        <Form.Group className="form-container" controlId="formBasicLastName">
                             <Form.Control
                                 className="input-field"
                                 type="lastName"
@@ -172,12 +173,12 @@ export default function RegistrationForm() {
                             />
                         </Form.Group>
                         {errors.lastName && touched.lastName ? (
-                            <p className="required-message">{errors.lastName}</p>
+                            <p className="login-required-message">{errors.lastName}</p>
                         ) : (
                             ""
                         )}
                         {/*Email*/}
-                        <Form.Group controlId="formBasicEmail">
+                        <Form.Group className="form-container" controlId="formBasicEmail">
                             <Form.Control
                                 className="input-field"
                                 type="email"
@@ -190,12 +191,12 @@ export default function RegistrationForm() {
                             />
                         </Form.Group>
                         {errors.email && touched.email ? (
-                            <p className="required-message">{errors.email}</p>
+                            <p className="login-required-message">{errors.email}</p>
                         ) : (
                             ""
                         )}
                         {/*Username*/}
-                        <Form.Group controlId="formBasicUsername">
+                        <Form.Group className="form-container" controlId="formBasicUsername">
                             <Form.Control
                                 className="input-field"
                                 type="username"
@@ -210,12 +211,12 @@ export default function RegistrationForm() {
                             />
                         </Form.Group>
                         {errors.username && touched.username ? (
-                            <p className="required-message">{errors.username}</p>
+                            <p className="login-required-message">{errors.username}</p>
                         ) : (
                             ""
                         )}
                         {/*Password*/}
-                        <Form.Group controlId="formBasicPassword">
+                        <Form.Group className="form-container" controlId="formBasicPassword">
                             <Form.Control
                                 className="input-field"
                                 type="password"
@@ -230,7 +231,7 @@ export default function RegistrationForm() {
                             />
                         </Form.Group>
                         {errors.password && touched.password ? (
-                            <p className="required-message">{errors.password}</p>
+                            <p className="login-required-message">{errors.password}</p>
                         ) : (
                             ""
                         )}

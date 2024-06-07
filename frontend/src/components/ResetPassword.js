@@ -47,7 +47,9 @@ export default function ResetPasswordForm() {
 
   return (
     <div className="reset-password-page">
-      <h2>Reset Password</h2>
+      <h2 className="main-heading">Reset Password</h2>
+      {/*TODO: Replace *EMAIL* with the email that requested the reset password link.*/}
+      <p className="rp-sub-text">Enter a new password for *EMAIL* below.</p>
       <Form onSubmit={handleSubmit}>
         {/*Password*/}
         <Form.Group controlId="formBasicPassword">

@@ -11,16 +11,16 @@ export default function Privacy() {
 
     return (
         <div className="privacy-body">
-                {validPhoneNumber ? (
+                {!validPhoneNumber ? (
                     <div className="privacy-page">
                         <h2 className="main-heading">Improve your privacy.</h2>
-                        <h3 className="sub-heading">Opt in to 2 factor authentication to ensure your account is secure.</h3>
+                        <h3 className="p-sub-heading">Opt in to 2 factor authentication to ensure your account is secure.</h3>
                         <p className="sub-text">A 4-digit code will be sent to your phone number when signing in.</p>
                         <Form className="form-container">
                             {/* Phone Number */}
                             <Form.Group controlId="formBasicFirstName">
                                 <Form.Control
-                                    className="input-field"
+                                    className="p-input-field"
                                     type="firstName"
                                     name="firstName"
                                     placeholder="Phone Number"
@@ -39,13 +39,13 @@ export default function Privacy() {
                     ) : (
                     <div className="privacy-page">
                         <h2 className="main-heading">Improve your privacy.</h2>
-                        <h3 className="sub-heading">Opt in to 2 factor authentication to ensure your account is secure.</h3>
+                        <h3 className="p-sub-heading">Opt in to 2 factor authentication to ensure your account is secure.</h3>
                         <p className="sub-text">Enter the 4-digit code sent your phone number.</p>
                         <Form className="form-container">
                             {/*Phone Number*/}
                             <Form.Group controlId="formBasicFirstName">
                                 <Form.Control
-                                    className="input-field"
+                                    className="p-input-field"
                                     type="firstName"
                                     name="firstName"
                                     placeholder="4-digit Code"
