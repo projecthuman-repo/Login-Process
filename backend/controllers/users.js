@@ -463,6 +463,7 @@ usersRouter.patch("/verification/", async (request, response) => {
   }
   // Verify user and save user
   user.isVerified = true;
+  user.token = token;
   await user.save();
   return response.json({
     status: "Success",

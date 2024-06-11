@@ -132,6 +132,7 @@ loginRouter.post(
       token,
       username: user.username,
       firstName: user.firstName,
+      lastName: user.lastName,
       otherAccounts: user.otherAccounts,
     });
   }
