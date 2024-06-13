@@ -9,7 +9,8 @@ export default function SocialMedia() {
     return (
         <div className="social-media-body">
             <div className="social-media-page">
-            <h2 className="main-heading">Connect Social Media</h2>
+            <h2 className="main-heading">Connect Your Social Media Accounts.</h2>
+            <p className="sm-sub-text">Connect different social media accounts for better integration across Project: Human City apps.</p>
             <div className="connect-social-button-container">
                 <Button className="connect-social-button">
                     <img src="/SocialMedia/facebook.png" alt="Facebook" />

@@ -96,21 +96,16 @@ export default function RegistrationForm() {
                         {" "} 
                         <h2 className="main-heading">Verify your account.</h2>
                         {/*TODO: Replace **EMAIL** with the email the user has entered. */}
-                        <p className="sub-text">
+                        <p className="r-sub-text">
                             A confirmation email has been sent to **EMAIL**, please click the link to verify your account.
                         </p>
                         <div className="resend-button-container">
                             <p className="sub-text">
                                 <b>Didn't receieve an email?</b>
                             </p>
-                            <Button
-                                className="resend-button" 
-                                variant="primary"
-                                type="submit"
-                                onClick={() => resendLink()}
-                            >
+                            <p className="resend-text" onClick={() => resendLink()}>
                                 Resend Verification Link.
-                            </Button>
+                            </p>
                         </div>
                     </div>
                     ) : (

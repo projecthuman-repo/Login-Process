@@ -58,3 +58,11 @@
     height: 40px;
     margin: 15px 15px 15px 15px;
 }
+
+.sm-sub-text {
+    font-family: Helvetica;
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+    margin: 0px 0px 30px 0px;
+}

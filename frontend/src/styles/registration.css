@@ -74,17 +74,10 @@
     align-items: center;
 }
 
-.resend-button {
-    font-size: 16px;
+.resend-text {
     color: blue;
     cursor: pointer;
-    background: none;
-    border-radius: 20px;
-    border: none;
-    width: 195px;
-    height: 35px;
-    padding: 0px;
-    margin: 0px 0px 0px 10px;
+    margin: -5px 0px 0px 15px;
 }
 
 .login-required-message {
@@ -93,4 +86,12 @@
     color: red;
     padding-left: 20px;
     margin: -5px 0px 15px 38px;
+}
+
+.r-sub-text {
+    font-family: Helvetica;
+    font-weight: 400;
+    font-size: 16px;
+    text-align: center;
+    margin: 5px 0px 20px 0px;
 }
