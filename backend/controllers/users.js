@@ -281,6 +281,7 @@ const registerUser = async (request, response) => {
       email: userInfo.email,
       phoneNumber: userInfo.phoneNumber,
       picture: userInfo.picture ? userInfo.picture : " ",
+      token: " ",
       emailToken: emailToken,
       isVerified: false,
       passwordResetToken: "",
@@ -289,6 +290,7 @@ const registerUser = async (request, response) => {
       registrationDate: new Date(),
       lastLoginDate: null,
       previousPasswords: [],
+      otherAccounts: {},
     });
 
     await newUser.save();
@@ -461,6 +463,7 @@ usersRouter.patch("/verification/", async (request, response) => {
   }
   // Verify user and save user
   user.isVerified = true;
+  user.token = token;
   await user.save();
   return response.json({
     status: "Success",
