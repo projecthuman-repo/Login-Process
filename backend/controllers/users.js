@@ -281,6 +281,7 @@ const registerUser = async (request, response) => {
       email: userInfo.email,
       phoneNumber: userInfo.phoneNumber,
       picture: userInfo.picture ? userInfo.picture : " ",
+      userType: "personal",
       token: " ",
       emailToken: emailToken,
       isVerified: false,

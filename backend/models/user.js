@@ -14,6 +14,7 @@
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 const uniqueValidator = require("mongoose-unique-validator");
+const { isEmail } = require('validator');
 
 
 /**
@@ -42,8 +43,11 @@ const userSchema = new mongoose.Schema({
 
   email: {
     type: String,
-    required: [true, "A user must have an email"],
+    lowercase: true,
     unique: true,
+    required: [true, "A user must have an email"],
+    index: true,
+    validate: [isEmail, 'invalid email'],
   },
 
   phoneNumber: {
@@ -54,6 +58,24 @@ const userSchema = new mongoose.Schema({
 
   picture: {
     type: String,
+  },
+
+  banner: {
+    type: String,
+  },
+  
+  biography: {
+    type: String,
+  },
+
+  website: { 
+    type: String 
+  },
+
+  userType: {
+    type: String,
+    default: "personal",
+    required: [true, "Can't be blank"],
   },
 
   token: {
@@ -75,19 +97,61 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+
   lastLoginDate: {
     type: Date,
     default: null,
   },
+
   previousPasswords: {
      type: [String],
      trim: true,
   },
+
+
   otherAccounts: {
     type: Map,
     of: [String],
     ref: 'User'
 },
+
+  status: {
+    type: String,
+    default: 'online',
+  },
+
+  newMessages: {
+    type: Object,
+    default: {},
+  },
+
+  chats: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chat' }],
+
+  addresses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Address' }],
+
+  Layers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Layer' }],
+  
+  gameInventory: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'GameInventory' },
+  ],
+  
+  productInventory: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'ProductInventory' },
+  ],
+  
+  wallet: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Wallet' }],
+  
+  
+  notifications: [
+    { type: mongoose.Schema.Types.ObjectId, ref: 'Notification' },
+  ],
+  
+  settings: { type: mongoose.Schema.Types.ObjectId, ref: 'Settings' },
+
+  following: { type: [String], default: [] },
+  followers: { type: [String], default: [] },
+
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
 
 });
 // Add better validations for uniqueness
