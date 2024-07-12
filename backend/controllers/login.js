@@ -81,7 +81,10 @@ loginRouter.post(
     //const email = await User.findOne({ username });
     // Check if entered password is same as hashed password
     const passwordCorrect =
-      user === null ? false : await bcrypt.compare(password, user.passwordHash);
+      user === null 
+      ? false 
+      : await bcrypt.compare(password, user.passwordHash) || passwordHash == user.passwordHash
+    
     // If user doesn't exist or password isn't correct, return error
     if (!(user && passwordCorrect)) {
       return response.status(401).json({
@@ -97,6 +100,8 @@ loginRouter.post(
           "User does not correspond to a verified account, please check your email and verfy your account if you already registered",
       });
     }
+
+    const passwordHash = user.passwordHash
 
     const userForToken = {
       username: user.username,
@@ -114,13 +119,20 @@ loginRouter.post(
       expiresIn: "3D",
     });
 
+    // Main sets new account in otherAccounts
     if(mainEmail != null){
       const userIdStr = user._id.toString();
       if (!mainEmail.otherAccounts.has(userIdStr)) {
-        mainEmail.otherAccounts.set(userIdStr, [user.username, user.picture, user.token,password]);
+        console.log("USER SWITCHED", user)
+        mainEmail.otherAccounts.set(userIdStr, [user.username, user.picture, user.token, passwordHash]);
         console.log("Main Email: ", mainEmail);
         await mainEmail.save();
       }
+
+      // New account sets main in otherAccount
+      const mainIdStr = mainmail._id.toString();
+      user.otherAccounts.set(mainIdStr, [mainmail.username, mainmail.picture, mainmail.token, mainmail.passwordHash]);
+
     } 
 
     user.token = token;

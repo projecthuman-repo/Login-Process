@@ -198,12 +198,15 @@ usersRouter.post(
 const registerUser = async (request, response) => {
   try {
     const userInfo = request.body;
+    console.log("REQUEST BODY", userInfo)
+
 
     // Check if the user already exists
     const userExists = await User.findOne({
       $or: [{ email: userInfo.email }, { username: userInfo.username }],
     });
     if (userExists) {
+      console.log("HERE============")
       // Check if the user is already connected to the app
       const app = await App.findOne({ appId: userInfo.appId });
       if (app == null) {

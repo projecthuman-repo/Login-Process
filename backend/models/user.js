@@ -66,10 +66,12 @@ const userSchema = new mongoose.Schema({
   
   biography: {
     type: String,
+    ref: "biography"
   },
 
   website: { 
-    type: String 
+    type: String, 
+    ref: "website"
   },
 
   userType: {
