@@ -30,10 +30,10 @@ module.exports = class Email {
       host: "smtp.gmail.com",
       port: 465,
       secure: true, // Use SSL/TLS
-    auth: {
-    user: process.env.EMAIL_USERNAME,
-    pass: process.env.EMAIL_PASSWORD,
-  },
+      auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
+      },
     });
   }
   /**
@@ -52,8 +52,9 @@ module.exports = class Email {
     };
     try {
       await this.newTransport().sendMail(mailOptions);
+      console.log('Email sent successfully');
     } catch (e) {
-      console.log(e);
+      console.error('Error sending email:', e);
     }
   }
   /**
