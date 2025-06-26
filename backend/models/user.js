@@ -91,6 +91,13 @@ const userSchema = new mongoose.Schema({
     default: false,
   },
 
+  otpCode: {
+    type: String,
+  },
+  otpExpiresAt: {
+    type: Date,
+  },
+
   passwordResetToken: String,
   passwordResetExpires: Date,
   passwordChangedAt: Date,

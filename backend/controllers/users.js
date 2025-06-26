@@ -9,7 +9,9 @@
  */
 
 const bcrypt = require("bcrypt");
-const { validate } = require("deep-email-validator");
+// const { validate } = require("deep-email-validator");
+const emailValidator = require("email-validator");
+
 const crypto = require("crypto");
 const usersRouter = require("express").Router();
 const User = require("../models/user");
@@ -163,18 +165,8 @@ usersRouter.post(
     const errors = validationResult(request).array();
     let list_errors = "";
 
-    let validate_email = await validate({
-      email: request.body.email,
-      sender: process.env.EMAIL_USERNAME,
-      validateRegex: true,
-      validateMx: true,
-      validateTypo: true,
-      validateDisposable: true,
-      validateSMTP: false,
-    });
-
-    if (validate_email.valid !== true) {
-      list_errors += "Email entered is not a real email\n";
+    if (!emailValidator.validate(request.body.email)) {
+ 	list_errors += "Email entered is not a valid email\n";
     }
 
     for (let i = 0; i < errors.length; i++) {
@@ -566,17 +558,8 @@ usersRouter.patch(
     // Get errors of validation of body above
     const errors = validationResult(request).array();
     let list_errors = "";
-    let validate_email = await validate({
-      email: request.body.email,
-      sender: process.env.EMAIL_USERNAME,
-      validateRegex: true,
-      validateMx: true,
-      validateTypo: true,
-      validateDisposable: true,
-      validateSMTP: false,
-    });
-    if (validate_email.valid !== true) {
-      list_errors += "Email entered is not a real email\n";
+    if (!emailValidator.validate(request.body.email)) {
+ 	list_errors += "Email entered is not a valid email\n";
     }
 
     for (let i = 0; i < errors.length; i++) {

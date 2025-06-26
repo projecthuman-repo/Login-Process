@@ -4,6 +4,7 @@
  * @requires nodemailer
  */
 const nodemailer = require("nodemailer");
+
 /**
  * @class
  * @public
@@ -20,6 +21,7 @@ module.exports = class Email {
     /** @type {string} email address to send emails from */
     this.from = process.env.EMAIL_USERNAME;
   }
+
   /**
    * Creates transporter for nodemailer to send emails using specified email address and password
    * @function
@@ -27,15 +29,16 @@ module.exports = class Email {
    */
   newTransport() {
     return nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true, // Use SSL/TLS
-    auth: {
-    user: process.env.EMAIL_USERNAME,
-    pass: process.env.EMAIL_PASSWORD,
-  },
+      host: process.env.EMAIL_HOST || "smtp.ethereal.email",
+      port: process.env.EMAIL_PORT || 587,
+      secure: false, // false for STARTTLS (Ethereal), true for SSL (Gmail)
+      auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
+      },
     });
   }
+
   /**
    * Customize subject and message of email
    * @param {string} subject
@@ -56,6 +59,7 @@ module.exports = class Email {
       console.log(e);
     }
   }
+
   /**
    * Send welcome to app message for verifying of email
    * @function
@@ -67,6 +71,7 @@ module.exports = class Email {
       `Welcome to the main PHC login page, visit ${this.url} to verify your email`
     );
   }
+
   /**
    * Send password reset email
    * @function

@@ -10,6 +10,10 @@
  * @const app
  */
 
+// new stuff-anvit (05/30/2025)
+const localAuthRouter = require("./routes/auth");
+const externalAuthRouter = require("./controllers/auth").authRouter;
+
 const express = require("express");
 require("express-async-errors"); // eliminates need for try-catch blocks
 const morgan = require("morgan");
@@ -35,14 +39,15 @@ const app = express();
 const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const compression = require("compression");
-const xss = require("xss-clean");
+// const xss = require("xss-clean");
+// replaced with xssFilters
 const cors = require("cors"); // required for frontend
 const usersRouter = require("./controllers/users");
 const loginRouter = require("./controllers/login");
 const googleUsersRouter = require("./controllers/googleUsers");
 const facebookUsersRouter = require("./controllers/facebookUsers");
 const instagramUsersRouter = require("./controllers/instagramUsers");
-const mastodonUserRouter = require("./controllers/mastodonUsers")
+// const mastodonUserRouter = require("./controllers/mastodonUsers")
 const authRouter = require("./controllers/auth").authRouter;
 const middleware = require("./utils/middleware");
 
@@ -58,7 +63,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(mongoSanitize());
 
 //Data sanitization against XSS
-app.use(xss());
+const xssFilters = require("xss-filters");
+// new xxs-filter (05-30-2025)
 
 //Compress response data
 app.use(compression());
@@ -72,9 +78,16 @@ app.use("/api/login", loginRouter);
 app.use("/api/googleUsers", googleUsersRouter);
 app.use("/api/instagramUsers", instagramUsersRouter);
 app.use("/api/facebookUsers", facebookUsersRouter);
-app.use("/api/mastodonUsers", mastodonUserRouter)
-app.use("/api/authentication", authRouter);
+// app.use("/api/mastodonUsers", mastodonUserRouter)
+app.use("/api/authentication", externalAuthRouter);
+app.use("/api", localAuthRouter);
 
+// Remove when integrating (Just for testing)
+app.get("/", (req, res) => {
+  res.status(200).json({ status: "Login backend is running" });
+});
+
+//error handling
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 
