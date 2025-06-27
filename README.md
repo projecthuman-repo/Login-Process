@@ -52,7 +52,7 @@ backend/
 ### 1. Clone the repo
 
 ```bash
-git clone https://github.com/<your-org>/login-process.git
+git clone https://github.com/projecthuman-repo/Login-Process.git
 cd login-process/backend
 ```
 
