@@ -1,0 +1,13 @@
+# ignore local env files
+/backend/config.env
+*.env
+
+# ignore test scripts
+/backend/testEmail.js
+
+# node modules
+/node_modules/
+
+# macOS metadata
+**/.DS_Store
+**/__MACOSX/
