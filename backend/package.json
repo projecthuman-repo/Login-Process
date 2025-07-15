@@ -1,12 +1,13 @@
 {
   "name": "login-process",
   "version": "1.0.0",
-  "description": "Login System",
-  "main": "app.js",
+  "description": "Login System with OAuth2 and TypeScript",
+  "main": "dist/app.js",
   "scripts": {
     "test": "cross-env NODE_ENV=test jest --verbose --runInBand",
-    "start": "cross-env NODE_ENV=production node server.js",
-    "dev": "cross-env NODE_ENV=development nodemon server.js"
+    "build": "tsc",
+    "start": "cross-env NODE_ENV=production node dist/server.js",
+    "dev": "cross-env NODE_ENV=development nodemon src/server.ts"
   },
   "repository": {
     "type": "git",
@@ -40,9 +41,21 @@
     "xss-filters": "^1.2.7"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/compression": "^1.8.1",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/morgan": "^1.9.10",
+    "@types/node": "^24.0.13",
+    "@types/nodemailer": "^6.4.17",
+    "@types/xss-filters": "^1.2.0",
     "cross-env": "^7.0.3",
     "jest": "^29.7.0",
-    "nodemon": "^3.1.10"
+    "mongodb-memory-server": "^10.1.4",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   },
   "jest": {
     "testEnvironment": "node"
